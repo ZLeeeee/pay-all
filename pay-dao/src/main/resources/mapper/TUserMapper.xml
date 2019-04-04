@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chaotu.pay.dao.TUserMapper">
+  <resultMap id="BaseResultMap" type="com.chaotu.pay.po.TUser">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="del_flag" jdbcType="INTEGER" property="delFlag" />
+    <result column="department_id" jdbcType="VARCHAR" property="departmentId" />
+    <result column="street" jdbcType="VARCHAR" property="street" />
+    <result column="pass_strength" jdbcType="VARCHAR" property="passStrength" />
+  </resultMap>
+</mapper>

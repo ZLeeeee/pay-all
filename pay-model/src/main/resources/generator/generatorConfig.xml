@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <properties resource="generator/application.properties"/>
+
+    <context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+        <property name="autoDelimitKeywords" value="true"/>
+
+        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+            <property name="mappers" value="com.chaotu.pay.utils.MyMapper"/>
+        </plugin>
+
+        <jdbcConnection driverClass="${druid.driver-class-name}" connectionURL="${druid.url}" userId="${druid.username}" password="${druid.password}">
+        </jdbcConnection>
+
+        <javaModelGenerator targetPackage="com.chaotu.pay.po" targetProject="src/main/java"/>
+
+        <sqlMapGenerator targetPackage="mapper" targetProject="../pay-dao/src/main/resources"/>
+
+        <javaClientGenerator targetPackage="com.chaotu.pay.dao" targetProject="../pay-dao/src/main/java" type="XMLMAPPER"/>
+
+
+        <table schema="pay" tableName="t_user_role">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="t_user">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+
+        <table schema="pay" tableName="t_role_permission">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="t_role_department">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="t_role">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="t_quartz_job">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="t_permission">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="t_log">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="t_file">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="t_dict_data">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="t_dict">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="t_department_header">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="t_department">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="qrtz_triggers">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="qrtz_simprop_triggers">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="qrtz_simple_triggers">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="qrtz_scheduler_state">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="qrtz_paused_trigger_grps">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="qrtz_locks">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="qrtz_job_details">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="qrtz_fired_triggers">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="qrtz_cron_triggers">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="qrtz_calendars">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="qrtz_blob_triggers">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+    </context>
+</generatorConfiguration>
