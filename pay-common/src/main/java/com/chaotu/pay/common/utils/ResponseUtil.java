@@ -1,7 +1,7 @@
 package com.chaotu.pay.common.utils;
 
-import com.chinasoft.tax.constant.MsgStatus;
-import com.chinasoft.tax.vo.Message;
+import com.chaotu.pay.constant.MsgStatus;
+import com.chaotu.pay.vo.Message;
 
 /**
  * @Author: zhangchu@iyungu.com

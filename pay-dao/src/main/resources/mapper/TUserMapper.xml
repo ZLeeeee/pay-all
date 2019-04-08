@@ -26,4 +26,21 @@
     <result column="street" jdbcType="VARCHAR" property="street" />
     <result column="pass_strength" jdbcType="VARCHAR" property="passStrength" />
   </resultMap>
+
+  <select id="findAll" resultMap="BaseResultMap" parameterType="com.chaotu.pay.vo.UserVo">
+    select * from t_user u where 1=1
+    <if test ="username!=null and username!=''">
+      and u.user_name like concat('%',#{username},'%')
+    </if>
+
+    <if test="startDate!=null and startDate!=''">
+      and u.create_time &gt;= #{startDate}
+    </if>
+
+    <if test="endDate!=null and endDate!=''">
+      and u.create_time &lt;= #{endDate}
+    </if>
+
+
+  </select>
 </mapper>

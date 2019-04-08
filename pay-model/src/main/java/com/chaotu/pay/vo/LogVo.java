@@ -1,7 +1,13 @@
 package com.chaotu.pay.vo;
 
-import java.util.Date;
+import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSON;
+import lombok.Data;
 
+import java.util.Date;
+import java.util.Map;
+
+@Data
 public class LogVo {
 
     private String id;
@@ -33,4 +39,12 @@ public class LogVo {
     private Integer logType;
 
     private String requestParam;
+
+    /**
+     * 转换请求参数为Json
+     * @param paramMap
+     */
+    public void setMapToParams(Map<String, String[]> paramMap) {
+        this.requestParam = JSON.toJSONString(paramMap);
+    }
 }

@@ -15,8 +15,8 @@
     <result column="user_id" jdbcType="VARCHAR" property="userId" />
   </resultMap>
 
-  <select id="findByUserId" resultType="com.chinasoft.tax.po.TRole">
-      SELECT r.id id, name,code
+  <select id="findByUserId" resultType="com.chaotu.pay.po.TRole">
+      SELECT r.id id, name
       FROM t_user_role ur
       LEFT JOIN t_role r
       ON ur.role_id = r.id

@@ -37,5 +37,10 @@
 
   </select>
 
+    <select id="findByRoleId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select * from t_permission p where p.id IN
+        (select rp.permission_id from t_role_permission rp where rp.role_Id = #{roleId})
+    </select>
+
 
 </mapper>

@@ -1,22 +1,27 @@
 package com.chaotu.pay.aop;
 
-import com.alibaba.fastjson.JSON;
+import cn.hutool.core.util.StrUtil;
+import com.chaotu.pay.annotation.SystemLog;
+import com.chaotu.pay.beanUtils.IpInfoUtil;
+import com.chaotu.pay.common.utils.ThreadPoolUtil;
+import com.chaotu.pay.service.LogService;
+import com.chaotu.pay.vo.LogVo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.NamedThreadLocal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * @Description: Spring AOP实现日志管理
@@ -31,16 +36,13 @@ public class SystemLogAspect {
     private static final ThreadLocal<Date> beginTimeThreadLocal = new NamedThreadLocal<Date>("ThreadLocal beginTime");
 
     @Autowired
-    private LogInfoService logInfoService;
+    private LogService logService;
 
     @Autowired(required = false)
     private HttpServletRequest request;
 
     @Autowired
     private IpInfoUtil ipInfoUtil;
-
-    @Autowired
-    private CurrentUserUtils currentUserUtils;
 
     /**
      * Controller层切点,注解方式
@@ -74,74 +76,58 @@ public class SystemLogAspect {
     @After("controllerAspect()")
     public void after(JoinPoint joinPoint) {
         try {
-            String username = currentUserUtils.getUserName();
-            //String username = "admin";
-            if (StringUtils.isNotBlank(username)) {
-                StringBuffer sb = new StringBuffer();
-                // 参数值
-                Object[] args = joinPoint.getArgs();
-                // 参数名
-                String[] argNames = ((MethodSignature)joinPoint.getSignature()).getParameterNames();
-                for (int i = 0; i < args.length; i++) {
-                    sb.append(JSON.toJSON(argNames[i])).append("=");
-                    sb.append(args[i].toString());
-                    sb.append(";");
-                }
-                String paramData = "";
-                if(StringUtils.isNotEmpty(sb)){
-                    paramData = sb.substring(0,sb.length()-1);
-                }
-                //log.info("参数名称列表："+JSON.toJSONString(argNames));
-                //log.info("输入参数列表:"+JSON.toJSONString(args));
-                log.info("参数："+paramData);
-                Signature signature = joinPoint.getSignature();
-                String declaringTypeName = joinPoint.getSignature().getDeclaringTypeName();
-                String methodName = declaringTypeName+"."+signature.getName();
-                LogInfoVo logInfoVo = new LogInfoVo();
-                logInfoVo.setCreator(username);
-                //日志标题
-                logInfoVo.setMethod(getControllerMethodDescription(joinPoint));
-                logInfoVo.setMethodCode(methodName);
-                //操作时间
-                logInfoVo.setOperationTime(new Date());
-                //请求参数
-                //Map<String, String[]> logParams = request.getParameterMap();
-                logInfoVo.setParam(paramData);
-                //请求用户
-                logInfoVo.setUsername(username);
-                //请求IP
-                logInfoVo.setIp(ipInfoUtil.getIpAddr(request));
-                //请求开始时间
-                /*Date logStartTime = beginTimeThreadLocal.get();
-                long beginTime = beginTimeThreadLocal.get().getTime();
-                long endTime = System.currentTimeMillis();
-                //请求耗时
-                Long logElapsedTime = endTime - beginTime;*/
-                //调用线程保存至ES
-                ThreadPoolUtil.getPool().execute(new SaveSystemLogThread(logInfoVo, logInfoService));
-            }
+            UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String username = user.getUsername();
 
+            if (StrUtil.isNotBlank(username)) {
+
+
+                LogVo logVo = new LogVo();
+
+                //日志标题
+                logVo.setName(getControllerMethodDescription(joinPoint));
+                //日志请求url
+                logVo.setRequestUrl(request.getRequestURI());
+                //请求方式
+                logVo.setRequestType(request.getMethod());
+                //请求参数
+                Map<String, String[]> logParams = request.getParameterMap();
+                logVo.setMapToParams(logParams);
+                //请求用户
+                logVo.setUsername(username);
+                //请求IP
+                logVo.setIp(ipInfoUtil.getIpAddr(request));
+                //IP地址
+                //logVo.setIpInfo(ipInfoUtil.getIpCity(ipInfoUtil.getIpAddr(request)));
+                //请求开始时间
+                Date logStartTime = beginTimeThreadLocal.get();
+
+                //调用线程保存至ES
+                ThreadPoolUtil.getPool().execute(new SaveSystemLogThread(logVo, logService));
+
+            }
         } catch (Exception e) {
             log.error("AOP后置通知异常", e);
         }
     }
-
 
     /**
      * 保存日志至数据库
      */
     private static class SaveSystemLogThread implements Runnable {
 
-        private LogInfoVo logInfoVo;
-        private LogInfoService logInfoService;
+        private LogVo logVo;
+        private LogService logService;
 
-        public SaveSystemLogThread(LogInfoVo logInfoVo, LogInfoService logInfoService) {
-            this.logInfoVo = logInfoVo;
-            this.logInfoService = logInfoService;
+        public SaveSystemLogThread(LogVo logVo, LogService logService) {
+            this.logVo = logVo;
+            this.logService = logService;
         }
+
         @Override
         public void run() {
-            logInfoService.add(logInfoVo);
+
+            logService.add(logVo);
         }
     }
 
@@ -180,4 +166,5 @@ public class SystemLogAspect {
         }
         return description;
     }
+
 }
