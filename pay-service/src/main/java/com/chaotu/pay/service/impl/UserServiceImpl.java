@@ -35,7 +35,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private TUserRoleMapper tUserRoleMapper;
-
     @Autowired
     private TPermissionMapper tPermissionMapper;
 

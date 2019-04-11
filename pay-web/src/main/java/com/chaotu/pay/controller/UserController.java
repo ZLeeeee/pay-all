@@ -82,7 +82,7 @@ public class UserController {
      * 用户登录
      * @param vo
      * @return
-     *//*
+     */
     @PostMapping("/login")
     public Message login(UserVo vo) {
         if(StringUtils.isEmpty(vo.getUsername())||StringUtils.isEmpty(vo.getPassword())){
@@ -95,7 +95,7 @@ public class UserController {
         //String token = jwtTokenUtil.generateToken(userDetails);
         //log.info("用户登录token:"+token);
         return ResponseUtil.responseBody("登录成功");
-    }*/
+    }
 
 
     /**

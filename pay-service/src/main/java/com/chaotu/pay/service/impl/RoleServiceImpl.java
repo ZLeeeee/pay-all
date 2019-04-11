@@ -55,7 +55,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void addRole(RoleVo roleVo) {
         log.info("添加角色,入参roleVo=["+roleVo.toString()+"]");
-        if(StringUtils.isEmpty(roleVo.getName())|| StringUtils.isEmpty(roleVo.getCode())){
+        if(StringUtils.isEmpty(roleVo.getName())){
             throw new BizException(ExceptionCode.REQUEST_PARAM_MISSING);
         }
         TRole tRole = new TRole();
@@ -63,7 +63,6 @@ public class RoleServiceImpl implements RoleService {
         Example example = new Example(TRole.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("name",roleVo.getName());
-        criteria.orEqualTo("code", roleVo.getCode());
         int i = tRoleMapper.selectCountByExample(example);
         if(i>0){
             log.error("该角色名称或编码");
@@ -97,7 +96,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void editRole(RoleVo roleVo) {
-        if(StringUtils.isEmpty(roleVo.getId())||StringUtils.isEmpty(roleVo.getName())|| StringUtils.isEmpty(roleVo.getCode())){
+        if(StringUtils.isEmpty(roleVo.getId())||StringUtils.isEmpty(roleVo.getName())){
             throw new BizException(ExceptionCode.REQUEST_PARAM_MISSING);
         }
         log.info("修改角色,入参roleVo=["+roleVo.toString()+"]");

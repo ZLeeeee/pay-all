@@ -12,8 +12,6 @@ public class RoleVo {
 
     private String name;
 
-    private String code;
-
     private Date createTime;
 
     private String creator;
