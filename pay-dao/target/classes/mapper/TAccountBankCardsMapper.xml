@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chaotu.pay.dao.TAccountBankCardsMapper">
+  <resultMap id="BaseResultMap" type="com.chaotu.pay.po.TAccountBankCards">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="third" jdbcType="CHAR" property="third" />
+    <result column="channel_payment_id" jdbcType="BIGINT" property="channelPaymentId" />
+    <result column="accountType" jdbcType="VARCHAR" property="accounttype" />
+    <result column="dayQuota" jdbcType="DECIMAL" property="dayquota" />
+    <result column="phone_id" jdbcType="VARCHAR" property="phoneId" />
+    <result column="bank_name" jdbcType="VARCHAR" property="bankName" />
+    <result column="bank_mark" jdbcType="VARCHAR" property="bankMark" />
+    <result column="bank_account" jdbcType="VARCHAR" property="bankAccount" />
+    <result column="cardNo" jdbcType="VARCHAR" property="cardno" />
+    <result column="tradeAmount" jdbcType="DECIMAL" property="tradeamount" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+    <result column="signKey" jdbcType="VARCHAR" property="signkey" />
+    <result column="chard_index" jdbcType="VARCHAR" property="chardIndex" />
+    <result column="qrcode" jdbcType="VARCHAR" property="qrcode" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+</mapper>

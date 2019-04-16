@@ -29,5 +29,5 @@ public class RoleVo {
     private List<PermissionVo> permissions;
 
     /**流程角色，这里指流程id，来自<code>com.chinasoft.tax.enums.TaskCode</code>*/
-    private String processKey;
+    /*private String processKey;*/
 }

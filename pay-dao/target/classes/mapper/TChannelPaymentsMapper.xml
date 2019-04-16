@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chaotu.pay.dao.TChannelPaymentsMapper">
+  <resultMap id="BaseResultMap" type="com.chaotu.pay.po.TChannelPayments">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="channel_id" jdbcType="BIGINT" property="channelId" />
+    <result column="paymentName" jdbcType="VARCHAR" property="paymentname" />
+    <result column="paymentCode" jdbcType="VARCHAR" property="paymentcode" />
+    <result column="ico" jdbcType="VARCHAR" property="ico" />
+    <result column="runRate" jdbcType="DECIMAL" property="runrate" />
+    <result column="costRate" jdbcType="DECIMAL" property="costrate" />
+    <result column="minAmount" jdbcType="INTEGER" property="minamount" />
+    <result column="maxAmount" jdbcType="INTEGER" property="maxamount" />
+    <result column="status" jdbcType="CHAR" property="status" />
+  </resultMap>
+</mapper>

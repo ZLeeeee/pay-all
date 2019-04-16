@@ -6,7 +6,6 @@ import com.chaotu.pay.utils.MyMapper;
 import java.util.List;
 
 public interface TPermissionMapper extends MyMapper<TPermission> {
-
     /**
      * 通过用户id获取该用户所拥有的权限
      * @param userId

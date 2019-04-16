@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chaotu.pay.dao.TOrderMapper">
+  <resultMap id="BaseResultMap" type="com.chaotu.pay.po.TOrder">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
+    <result column="del_flag" jdbcType="CHAR" property="delFlag" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="merchant" jdbcType="VARCHAR" property="merchant" />
+    <result column="agent_id" jdbcType="VARCHAR" property="agentId" />
+    <result column="channel_id" jdbcType="BIGINT" property="channelId" />
+    <result column="channel_payment_id" jdbcType="BIGINT" property="channelPaymentId" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="phone_id" jdbcType="VARCHAR" property="phoneId" />
+    <result column="phone_uid" jdbcType="BIGINT" property="phoneUid" />
+    <result column="orderMk" jdbcType="VARCHAR" property="ordermk" />
+    <result column="orderNo" jdbcType="VARCHAR" property="orderno" />
+    <result column="underOrderNo" jdbcType="VARCHAR" property="underorderno" />
+    <result column="onOrderNo" jdbcType="VARCHAR" property="onorderno" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="orderRate" jdbcType="DECIMAL" property="orderrate" />
+    <result column="sysAmount" jdbcType="DECIMAL" property="sysamount" />
+    <result column="agentAmount" jdbcType="DECIMAL" property="agentamount" />
+    <result column="userAmount" jdbcType="DECIMAL" property="useramount" />
+    <result column="notifyUrl" jdbcType="VARCHAR" property="notifyurl" />
+    <result column="successUrl" jdbcType="VARCHAR" property="successurl" />
+    <result column="channelName" jdbcType="VARCHAR" property="channelname" />
+    <result column="paymentName" jdbcType="VARCHAR" property="paymentname" />
+    <result column="extend" jdbcType="VARCHAR" property="extend" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+  </resultMap>
+</mapper>

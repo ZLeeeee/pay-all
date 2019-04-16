@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chaotu.pay.dao.TChannelMapper">
+  <resultMap id="BaseResultMap" type="com.chaotu.pay.po.TChannel">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="merchant" jdbcType="VARCHAR" property="merchant" />
+    <result column="signkey" jdbcType="VARCHAR" property="signkey" />
+    <result column="channelName" jdbcType="VARCHAR" property="channelname" />
+    <result column="channelCode" jdbcType="VARCHAR" property="channelcode" />
+    <result column="refererDomain" jdbcType="VARCHAR" property="refererdomain" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="channelQuota" jdbcType="INTEGER" property="channelquota" />
+    <result column="tradeAmount" jdbcType="DECIMAL" property="tradeamount" />
+    <result column="extend" jdbcType="VARCHAR" property="extend" />
+  </resultMap>
+</mapper>

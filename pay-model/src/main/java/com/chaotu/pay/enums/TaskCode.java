@@ -9,6 +9,4 @@ public enum TaskCode {
     CHECK_PAY,
     APPROVAL_PAY;
 
-
-
 }

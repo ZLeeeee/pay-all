@@ -1,28 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.chaotu.pay.dao.TUserRoleMapper">
-  <resultMap id="BaseResultMap" type="com.chaotu.pay.po.TUserRole">
+<mapper namespace="com.chaotu.pay.dao.TRolePermissionMapper">
+  <resultMap id="BaseResultMap" type="com.chaotu.pay.po.TRolePermission">
     <!--
       WARNING - @mbg.generated
     -->
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="del_flag" jdbcType="INTEGER" property="delFlag" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="del_flag" jdbcType="INTEGER" property="delFlag" />
+    <result column="permission_id" jdbcType="VARCHAR" property="permissionId" />
     <result column="role_id" jdbcType="VARCHAR" property="roleId" />
-    <result column="user_id" jdbcType="VARCHAR" property="userId" />
   </resultMap>
-
-  <select id="findByUserId" resultType="com.chaotu.pay.po.TRole">
-      SELECT r.id id, name
-      FROM t_user_role ur
-      LEFT JOIN t_role r
-      ON ur.role_id = r.id
-      WHERE 1=1
-      and user_Id = #{userId}
-      and r.id is not null
-
-    </select>
 </mapper>

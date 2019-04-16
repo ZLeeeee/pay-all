@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chaotu.pay.dao.TOrderDayCountMapper">
+  <resultMap id="BaseResultMap" type="com.chaotu.pay.po.TOrderDayCount">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="agent_id" jdbcType="BIGINT" property="agentId" />
+    <result column="merchant_amount" jdbcType="DECIMAL" property="merchantAmount" />
+    <result column="merchant_income" jdbcType="DECIMAL" property="merchantIncome" />
+    <result column="merchant_order_count" jdbcType="INTEGER" property="merchantOrderCount" />
+    <result column="merchant_order_suc_count" jdbcType="INTEGER" property="merchantOrderSucCount" />
+    <result column="sys_amount" jdbcType="DECIMAL" property="sysAmount" />
+    <result column="sys_income" jdbcType="DECIMAL" property="sysIncome" />
+    <result column="sys_order_count" jdbcType="INTEGER" property="sysOrderCount" />
+    <result column="sys_order_suc_count" jdbcType="INTEGER" property="sysOrderSucCount" />
+  </resultMap>
+</mapper>

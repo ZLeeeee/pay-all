@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chaotu.pay.dao.TLogMapper">
+  <resultMap id="BaseResultMap" type="com.chaotu.pay.po.TLog">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="del_flag" jdbcType="INTEGER" property="delFlag" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="cost_time" jdbcType="INTEGER" property="costTime" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="ip_info" jdbcType="VARCHAR" property="ipInfo" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="request_type" jdbcType="VARCHAR" property="requestType" />
+    <result column="request_url" jdbcType="VARCHAR" property="requestUrl" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="log_type" jdbcType="INTEGER" property="logType" />
+    <result column="request_param" jdbcType="LONGVARCHAR" property="requestParam" />
+  </resultMap>
+</mapper>

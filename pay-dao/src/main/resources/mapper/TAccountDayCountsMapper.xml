@@ -1,28 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.chaotu.pay.dao.TUserRoleMapper">
-  <resultMap id="BaseResultMap" type="com.chaotu.pay.po.TUserRole">
+<mapper namespace="com.chaotu.pay.dao.TAccountDayCountsMapper">
+  <resultMap id="BaseResultMap" type="com.chaotu.pay.po.TAccountDayCounts">
     <!--
       WARNING - @mbg.generated
     -->
-    <id column="id" jdbcType="VARCHAR" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="del_flag" jdbcType="INTEGER" property="delFlag" />
-    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
     <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="account_amount" jdbcType="DECIMAL" property="accountAmount" />
+    <result column="account_order_count" jdbcType="INTEGER" property="accountOrderCount" />
+    <result column="account_order_suc_count" jdbcType="INTEGER" property="accountOrderSucCount" />
   </resultMap>
-
-  <select id="findByUserId" resultType="com.chaotu.pay.po.TRole">
-      SELECT r.id id, name
-      FROM t_user_role ur
-      LEFT JOIN t_role r
-      ON ur.role_id = r.id
-      WHERE 1=1
-      and user_Id = #{userId}
-      and r.id is not null
-
-    </select>
 </mapper>

@@ -21,39 +21,79 @@ public class TUser {
     @Column(name = "update_time")
     private Date updateTime;
 
+    /**
+     * 地址
+     */
     private String address;
 
+    /**
+     * 头像
+     */
     private String avatar;
 
+    /**
+     * 描述
+     */
     private String description;
 
+    /**
+     * 邮箱
+     */
     private String email;
 
+    /**
+     * 手机号
+     */
     private String mobile;
 
+    /**
+     * 昵称
+     */
     @Column(name = "nick_name")
     private String nickName;
 
+    /**
+     * 密码
+     */
     private String password;
 
+    /**
+     * 性别
+     */
     private Integer sex;
 
+    /**
+     * 状态
+     */
     private Integer status;
 
+    /**
+     * 类型
+     */
     private Integer type;
 
+    /**
+     * 用户名
+     */
     private String username;
 
+    /**
+     * 删除标记
+     */
     @Column(name = "del_flag")
     private Integer delFlag;
 
-    @Column(name = "department_id")
-    private String departmentId;
+    /**
+     * 支付密码
+     */
+    @Column(name = "payPassword")
+    private String paypassword;
 
-    private String street;
-
-    @Column(name = "pass_strength")
-    private String passStrength;
+    /**
+     * 上级id
+     */
+    @Column(name = "parent_id")
+    private String parentId;
 
     /**
      * @return id
@@ -126,212 +166,254 @@ public class TUser {
     }
 
     /**
-     * @return address
+     * 获取地址
+     *
+     * @return address - 地址
      */
     public String getAddress() {
         return address;
     }
 
     /**
-     * @param address
+     * 设置地址
+     *
+     * @param address 地址
      */
     public void setAddress(String address) {
         this.address = address;
     }
 
     /**
-     * @return avatar
+     * 获取头像
+     *
+     * @return avatar - 头像
      */
     public String getAvatar() {
         return avatar;
     }
 
     /**
-     * @param avatar
+     * 设置头像
+     *
+     * @param avatar 头像
      */
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
 
     /**
-     * @return description
+     * 获取描述
+     *
+     * @return description - 描述
      */
     public String getDescription() {
         return description;
     }
 
     /**
-     * @param description
+     * 设置描述
+     *
+     * @param description 描述
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
     /**
-     * @return email
+     * 获取邮箱
+     *
+     * @return email - 邮箱
      */
     public String getEmail() {
         return email;
     }
 
     /**
-     * @param email
+     * 设置邮箱
+     *
+     * @param email 邮箱
      */
     public void setEmail(String email) {
         this.email = email;
     }
 
     /**
-     * @return mobile
+     * 获取手机号
+     *
+     * @return mobile - 手机号
      */
     public String getMobile() {
         return mobile;
     }
 
     /**
-     * @param mobile
+     * 设置手机号
+     *
+     * @param mobile 手机号
      */
     public void setMobile(String mobile) {
         this.mobile = mobile;
     }
 
     /**
-     * @return nick_name
+     * 获取昵称
+     *
+     * @return nick_name - 昵称
      */
     public String getNickName() {
         return nickName;
     }
 
     /**
-     * @param nickName
+     * 设置昵称
+     *
+     * @param nickName 昵称
      */
     public void setNickName(String nickName) {
         this.nickName = nickName;
     }
 
     /**
-     * @return password
+     * 获取密码
+     *
+     * @return password - 密码
      */
     public String getPassword() {
         return password;
     }
 
     /**
-     * @param password
+     * 设置密码
+     *
+     * @param password 密码
      */
     public void setPassword(String password) {
         this.password = password;
     }
 
     /**
-     * @return sex
+     * 获取性别
+     *
+     * @return sex - 性别
      */
     public Integer getSex() {
         return sex;
     }
 
     /**
-     * @param sex
+     * 设置性别
+     *
+     * @param sex 性别
      */
     public void setSex(Integer sex) {
         this.sex = sex;
     }
 
     /**
-     * @return status
+     * 获取状态
+     *
+     * @return status - 状态
      */
     public Integer getStatus() {
         return status;
     }
 
     /**
-     * @param status
+     * 设置状态
+     *
+     * @param status 状态
      */
     public void setStatus(Integer status) {
         this.status = status;
     }
 
     /**
-     * @return type
+     * 获取类型
+     *
+     * @return type - 类型
      */
     public Integer getType() {
         return type;
     }
 
     /**
-     * @param type
+     * 设置类型
+     *
+     * @param type 类型
      */
     public void setType(Integer type) {
         this.type = type;
     }
 
     /**
-     * @return username
+     * 获取用户名
+     *
+     * @return username - 用户名
      */
     public String getUsername() {
         return username;
     }
 
     /**
-     * @param username
+     * 设置用户名
+     *
+     * @param username 用户名
      */
     public void setUsername(String username) {
         this.username = username;
     }
 
     /**
-     * @return del_flag
+     * 获取删除标记
+     *
+     * @return del_flag - 删除标记
      */
     public Integer getDelFlag() {
         return delFlag;
     }
 
     /**
-     * @param delFlag
+     * 设置删除标记
+     *
+     * @param delFlag 删除标记
      */
     public void setDelFlag(Integer delFlag) {
         this.delFlag = delFlag;
     }
 
     /**
-     * @return department_id
+     * 获取支付密码
+     *
+     * @return payPassword - 支付密码
      */
-    public String getDepartmentId() {
-        return departmentId;
+    public String getPaypassword() {
+        return paypassword;
     }
 
     /**
-     * @param departmentId
+     * 设置支付密码
+     *
+     * @param paypassword 支付密码
      */
-    public void setDepartmentId(String departmentId) {
-        this.departmentId = departmentId;
+    public void setPaypassword(String paypassword) {
+        this.paypassword = paypassword;
     }
 
     /**
-     * @return street
+     * 获取上级id
+     *
+     * @return parent_id - 上级id
      */
-    public String getStreet() {
-        return street;
+    public String getParentId() {
+        return parentId;
     }
 
     /**
-     * @param street
+     * 设置上级id
+     *
+     * @param parentId 上级id
      */
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    /**
-     * @return pass_strength
-     */
-    public String getPassStrength() {
-        return passStrength;
-    }
-
-    /**
-     * @param passStrength
-     */
-    public void setPassStrength(String passStrength) {
-        this.passStrength = passStrength;
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
     }
 }
