@@ -151,7 +151,7 @@ public class UserController {
 //        if(!b){
 //            throw new BizException(ExceptionCode.REQUEST_PARAM_ERROR.getCode(),"用户名只能包含数字＋英文");
 //        }
-        vo.setNickName(vo.getUsername());
+        vo.setMerchant(vo.getMerchant());
         userService.addUser(vo);
         return ResponseUtil.responseBody("添加成功");
     }

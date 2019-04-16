@@ -47,10 +47,10 @@ public class TUser {
     private String mobile;
 
     /**
-     * 昵称
+     * 商户号
      */
-    @Column(name = "nick_name")
-    private String nickName;
+    @Column(name = "merchant")
+    private String merchant;
 
     /**
      * 密码
@@ -260,17 +260,17 @@ public class TUser {
      *
      * @return nick_name - 昵称
      */
-    public String getNickName() {
-        return nickName;
+    public String getMerchant() {
+        return merchant;
     }
 
     /**
-     * 设置昵称
+     * 设置商户号
      *
-     * @param nickName 昵称
+     * @param merchant 商户号
      */
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
+    public void setMerchant(String merchant) {
+        this.merchant = merchant;
     }
 
     /**

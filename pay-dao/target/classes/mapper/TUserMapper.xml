@@ -15,7 +15,7 @@
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
-    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="merchant" jdbcType="VARCHAR" property="merchant" />
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="sex" jdbcType="INTEGER" property="sex" />
     <result column="status" jdbcType="INTEGER" property="status" />

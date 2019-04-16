@@ -28,7 +28,7 @@ public class UserVo {
 
     private String mobile;
 
-    private String nickName;
+    private String merchant;
 
     private String password;
 
