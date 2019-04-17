@@ -1,9 +1,6 @@
 package com.chaotu.pay.service;
 
-import com.chaotu.pay.vo.MyPageInfo;
-import com.chaotu.pay.vo.PageVo;
-import com.chaotu.pay.vo.SearchVo;
-import com.chaotu.pay.vo.UserVo;
+import com.chaotu.pay.vo.*;
 
 import java.text.ParseException;
 import java.util.List;
@@ -93,6 +90,21 @@ public interface UserService {
 
 
     MyPageInfo<UserVo> findByCondition(PageVo pageVo, SearchVo searchVo, UserVo userVo) throws ParseException;
+
+    /***
+     * 根据role分页查询角色
+     * @param pageVo
+     * @param userVo
+     * @return
+     */
+    MyPageInfo<UserVo> getUserByRole(PageVo pageVo,UserVo userVo);
+
+    /**
+     * 根据role查询行数
+     * @param userVo
+     * @return
+     */
+    int countUserByRole(UserVo userVo);
 
 
 }

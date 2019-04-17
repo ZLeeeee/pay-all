@@ -24,6 +24,35 @@
     <result column="del_flag" jdbcType="INTEGER" property="delFlag" />
     <result column="payPassword" jdbcType="VARCHAR" property="paypassword" />
     <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="parent_name" jdbcType="VARCHAR" property="parentName" />
+  </resultMap>
+
+  <resultMap id="VoResultMap" type="com.chaotu.pay.vo.UserVo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="merchant" jdbcType="VARCHAR" property="merchant" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="del_flag" jdbcType="INTEGER" property="delFlag" />
+    <result column="payPassword" jdbcType="VARCHAR" property="paypassword" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="parent_name" jdbcType="VARCHAR" property="parentName" />
+    <result column="amount" jdbcType="VARCHAR" property="amount" />
+    <result column="pay_amount" jdbcType="VARCHAR" property="payAmount" />
   </resultMap>
 
   <select id="findAll" parameterType="com.chaotu.pay.vo.UserVo" resultMap="BaseResultMap">
@@ -42,4 +71,48 @@
 
 
   </select>
+
+  <select id="getUserByRole" parameterType="com.chaotu.pay.vo.UserVo" resultMap="VoResultMap">
+    select u.*,p.username parent_name,
+    SUM(IF(w.type = '2' ,w.residual_amount,NULL)) amount ,
+    SUM(IF(w.type = '1' ,w.residual_amount,NULL)) payAmount
+    from t_user u left join t_user p on u.parent_id = p.id
+    inner join t_user_role ur on u.id = ur.user_id
+    left join t_wallet w on w.user_id = u.id
+    where 1=1
+    <if test="roleIds!=null and roleIds!=''">
+      and ur.role_id = #{roleIds}
+    </if>
+
+    <if test="username!=null and username!=''">
+      and u.username like concat('%',#{username},'%')
+    </if>
+
+    <if test="status!=null and status!=''">
+      and u.status = #{status}
+    </if>
+    group by u.id
+
+  </select>
+
+  <select id="countUserByRole" parameterType="com.chaotu.pay.vo.UserVo" resultType="int">
+    select count(1) from(
+    select u.*,p.username parent_name from t_user u left join t_user p on u.parent_id = p.id
+    inner join t_user_role ur on u.id = ur.user_id
+    where 1=1
+    <if test="roleIds!=null and roleIds!=''">
+      and ur.role_id = #{roleIds}
+    </if>
+
+    <if test="username!=null and username!=''">
+      and u.username like concat('%',#{username},'%')
+    </if>
+
+    <if test="status!=null and status!=''">
+      and u.status = #{status}
+    </if>
+    group by u.id) a
+
+  </select>
+
 </mapper>

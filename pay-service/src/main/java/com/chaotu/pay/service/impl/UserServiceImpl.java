@@ -39,6 +39,28 @@ public class UserServiceImpl implements UserService {
     private TPermissionMapper tPermissionMapper;
 
     @Override
+    public int countUserByRole(UserVo userVo) {
+        return tUserMapper.countUserByRole(userVo);
+    }
+
+
+    @Override
+    public MyPageInfo<UserVo> getUserByRole(PageVo pageVo, UserVo userVo) {
+
+
+        PageHelper.startPage(pageVo.getPageNumber(), pageVo.getPageSize(), true);
+
+        List<UserVo> userVoList = tUserMapper.getUserByRole(userVo);
+        MyPageInfo info = new MyPageInfo(userVoList);
+        if(!CollectionUtils.isEmpty(userVoList)){
+            info.setTotalElements(countUserByRole(userVo));
+            info.setPageNum(pageVo.getPageNumber());
+        }
+        return info;
+
+    }
+
+    @Override
     public boolean login(UserVo vo) {
         if (vo == null) {
             throw new BizException(ExceptionCode.USER_INFO_IS_NOT_EXIST);

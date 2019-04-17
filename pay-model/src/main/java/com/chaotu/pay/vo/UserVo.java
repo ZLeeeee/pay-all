@@ -58,4 +58,9 @@ public class UserVo {
     private String endDate;
 
     private String roleNames;
+
+    private String parentName;
+    private String parentId;
+    private Double amount;
+    private Double payAmount;
 }

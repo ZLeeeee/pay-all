@@ -43,7 +43,7 @@ public class TWallet {
      * 用户id
      */
     @Column(name = "user_id")
-    private Long userId;
+    private String userId;
 
     /**
      * 余额
@@ -165,7 +165,7 @@ public class TWallet {
      *
      * @return user_id - 用户id
      */
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
@@ -174,7 +174,7 @@ public class TWallet {
      *
      * @param userId 用户id
      */
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
