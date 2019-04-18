@@ -20,4 +20,16 @@
     <result column="tradeAmount" jdbcType="DECIMAL" property="tradeamount" />
     <result column="extend" jdbcType="VARCHAR" property="extend" />
   </resultMap>
+
+  <!--更新接口状态-->
+  <update id="updateStatus" parameterType="com.chaotu.pay.vo.ChannelVo">
+    update t_channel
+    <trim prefix="set" suffixOverrides=",">
+      <if test="status!=null">
+        status=#{status}
+      </if>
+    </trim>
+    where id=#{id}
+  </update>
+
 </mapper>
