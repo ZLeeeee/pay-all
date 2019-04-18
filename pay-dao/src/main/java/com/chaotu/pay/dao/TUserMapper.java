@@ -30,4 +30,6 @@ public interface TUserMapper extends MyMapper<TUser> {
      * @return
      */
     int countUserByRole(UserVo userVo);
+
+    List<TUser> getUserByParents(@Param("parents") List<String> parents);
 }
