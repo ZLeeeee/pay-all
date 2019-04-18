@@ -9,6 +9,7 @@ import com.chaotu.pay.vo.OrderVo;
 import com.chaotu.pay.vo.PageVo;
 import com.chaotu.pay.vo.SearchVo;
 import com.github.pagehelper.PageHelper;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,9 @@ import org.springframework.util.unit.DataUnit;
 import tk.mybatis.mapper.entity.Example;
 
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description: 订单管理
@@ -33,25 +36,19 @@ public class OrderServiceImpl implements OrderService {
     private TOrderMapper tOrderMapper;
 
     @Override
-    public MyPageInfo<OrderVo> findByCondition(PageVo pageVo, SearchVo searchVo, OrderVo orderVo) throws ParseException {
+    public Map<String,Object> findByCondition(PageVo pageVo, SearchVo searchVo, OrderVo orderVo) throws ParseException {
         Example example = new Example(TOrder.class);
         Example.Criteria criteria = example.createCriteria();
 
         //通过时间查询所有订单
         //如果时间为空，则为当日00:00:00至当前时间
-        // TODO 时间逻辑有问题，待商榷
- /*       if(StringUtils.isEmpty(searchVo.getStartDate())){
-            orderVo.setStartTime(searchVo.getStartDate()+" 00:00:00");
-        }else{
+        if(!StringUtils.isEmpty(searchVo.getStartDate())){
             orderVo.setStartTime(searchVo.getStartDate());
         }
 
-        if(StringUtils.isEmpty(searchVo.getEndDate())){
-            orderVo.setEndTime(searchVo.getStartDate()+" 23:59:59");
-        }else{
-            orderVo.setEndTime(searchVo.getEndDate());
+        if(!StringUtils.isEmpty(searchVo.getEndDate())){
+            orderVo.setEndTime(searchVo.getStartDate());
         }
-*/
 
 
         PageHelper.startPage(pageVo.getPageNumber(),pageVo.getPageSize(), true);
@@ -59,12 +56,16 @@ public class OrderServiceImpl implements OrderService {
         List<TOrder> orderList = tOrderMapper.findAll(orderVo);
         //获取订单总数量
         int count = tOrderMapper.selectCountByExample(example);
+        Map<String,Object> generalAccount = tOrderMapper.getGeneralAccount(orderVo);
+        Map<String, Object> map = new HashMap<>();
 
         MyPageInfo info = new MyPageInfo(orderList);
         if(!CollectionUtils.isEmpty(orderList)){
             info.setTotal(count);
             info.setPageNum(pageVo.getPageNumber());
         }
-        return info;
+        map.put("pageInfo", info);
+        map.put("generalAccount", generalAccount);
+        return map;
     }
 }

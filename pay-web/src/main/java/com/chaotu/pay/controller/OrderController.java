@@ -2,7 +2,6 @@ package com.chaotu.pay.controller;
 
 import com.chaotu.pay.common.utils.ResponseUtil;
 import com.chaotu.pay.qo.OrderQo;
-import com.chaotu.pay.qo.UserQo;
 import com.chaotu.pay.service.OrderService;
 import com.chaotu.pay.vo.*;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
+import java.util.Map;
 
 /**
  * @description: 订单管理
@@ -24,6 +24,7 @@ import java.text.ParseException;
 @RequestMapping("/order")
 @RestController
 public class OrderController {
+
     @Autowired
     private OrderService orderService;
 
@@ -34,7 +35,7 @@ public class OrderController {
     @PostMapping("/all")
     public Message getAllAgent(@RequestBody OrderQo orderQo){
 
-        MyPageInfo<OrderVo> pageInfo = null;
+        Map<String,Object> pageInfo = null;
         PageVo pageVo = orderQo.getPageVo();
         SearchVo searchVo = orderQo.getSearchVo();
         OrderVo orderVo = orderQo.getOrderVo();
