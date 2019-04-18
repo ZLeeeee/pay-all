@@ -21,9 +21,7 @@ import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
 
 import java.text.ParseException;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -43,6 +41,45 @@ public class UserServiceImpl implements UserService {
         return tUserMapper.countUserByRole(userVo);
     }
 
+
+    /***
+     * 获取用户的子用户
+     * @param parentId
+     * @return
+     */
+    @Override
+    public  List<TUser> findByParentId(String parentId) {
+       TUser user = new TUser();
+       user.setParentId(parentId);
+        List<TUser> users = tUserMapper.select(user);
+        if(!users.isEmpty()){
+            List<String> pIds = new ArrayList<>();
+            for (TUser u:users) {
+                pIds.add(u.getId());
+            }
+            return findByParentId(users,pIds);
+        }
+        return null;
+    }
+
+    /**
+     * 获取所有子用户的递归方法
+     * @param list
+     * @param ids
+     * @return
+     */
+    private List<TUser> findByParentId(List<TUser> list,List<String> ids){
+        List<TUser> users = tUserMapper.getUserByParents(ids);
+        //若查到用户为空  返回list
+        if(users==null ||users.isEmpty())
+            return list;
+        List<String> pIds = new ArrayList<>();
+        for (TUser user: users) {
+            pIds.add(user.getId());
+        }
+        list.addAll(users);
+        return findByParentId(list,pIds);
+    }
 
     @Override
     public MyPageInfo<UserVo> getUserByRole(PageVo pageVo, UserVo userVo) {

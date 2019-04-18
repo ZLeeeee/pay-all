@@ -73,12 +73,13 @@
   </select>
 
   <select id="getUserByRole" parameterType="com.chaotu.pay.vo.UserVo" resultMap="VoResultMap">
-    select u.*,p.username parent_name,
-    SUM(IF(w.type = '2' ,w.residual_amount,NULL)) amount ,
-    SUM(IF(w.type = '1' ,w.residual_amount,NULL)) payAmount
-    from t_user u left join t_user p on u.parent_id = p.id
-    inner join t_user_role ur on u.id = ur.user_id
-    left join t_wallet w on w.user_id = u.id
+    SELECT  u.*,p.username parent_name,
+    wb.residual_amount amount ,
+    wa.residual_amount payAmount
+    FROM t_user u LEFT JOIN t_user p ON u.parent_id = p.id
+    INNER JOIN t_user_role ur ON u.id = ur.user_id
+    LEFT JOIN t_wallet wa ON wa.user_id = u.id AND wa.type = '1'
+    LEFT JOIN t_wallet wb ON wb.user_id = u.id AND wb.type = '2'
     where 1=1
     <if test="roleIds!=null and roleIds!=''">
       and ur.role_id = #{roleIds}
@@ -97,8 +98,13 @@
 
   <select id="countUserByRole" parameterType="com.chaotu.pay.vo.UserVo" resultType="int">
     select count(1) from(
-    select u.*,p.username parent_name from t_user u left join t_user p on u.parent_id = p.id
-    inner join t_user_role ur on u.id = ur.user_id
+    SELECT u.*,p.username parent_name,
+    wb.residual_amount amount ,
+    wa.residual_amount payAmount
+    FROM t_user u LEFT JOIN t_user p ON u.parent_id = p.id
+    INNER JOIN t_user_role ur ON u.id = ur.user_id
+    LEFT JOIN t_wallet wa ON wa.user_id = u.id AND wa.type = '1'
+    LEFT JOIN t_wallet wb ON wb.user_id = u.id AND wb.type = '2'
     where 1=1
     <if test="roleIds!=null and roleIds!=''">
       and ur.role_id = #{roleIds}
@@ -113,6 +119,15 @@
     </if>
     group by u.id) a
 
+  </select>
+
+  <select id="getUserByParents" parameterType="java.util.List" resultMap="VoResultMap">
+    SELECT id
+    from t_user
+    where parent_id in
+    <foreach collection="parents" item="item" index="index" open="(" close=")" separator=",">
+      #{item}
+    </foreach>
   </select>
 
 </mapper>
