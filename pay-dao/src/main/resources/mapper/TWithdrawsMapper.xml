@@ -52,7 +52,7 @@
   </select>
 
   <select id="getGeneralAccount" parameterType="com.chaotu.pay.vo.WithdrawsVo" resultType="java.util.Map">
-    SELECT SUM(withdrawAmount) AS allAmount, SUM(withdrawRate) AS allRate, SUM(toAmount) AS allToAmount FROM `t_withdraws`  WHERE 1 = 1
+    SELECT SUM(withdrawAmount) AS allAmount, SUM(withdrawRate) AS allRate, SUM(toAmount) AS allToAmount FROM `t_withdraws` w WHERE 1 = 1
     <if test="startTime != null and startTime != ''">
       and w.create_time &gt;= #{startTime}
     </if>
@@ -61,7 +61,7 @@
     </if>
     <!--结算订单号-->
     <if test="orderid != null and orderid != ''">
-      and w.orderId like CONCAT('%',#{orderid},'%')
+      and w.orderid like CONCAT('%',#{orderid},'%')
     </if>
     <if test="username != null and username != ''">
       AND u.`username` LIKE CONCAT('%',#{username},'%')
