@@ -3,12 +3,10 @@ package com.chaotu.pay.service.impl;
 import com.chaotu.pay.common.utils.DateUtil;
 import com.chaotu.pay.common.utils.MyBeanUtils;
 import com.chaotu.pay.dao.TOrderMapper;
+import com.chaotu.pay.enums.ExceptionCode;
 import com.chaotu.pay.po.TOrder;
 import com.chaotu.pay.service.OrderService;
-import com.chaotu.pay.vo.MyPageInfo;
-import com.chaotu.pay.vo.OrderVo;
-import com.chaotu.pay.vo.PageVo;
-import com.chaotu.pay.vo.SearchVo;
+import com.chaotu.pay.vo.*;
 import com.github.pagehelper.PageHelper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +35,7 @@ public class OrderServiceImpl implements OrderService {
     private TOrderMapper tOrderMapper;
 
     @Override
-    public Map<String,Object> findByCondition(PageVo pageVo, SearchVo searchVo, OrderVo orderVo) throws ParseException {
+    public Map<String,Object> findByCondition(PageVo pageVo, SearchVo searchVo, OrderVo orderVo){
         Example example = new Example(TOrder.class);
         Example.Criteria criteria = example.createCriteria();
 
@@ -52,22 +50,27 @@ public class OrderServiceImpl implements OrderService {
         }
 
 
-        PageHelper.startPage(pageVo.getPageNumber(),pageVo.getPageSize(), true);
-        //获取所有订单
-        List<TOrder> orderList = tOrderMapper.findAll(orderVo);
-        //获取订单总数量
-        int count = tOrderMapper.selectCountByExample(example);
-        Map<String,Object> generalAccount = tOrderMapper.getGeneralAccount(orderVo);
-        Map<String, Object> map = new HashMap<>();
+       /* try {*/
+            PageHelper.startPage(pageVo.getPageNumber(),pageVo.getPageSize());
+            //获取所有订单
+            List<TOrder> orderList = tOrderMapper.findAll(orderVo);
+            //获取订单总数量
+            int count = tOrderMapper.selectCountByExample(example);
+            Map<String,Object> generalAccount = tOrderMapper.getGeneralAccount(orderVo);
+            Map<String, Object> map = new HashMap<>();
 
-        MyPageInfo info = new MyPageInfo(orderList);
-        if(!CollectionUtils.isEmpty(orderList)){
-            info.setTotal(count);
-            info.setPageNum(pageVo.getPageNumber());
-        }
-        map.put("pageInfo", info);
-        map.put("generalAccount", generalAccount);
-        return map;
+
+            MyPageInfo info = new MyPageInfo(orderList);
+            if(!CollectionUtils.isEmpty(orderList)){
+                info.setTotal(count);
+                info.setPageNum(pageVo.getPageNumber());
+            }
+            map.put("pageInfo", info);
+            map.put("generalAccount", generalAccount);
+            return map;
+       /* } catch (Exception e) {
+            throw new BizException(ExceptionCode.UNKNOWN_ERROR);
+        }*/
     }
 
     @Override
