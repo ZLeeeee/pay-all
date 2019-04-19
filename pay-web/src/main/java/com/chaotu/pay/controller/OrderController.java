@@ -48,10 +48,26 @@ public class OrderController {
         return ResponseUtil.responseBody(pageInfo);
     }
 
+    /**
+     * 订单详情
+     * @param orderVo
+     * @return
+     */
     @PostMapping("/details")
     public Message orderDetails(@RequestBody OrderVo orderVo){
         OrderVo order = orderService.selectOneOrderDeails(orderVo);
         return ResponseUtil.responseBody(order);
+    }
+
+    /**
+     * 修改订单状态为成功
+     * @param orderVo
+     * @return
+     */
+    @PostMapping("/update")
+    public Message updateStatus(@RequestBody OrderVo orderVo){
+        int i = orderService.updateStatus(orderVo);
+        return ResponseUtil.responseBody(i);
     }
 
 }

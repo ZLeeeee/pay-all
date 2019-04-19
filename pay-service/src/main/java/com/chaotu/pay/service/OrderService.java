@@ -18,8 +18,15 @@ public interface OrderService {
 
     /**
      * 获取订单详情
-     * @param orderId
+     * @param orderVo
      * @return
      */
     OrderVo selectOneOrderDeails(OrderVo orderVo);
+
+    /**
+     * 修改订单状态
+     * @param orderVo
+     * @return
+     */
+    int updateStatus(OrderVo orderVo);
 }

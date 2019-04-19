@@ -12,6 +12,7 @@ import com.chaotu.pay.vo.SearchVo;
 import com.github.pagehelper.PageHelper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -78,6 +79,12 @@ public class OrderServiceImpl implements OrderService {
         TOrder tOrder = tOrderMapper.selectOneByExample(example);
         OrderVo order = MyBeanUtils.copy(tOrder, OrderVo.class);
         return order;
+    }
+
+    @Override
+    public int updateStatus(OrderVo orderVo) {
+        orderVo.setStatus((byte)1);
+        return tOrderMapper.updateStatus(orderVo);
     }
 
 

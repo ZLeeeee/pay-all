@@ -103,4 +103,8 @@
       and o.status = #{status}
     </if>
   </select>
+
+  <update id="updateStatus" parameterType="com.chaotu.pay.vo.OrderVo" >
+    UPDATE `t_order` SET status = #{status} WHERE id = #{id}
+  </update>
 </mapper>
