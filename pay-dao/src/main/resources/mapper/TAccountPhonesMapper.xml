@@ -24,4 +24,120 @@
     <result column="status" jdbcType="CHAR" property="status" />
     <result column="signKey" jdbcType="VARCHAR" property="signkey" />
   </resultMap>
+
+  <resultMap id="VoResultMap" type="com.chaotu.pay.vo.AccountPhonesVo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="third" jdbcType="CHAR" property="third" />
+    <result column="channel_payment_id" jdbcType="BIGINT" property="channelPaymentId" />
+    <result column="accountType" jdbcType="VARCHAR" property="accounttype" />
+    <result column="dayQuota" jdbcType="DECIMAL" property="dayquota" />
+    <result column="phone_id" jdbcType="VARCHAR" property="phoneId" />
+    <result column="alipayuserid" jdbcType="VARCHAR" property="alipayuserid" />
+    <result column="alipayusername" jdbcType="VARCHAR" property="alipayusername" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="qrcode" jdbcType="VARCHAR" property="qrcode" />
+    <result column="tradeAmount" jdbcType="DECIMAL" property="tradeamount" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="signKey" jdbcType="VARCHAR" property="signkey" />
+    <result column="paymentName" jdbcType="VARCHAR" property="paymentName" />
+    <result column="account_amount" jdbcType="DECIMAL" property="accountAmount" />
+    <result column="account_order_count" jdbcType="DECIMAL" property="accountOrderCount" />
+    <result column="account_order_suc_count" jdbcType="DECIMAL" property="accountOrderSucCount" />
+    <result column="sucRates" jdbcType="DECIMAL" property="sucRates" />
+  </resultMap>
+
+  <select id="findByCondition"  resultMap="VoResultMap">
+    SELECT
+    ap.*,
+    cp.paymentName paymentName,
+    adc.account_amount account_amount,
+    adc.account_order_count account_order_count,
+    adc.account_order_suc_count account_order_suc_count,
+    CONVERT(
+    CONVERT(
+    adc.account_order_suc_count,
+    DECIMAL (8, 2)
+    ) / CONVERT(
+    adc.account_order_count,
+    DECIMAL (8, 2)
+    ),
+    DECIMAL (8, 2)
+    ) sucRates
+    FROM
+    `t_account_phones` ap
+    LEFT JOIN `t_channel_payments` cp
+    ON ap.channel_payment_id = cp.id
+    LEFT JOIN `t_account_day_counts` adc
+    ON ap.account = adc.account
+    where 1=1
+    <if test="accountPhonesVo!=null">
+    <if test="accountPhonesVo.channelPaymentId!=null and accountPhonesVo.channelPaymentId!=''">
+      and ap.channel_payment_id = #{accountPhonesVo.channelPaymentId}
+    </if>
+
+    <if test="accountPhonesVo.account!=null and accountPhonesVo.account!=''">
+      and ap.account like concat('%',#{accountPhonesVo.account},'%')
+    </if>
+    </if>
+    <if test="searchVo!=null">
+    <if test="searchVo.startTime!=null and searchVo.startTime!=''">
+      and adc.create_time = #{searchVo.startTime}
+    </if>
+    </if>
+
+
+
+  </select>
+
+  <select id="countByCondition"  resultType="int">
+    SELECT COUNT(1) FROM
+    (SELECT
+    ap.*,
+    cp.paymentName paymentName,
+    adc.account_amount account_amount,
+    adc.account_order_count account_order_count,
+    adc.account_order_suc_count account_order_suc_count,
+    CONVERT(
+    CONVERT(
+    adc.account_order_suc_count,
+    DECIMAL (8, 2)
+    ) / CONVERT(
+    adc.account_order_count,
+    DECIMAL (8, 2)
+    ),
+    DECIMAL (8, 2)
+    ) sucRates
+    FROM
+    `t_account_phones` ap
+    LEFT JOIN `t_channel_payments` cp
+    ON ap.channel_payment_id = cp.id
+    LEFT JOIN `t_account_day_counts` adc
+    ON ap.account = adc.account
+    where 1=1
+    <if test="accountPhonesVo!=null">
+      <if test="accountPhonesVo.channelPaymentId!=null and accountPhonesVo.channelPaymentId!=''">
+        and ap.channel_payment_id = #{accountPhonesVo.channelPaymentId}
+      </if>
+
+      <if test="accountPhonesVo.account!=null and accountPhonesVo.account!=''">
+        and ap.account like concat('%',#{accountPhonesVo.account},'%')
+      </if>
+    </if>
+    <if test="searchVo!=null">
+      <if test="searchVo.startTime!=null and searchVo.startTime!=''">
+        and adc.create_time = #{searchVo.startTime}
+      </if>
+    </if>
+    ) a
+
+
+  </select>
 </mapper>

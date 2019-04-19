@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chaotu.pay.dao.TWithdrawsMapper">
+  <resultMap id="BaseResultMap" type="com.chaotu.pay.po.TWithdraws">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="agent_id" jdbcType="INTEGER" property="agentId" />
+    <result column="bankName" jdbcType="VARCHAR" property="bankname" />
+    <result column="withdrawAmount" jdbcType="DECIMAL" property="withdrawamount" />
+    <result column="withdrawRate" jdbcType="DECIMAL" property="withdrawrate" />
+    <result column="toAmount" jdbcType="DECIMAL" property="toamount" />
+    <result column="accountName" jdbcType="VARCHAR" property="accountname" />
+    <result column="bankCardNo" jdbcType="VARCHAR" property="bankcardno" />
+    <result column="branchName" jdbcType="VARCHAR" property="branchname" />
+    <result column="bankCode" jdbcType="VARCHAR" property="bankcode" />
+    <result column="orderId" jdbcType="VARCHAR" property="orderid" />
+    <result column="outOrderId" jdbcType="VARCHAR" property="outorderid" />
+    <result column="upOrderId" jdbcType="VARCHAR" property="uporderid" />
+    <result column="channelCode" jdbcType="VARCHAR" property="channelcode" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="comment" jdbcType="VARCHAR" property="comment" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="extend" jdbcType="LONGVARCHAR" property="extend" />
+  </resultMap>
+
+  
+  <select id="findAll" parameterType="com.chaotu.pay.vo.WithdrawsVo" resultMap="BaseResultMap">
+    SELECT w.*, u.username FROM `t_withdraws` w LEFT JOIN `t_user` u ON w.`user_id` = u.`id` WHERE 1 = 1
+    <if test="startTime != null and startTime != ''">
+      and w.create_time &gt;= #{startTime}
+    </if>
+    <if test="endTime != null and endTime!=''">
+      and w.create_time &lt;= #{endTime}
+    </if>
+    <!--结算订单号-->
+    <if test="orderid != null and orderid != ''">
+      and w.orderId like CONCAT('%',#{orderid},'%')
+    </if>
+    <if test="username != null and username != ''">
+      AND u.`username` LIKE CONCAT('%',#{username},'%')
+    </if>
+    <if test="status != null and status != ''">
+      AND u.`status` = #{status}
+    </if>
+  </select>
+
+  <select id="getGeneralAccount" parameterType="com.chaotu.pay.vo.WithdrawsVo" resultType="java.util.Map">
+    SELECT SUM(withdrawAmount) AS allAmount, SUM(withdrawRate) AS allRate, SUM(toAmount) AS allToAmount FROM `t_withdraws` w WHERE 1 = 1
+    <if test="startTime != null and startTime != ''">
+      and w.create_time &gt;= #{startTime}
+    </if>
+    <if test="endTime != null and endTime!=''">
+      and w.create_time &lt;= #{endTime}
+    </if>
+    <!--结算订单号-->
+    <if test="orderid != null and orderid != ''">
+      and w.orderid like CONCAT('%',#{orderid},'%')
+    </if>
+    <if test="username != null and username != ''">
+      AND u.`username` LIKE CONCAT('%',#{username},'%')
+    </if>
+    <if test="status != null and status != ''">
+      AND u.`status` = #{status}
+    </if>
+  </select>
+
+
+</mapper>

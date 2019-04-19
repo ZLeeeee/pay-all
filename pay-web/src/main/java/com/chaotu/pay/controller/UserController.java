@@ -193,4 +193,17 @@ public class UserController {
         return ResponseUtil.responseBody("修改用户成功");
     }
 
+    /**
+     * 多条件分页根据角色获取用户列表
+     * @return
+     */
+    @PostMapping("/all/byRole")
+    public Message getAllAgent(@RequestBody UserQo userQo){
+
+        MyPageInfo<UserVo> pageInfo = null;
+
+        pageInfo = userService.getUserByRole(userQo.getPageVo(),userQo.getUserVo());
+
+        return ResponseUtil.responseBody(pageInfo);
+    }
 }

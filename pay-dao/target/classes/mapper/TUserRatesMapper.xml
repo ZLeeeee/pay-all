@@ -13,26 +13,10 @@
     <result column="status" jdbcType="TINYINT" property="status" />
   </resultMap>
 
-  <resultMap id="VoResultMap" type="com.chaotu.pay.vo.UserRatesVo">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="user_id" jdbcType="INTEGER" property="userId" />
-    <result column="channel_id" jdbcType="INTEGER" property="channelId" />
-    <result column="channel_payment_id" jdbcType="INTEGER" property="channelPaymentId" />
-    <result column="rate" jdbcType="DECIMAL" property="rate" />
-    <result column="status" jdbcType="TINYINT" property="status" />
-    <result column="paymentName" jdbcType="TINYINT" property="paymentName" />
-  </resultMap>
 
-
-  <select id="getUserRatesByUser" parameterType="com.chaotu.pay.vo.UserVo" resultMap="VoResultMap">
-    SELECT ur.*,cp.paymentName paymentName FROM t_user_rates ur
-    <if test="parentId!=null and parentId!=''">
-    inner join t_user_rates urp on urp.channel_id = ur.channel_id
+  <select id="getUserRatesByUser" parameterType="com.chaotu.pay.vo.UserVo" resultMap="BaseResultMap">
+    SELECT ur.* FROM t_user_rates ur inner join t_user_rates urp on urp.channel_id = ur.channel_id
     and urp.user_id = #{parentId} and urp.status = '1'
-    </if>
     inner join t_channel c on c.id = ur.channel_id and c.status = '1'
     inner join t_channel_payments cp on c.id = cp.channel_id and cp.status = '1'
     where ur.user_id = #{id}

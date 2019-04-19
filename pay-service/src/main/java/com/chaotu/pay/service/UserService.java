@@ -1,5 +1,6 @@
 package com.chaotu.pay.service;
 
+import com.chaotu.pay.po.TUser;
 import com.chaotu.pay.vo.*;
 
 import java.text.ParseException;
@@ -106,5 +107,10 @@ public interface UserService {
      */
     int countUserByRole(UserVo userVo);
 
+    /***
+     * 获取所有下级代理/商户
+     */
+
+    List<TUser> findByParentId(String parentId);
 
 }
