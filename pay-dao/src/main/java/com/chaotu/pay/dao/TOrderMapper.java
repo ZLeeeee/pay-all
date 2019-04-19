@@ -20,4 +20,11 @@ public interface TOrderMapper extends MyMapper<TOrder> {
      * @return
      */
     Map<String, Object> getGeneralAccount(OrderVo orderVo);
+
+    /**
+     * 修改订单状态
+     * @param orderVo
+     * @return
+     */
+    int updateStatus(OrderVo orderVo);
 }

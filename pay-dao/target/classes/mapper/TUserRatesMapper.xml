@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chaotu.pay.dao.TUserRatesMapper">
+  <resultMap id="BaseResultMap" type="com.chaotu.pay.po.TUserRates">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="channel_id" jdbcType="INTEGER" property="channelId" />
+    <result column="channel_payment_id" jdbcType="INTEGER" property="channelPaymentId" />
+    <result column="rate" jdbcType="DECIMAL" property="rate" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+  </resultMap>
+
+
+  <select id="getUserRatesByUser" parameterType="com.chaotu.pay.vo.UserVo" resultMap="BaseResultMap">
+    SELECT ur.* FROM t_user_rates ur inner join t_user_rates urp on urp.channel_id = ur.channel_id
+    and urp.user_id = #{parentId} and urp.status = '1'
+    inner join t_channel c on c.id = ur.channel_id and c.status = '1'
+    inner join t_channel_payments cp on c.id = cp.channel_id and cp.status = '1'
+    where ur.user_id = #{id}
+
+  </select>
+
+  <update id="updateByUserId">
+    update t_user_rates
+    <set>
+      <if test="userRates.status != null">status = #{userRates.status}</if>
+    </set>
+    where user_id in
+    <foreach collection="users" item="item" index="index" open="(" close=")" separator=",">
+      #{item.id}
+    </foreach>
+    and channel_payment_id = #{userRates.channelPaymentId}
+  </update>
+</mapper>

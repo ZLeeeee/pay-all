@@ -44,20 +44,20 @@
     <if test="endTime != null and endTime!=''">
       and o.create_time &lt;= #{endTime}
     </if>
-    <if test="orderNo != null and orderNo != ''">
-      and o.orderNo = #{orderNo}
+    <if test="orderno != null and orderno != ''">
+      and o.orderNo
     </if>
-    <if test="underOrderNo != null and underOrderNo != ''">
-      and o.underOrderNo = #{underOrderNo}
+    <if test="underorderno != null and underorderno != ''">
+      and o.underOrderNo like CONCAT('%',#{underorderno},'%')
     </if>
     <if test="merchant != null and merchant != ''">
-      and o.merchant = #{merchant}
+      and o.merchant like CONCAT('%',#{merchant},'%')
     </if>
     <if test="account != null and account != ''">
-      and o.account = #{account}
+      and o.account like CONCAT('%',#{account},'%')
     </if>
     <if test="amount != null and amount != ''">
-      and o.amount = #{amount}
+      and o.amount like CONCAT('%',#{amount},'%')
     </if>
     <if test="channelId != null and channelId != ''">
       and o.channel_id = #{channelId}
@@ -78,20 +78,20 @@
     <if test="endTime != null and endTime!=''">
       and o.create_time &lt;= #{endTime}
     </if>
-    <if test="orderNo != null and orderNo != ''">
-      and o.orderNo = #{orderNo}
+    <if test="orderno != null and orderno != ''">
+      and o.orderNo
     </if>
-    <if test="underOrderNo != null and underOrderNo != ''">
-      and o.underOrderNo = #{underOrderNo}
+    <if test="underorderno != null and underorderno != ''">
+      and o.underOrderNo like CONCAT('%',#{underorderno},'%')
     </if>
     <if test="merchant != null and merchant != ''">
-      and o.merchant = #{merchant}
+      and o.merchant like CONCAT('%',#{merchant},'%')
     </if>
     <if test="account != null and account != ''">
-      and o.account = #{account}
+      and o.account like CONCAT('%',#{account},'%')
     </if>
     <if test="amount != null and amount != ''">
-      and o.amount = #{amount}
+      and o.amount like CONCAT('%',#{amount},'%')
     </if>
     <if test="channelId != null and channelId != ''">
       and o.channel_id = #{channelId}
@@ -103,4 +103,8 @@
       and o.status = #{status}
     </if>
   </select>
+
+  <update id="updateStatus" parameterType="com.chaotu.pay.vo.OrderVo" >
+    UPDATE `t_order` SET status = #{status} WHERE id = #{id}
+  </update>
 </mapper>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chaotu.pay.dao.TRechargesMapper">
+  <resultMap id="BaseResultMap" type="com.chaotu.pay.po.TRecharges">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="udpate_time" jdbcType="TIMESTAMP" property="udpateTime" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="recharge_amount" jdbcType="DECIMAL" property="rechargeAmount" />
+    <result column="merchant" jdbcType="VARCHAR" property="merchant" />
+    <result column="actual_amount" jdbcType="DECIMAL" property="actualAmount" />
+    <result column="orderNo" jdbcType="VARCHAR" property="orderno" />
+    <result column="orderMk" jdbcType="VARCHAR" property="ordermk" />
+    <result column="pay_status" jdbcType="TINYINT" property="payStatus" />
+  </resultMap>
+
+  <!--条件搜索-->
+  <select id="findByCondition" parameterType="com.chaotu.pay.vo.RechargeVo" resultMap="BaseResultMap">
+    select
+    u.username ,
+    r.*
+    from
+    t_recharges r
+    left join
+    t_user u
+    on
+    r.user_id = u.id
+    where 1=1
+    <if test="orderno!=null and orderno!=''">
+      and r.orderNo like concat('%',#{orderno},'%')
+    </if>
+    <if test="merchant!=null and merchant!=''">
+      and r.merchant like concat('%',#{merchant},'%')
+    </if>
+    <if test="startDate!=null and startDate!=''">
+      and r.create_time &gt;= #{startDate}
+    </if>
+    <if test="endDate!=null and endDate!=''">
+      and r.create_time &lt;= #{endDate}
+    </if>
+    <if test="payStatus!=null and payStatus!=''">
+      and r.pay_status = #{payStatus}
+    </if>
+
+  </select>
+
+  <!--查询所有用户充值-->
+  <select id="findAll"  resultMap="BaseResultMap">
+        select
+            u.username ,
+            r.*
+        from
+            t_recharges r
+              left join
+                  t_user u
+              on
+                  r.user_id = u.id
+        where 1=1
+  </select>
+
+</mapper>
