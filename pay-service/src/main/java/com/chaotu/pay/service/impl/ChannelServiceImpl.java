@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -40,10 +41,8 @@ public class ChannelServiceImpl implements ChannelService {
     public MyPageInfo<ChannelVo> findAllByPage(PageVo pageVo,ChannelVo vo) {
         PageHelper.startPage(pageVo.getPageNumber(),pageVo.getPageSize());
         Example example = new Example(TChannel.class);
-        if(vo!=null){
-            Example.Criteria criteria = example.createCriteria();
-            criteria.andLike("merchant",vo.getMerchant());
-        }
+        Example.Criteria criteria = example.createCriteria();
+
         List<TChannel> tChannels = channelMapper.selectByExample(example);
         int count = channelMapper.selectCountByExample(example);
         List<ChannelVo> channelVoList = MyBeanUtils.copyList(tChannels, ChannelVo.class);
@@ -60,34 +59,36 @@ public class ChannelServiceImpl implements ChannelService {
         BeanUtils.copyProperties(channelVo,channel);
         Example example = new Example(TChannel.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("channelname",channelVo.getChannelname());
-        criteria.andEqualTo("channelcode",channelVo.getChannelcode());
+        criteria.andEqualTo("channelname",channelVo.getChannelName());
+        criteria.andEqualTo("channelcode",channelVo.getChannelCode());
         int count = channelMapper.selectCountByExample(example);
         if(count>0){//数据存在
             log.error("该通道名称或通道编码");
             throw new BizException(ExceptionCode.ROLE_AREADY_EXIST.getCode(),ExceptionCode.ROLE_AREADY_EXIST.getMsg());
         }
         channel.setCreateTime(new Date());
+        channel.setChannelname(channelVo.getChannelName());
+        channel.setChannelcode(channelVo.getChannelCode());
         channel.setMerchant(channelVo.getMerchant());
         channel.setSignkey(channelVo.getSignkey());
         channel.setChannelquota(channelVo.getChannelquota());
         channel.setExtend(channelVo.getExtend());
         channel.setStatus(channelVo.getStatus());
         channelMapper.insertSelective(channel);
-        log.info("添加通道成功，入参channelVo=["+channel.toString()+"]");
+        log.info("添加通道成功，参数channelVo=["+channel.toString()+"]");
     }
 
     @Override
     public void editChannel(ChannelVo channelVo) {
-        if( StringUtils.isEmpty(channelVo.getChannelname())){
+       /* if( StringUtils.isEmpty(channelVo.getChannelName())){
             throw new BizException(ExceptionCode.REQUEST_PARAM_MISSING);
-        }
+        }*/
         log.info("修改通道，入参cahnnelVo=["+channelVo.toString()+"]");
         TChannel channel = new TChannel();
         BeanUtils.copyProperties(channelVo,channel);
-        channel.setUpdateTime(new Date());
-        channelMapper.updateByPrimaryKeySelective(channel);
-        log.info("修改通道成功，入参channelVo=["+channel.toString()+"]");
+        channelVo.setUpdateTime(new Date());
+        channelMapper.updateChannel(channelVo);
+        log.info("修改通道成功，参数channelVo=["+channelVo.toString()+"]");
     }
 
     @Override
@@ -102,17 +103,4 @@ public class ChannelServiceImpl implements ChannelService {
         }
     }
 
-    @Override
-    public void updateStatus(ChannelVo channelVo) {
-        if( StringUtils.isEmpty(channelVo.getChannelname())){
-            throw new BizException(ExceptionCode.REQUEST_PARAM_MISSING);
-        }
-        log.info("更改状态，入参channelVo=["+channelVo.toString()+"]");
-        TChannel channel = new TChannel();
-        BeanUtils.copyProperties(channelVo,channel);
-        channel.setStatus(channelVo.getStatus());
-        channelMapper.updateStatus(channelVo);
-        log.info("更改状态成功，入参channelVo=["+channel.toString()+"]");
-
-    }
 }

@@ -12,8 +12,8 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="merchant" jdbcType="VARCHAR" property="merchant" />
     <result column="signkey" jdbcType="VARCHAR" property="signkey" />
-    <result column="channelName" jdbcType="VARCHAR" property="channelname" />
-    <result column="channelCode" jdbcType="VARCHAR" property="channelcode" />
+    <result column="channelName" jdbcType="VARCHAR" property="channelName" />
+    <result column="channelCode" jdbcType="VARCHAR" property="channelCode" />
     <result column="refererDomain" jdbcType="VARCHAR" property="refererdomain" />
     <result column="status" jdbcType="CHAR" property="status" />
     <result column="channelQuota" jdbcType="INTEGER" property="channelquota" />
@@ -21,13 +21,31 @@
     <result column="extend" jdbcType="VARCHAR" property="extend" />
   </resultMap>
 
-  <!--更新接口状态-->
-  <update id="updateStatus" parameterType="com.chaotu.pay.vo.ChannelVo">
+  <!--修改通道-->
+  <update id="updateChannel" parameterType="com.chaotu.pay.vo.ChannelVo">
     update t_channel
     <trim prefix="set" suffixOverrides=",">
-      <if test="status!=null">
-        status=#{status}
-      </if>
+        <if test="merchant!=null and merchant!=''">
+            merchant=#{merchant},
+        </if>
+        <if test="signkey!=null and signkey!=''">
+            signkey=#{signkey},
+        </if>
+        <if test="channelName!=null and channelName!=''">
+            channelName=#{channelName},
+        </if>
+        <if test="channelCode!=null and channelCode!=''">
+            channelCode=#{channelCode},
+        </if>
+        <if test="extend!=null and extend!=''">
+            extend=#{extend},
+        </if>
+        <if test="status!=null and status!=''">
+            status=#{status},
+        </if>
+        <if test="updateTime!=null">
+            update_time=#{updateTime,jdbcType=TIMESTAMP},
+        </if>
     </trim>
     where id=#{id}
   </update>
