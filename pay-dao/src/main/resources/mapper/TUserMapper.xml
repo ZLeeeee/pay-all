@@ -52,7 +52,7 @@
     <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
     <result column="parent_name" jdbcType="VARCHAR" property="parentName" />
     <result column="amount" jdbcType="VARCHAR" property="amount" />
-    <result column="pay_amount" jdbcType="VARCHAR" property="payAmount" />
+    <result column="payAmount" jdbcType="VARCHAR" property="payAmount" />
   </resultMap>
 
   <select id="findAll" parameterType="com.chaotu.pay.vo.UserVo" resultMap="BaseResultMap">
@@ -92,7 +92,7 @@
     <if test="status!=null and status!=''">
       and u.status = #{status}
     </if>
-    group by u.id
+
 
   </select>
 
@@ -117,7 +117,7 @@
     <if test="status!=null and status!=''">
       and u.status = #{status}
     </if>
-    group by u.id) a
+    ) a
 
   </select>
 
