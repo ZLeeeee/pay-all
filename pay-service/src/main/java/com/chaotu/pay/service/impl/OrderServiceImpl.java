@@ -1,6 +1,7 @@
 package com.chaotu.pay.service.impl;
 
 import com.chaotu.pay.common.utils.DateUtil;
+import com.chaotu.pay.common.utils.MyBeanUtils;
 import com.chaotu.pay.dao.TOrderMapper;
 import com.chaotu.pay.po.TOrder;
 import com.chaotu.pay.service.OrderService;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.util.unit.DataUnit;
 import tk.mybatis.mapper.entity.Example;
 
 import java.text.ParseException;
@@ -68,4 +68,17 @@ public class OrderServiceImpl implements OrderService {
         map.put("generalAccount", generalAccount);
         return map;
     }
+
+    @Override
+    public OrderVo selectOneOrderDeails(OrderVo orderVo) {
+        Example example = new Example(TOrder.class);
+        Example.Criteria criteria = example.createCriteria();
+
+        criteria.andEqualTo("id",orderVo.getId());
+        TOrder tOrder = tOrderMapper.selectOneByExample(example);
+        OrderVo order = MyBeanUtils.copy(tOrder, OrderVo.class);
+        return order;
+    }
+
+
 }

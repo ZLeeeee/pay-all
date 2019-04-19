@@ -55,17 +55,17 @@ public class OrderVo {
     /**
      * 系统订单号
      */
-    private String orderNo;
+    private String orderno;
 
     /**
      * 下游订单号(商户订单号)
      */
-    private String underOrderNo;
+    private String underorderno;
 
     /**
      * 上游订单号
      */
-    private String onOrderNo;
+    private String onorderno;
 
     /**
      * 订单金额
@@ -75,27 +75,37 @@ public class OrderVo {
     /**
      * 订单手续费
      */
-    private BigDecimal orderRate;
+    private BigDecimal orderrate;
 
     /**
      * 系统收入
      */
-    private BigDecimal sysAmount;
+    private BigDecimal sysamount;
 
     /**
      * 代理收入
      */
-    private BigDecimal agentAmount;
+    private BigDecimal agentamount;
 
     /**
      * 用户收入
      */
-    private BigDecimal userAmount;
+    private BigDecimal useramount;
 
     /**
      * 支付方式名称
      */
-    private String payMentName;
+    private String paymentname;
+
+    /**
+     * 商户异步通知地址
+     */
+    private String notifyurl;
+
+    /**
+     * 商户同步通知地址
+     */
+    private String successurl;
 
     /**
      * 订单状态：0未支付，1支付成功，2支付异常

@@ -44,11 +44,11 @@
     <if test="endTime != null and endTime!=''">
       and o.create_time &lt;= #{endTime}
     </if>
-    <if test="orderNo != null and orderNo != ''">
-      and o.orderNo = #{orderNo}
+    <if test="orderno != null and orderno != ''">
+      and o.orderNo = #{orderno}
     </if>
-    <if test="underOrderNo != null and underOrderNo != ''">
-      and o.underOrderNo = #{underOrderNo}
+    <if test="underorderno != null and underorderno != ''">
+      and o.underOrderNo = #{underorderno}
     </if>
     <if test="merchant != null and merchant != ''">
       and o.merchant = #{merchant}
@@ -78,11 +78,11 @@
     <if test="endTime != null and endTime!=''">
       and o.create_time &lt;= #{endTime}
     </if>
-    <if test="orderNo != null and orderNo != ''">
-      and o.orderNo = #{orderNo}
+    <if test="orderno != null and orderno != ''">
+      and o.orderNo = #{orderno}
     </if>
-    <if test="underOrderNo != null and underOrderNo != ''">
-      and o.underOrderNo = #{underOrderNo}
+    <if test="underorderno != null and underorderno != ''">
+      and o.underOrderNo = #{underorderno}
     </if>
     <if test="merchant != null and merchant != ''">
       and o.merchant = #{merchant}

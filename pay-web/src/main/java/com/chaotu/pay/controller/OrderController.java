@@ -29,7 +29,7 @@ public class OrderController {
     private OrderService orderService;
 
     /**
-     * 多条件分页获取用户列表
+     * 多条件分页获取订单列表
      * @return
      */
     @PostMapping("/all")
@@ -46,6 +46,12 @@ public class OrderController {
             e.printStackTrace();
         }
         return ResponseUtil.responseBody(pageInfo);
+    }
+
+    @PostMapping("/details")
+    public Message orderDetails(@RequestBody OrderVo orderVo){
+        OrderVo order = orderService.selectOneOrderDeails(orderVo);
+        return ResponseUtil.responseBody(order);
     }
 
 }
