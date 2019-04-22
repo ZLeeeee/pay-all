@@ -39,6 +39,7 @@
     <result column="minAmount" jdbcType="INTEGER" property="minAmount" />
     <result column="maxAmount" jdbcType="INTEGER" property="maxAmount" />
     <result column="status" jdbcType="CHAR" property="status" />
+    <result column="channelName" jdbcType="VARCHAR" property="channelName" />
   </resultMap>
 
   <select id="findAll" resultMap="VoResultMap">
