@@ -58,7 +58,6 @@ public class WithdrawsServiceImpl implements WithdrawsService {
 
             map.put("pageInfo", info);
             map.put("generalAccount", generalAccount);
-
             return map;
      /*   } catch (Exception e) {
             throw new BizException(ExceptionCode.UNKNOWN_ERROR);

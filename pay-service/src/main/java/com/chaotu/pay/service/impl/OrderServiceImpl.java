@@ -67,6 +67,7 @@ public class OrderServiceImpl implements OrderService {
             }
             map.put("pageInfo", info);
             map.put("generalAccount", generalAccount);
+            log.info("查询所有订单: 输出参数;["+map+"]");
             return map;
        /* } catch (Exception e) {
             throw new BizException(ExceptionCode.UNKNOWN_ERROR);
@@ -81,11 +82,13 @@ public class OrderServiceImpl implements OrderService {
         criteria.andEqualTo("id",orderVo.getId());
         TOrder tOrder = tOrderMapper.selectOneByExample(example);
         OrderVo order = MyBeanUtils.copy(tOrder, OrderVo.class);
+        log.info("查询所有订单详情: 输出参数;["+order+"]");
         return order;
     }
 
     @Override
     public int updateStatus(OrderVo orderVo) {
+        log.info("修改订单状态: 输入参数;["+orderVo+"]");
         orderVo.setStatus((byte)1);
         return tOrderMapper.updateStatus(orderVo);
     }
