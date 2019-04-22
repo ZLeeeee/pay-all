@@ -92,6 +92,9 @@
     <if test="status!=null and status!=''">
       and u.status = #{status}
     </if>
+    <if test="parentId!=null and parentId!=''">
+      and u.parent_id = #{parentId}
+    </if>
 
 
   </select>
@@ -116,6 +119,9 @@
 
     <if test="status!=null and status!=''">
       and u.status = #{status}
+    </if>
+    <if test="parentId!=null and parentId!=''">
+      and u.parent_id = #{parentId}
     </if>
     ) a
 
