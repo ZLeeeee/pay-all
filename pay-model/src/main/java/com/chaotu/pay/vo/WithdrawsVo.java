@@ -30,7 +30,7 @@ public class WithdrawsVo {
     /**
      * 商户id
      */
-    private Integer userId;
+    private String userId;
 
     /**
      * 商户所属代理id

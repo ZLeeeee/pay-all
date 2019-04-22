@@ -16,7 +16,7 @@ public class UserRatesVo {
      * 用户id
      */
 
-    private Integer userId;
+    private String userId;
 
     /**
      * 通道id

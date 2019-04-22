@@ -10,7 +10,7 @@
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
-    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
     <result column="agent_id" jdbcType="INTEGER" property="agentId" />
     <result column="bankName" jdbcType="VARCHAR" property="bankname" />
     <result column="withdrawAmount" jdbcType="DECIMAL" property="withdrawamount" />

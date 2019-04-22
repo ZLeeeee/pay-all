@@ -26,7 +26,7 @@ public class TRecharges {
      * 商户id
      */
     @Column(name = "user_id")
-    private Integer userId;
+    private String userId;
 
     /**
      * 充值金额
@@ -138,7 +138,7 @@ public class TRecharges {
      *
      * @return user_id - 商户id
      */
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
@@ -147,7 +147,7 @@ public class TRecharges {
      *
      * @param userId 商户id
      */
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
