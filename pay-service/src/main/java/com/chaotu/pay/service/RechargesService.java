@@ -1,9 +1,6 @@
 package com.chaotu.pay.service;
 
-import com.chaotu.pay.vo.MyPageInfo;
-import com.chaotu.pay.vo.PageVo;
-import com.chaotu.pay.vo.RechargeVo;
-import com.chaotu.pay.vo.SearchVo;
+import com.chaotu.pay.vo.*;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -33,5 +30,19 @@ public interface RechargesService {
      */
     MyPageInfo<RechargeVo> search(PageVo pageVo, SearchVo searchVo, RechargeVo rechargeVo) throws ParseException;
 
+    /***
+     * 账号充值
+     * @param vo
+     */
+    void add(RechargeVo vo, UserVo user );
+
+    /***
+     * 代理后台查询
+     * @param pageVo
+     * @param searchVo
+     * @param rechargeVo
+     * @return
+     */
+    public MyPageInfo<RechargeVo> findByCondition(PageVo pageVo, SearchVo searchVo,RechargeVo rechargeVo) throws ParseException;
 
 }

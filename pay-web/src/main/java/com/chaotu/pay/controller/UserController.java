@@ -151,7 +151,7 @@ public class UserController {
 //        if(!b){
 //            throw new BizException(ExceptionCode.REQUEST_PARAM_ERROR.getCode(),"用户名只能包含数字＋英文");
 //        }
-        vo.setMerchant(vo.getMerchant());
+       // vo.setMerchant(vo.getMerchant());
         userService.addUser(vo);
         return ResponseUtil.responseBody("添加成功");
     }
@@ -198,11 +198,22 @@ public class UserController {
      * @return
      */
     @PostMapping("/all/byRole")
-    public Message getAllAgent(@RequestBody UserQo userQo){
+    public Message getAllByRole(@RequestBody UserQo userQo){
 
         MyPageInfo<UserVo> pageInfo = null;
 
         pageInfo = userService.getUserByRole(userQo.getPageVo(),userQo.getUserVo());
+
+        return ResponseUtil.responseBody(pageInfo);
+    }
+
+    @PostMapping("/all/byAgent")
+    public Message getAllByAgent(@RequestBody UserQo userQo){
+
+        MyPageInfo<UserVo> pageInfo = null;
+        UserVo userVo = userQo.getUserVo();
+        userVo.setParentId(userService.currentUser().getId());
+        pageInfo = userService.getUserByRole(userQo.getPageVo(),userVo);
 
         return ResponseUtil.responseBody(pageInfo);
     }

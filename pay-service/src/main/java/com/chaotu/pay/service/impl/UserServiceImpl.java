@@ -14,6 +14,8 @@ import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -86,6 +88,7 @@ public class UserServiceImpl implements UserService {
 
 
         PageHelper.startPage(pageVo.getPageNumber(), pageVo.getPageSize(), true);
+
 
         List<UserVo> userVoList = tUserMapper.getUserByRole(userVo);
         MyPageInfo info = new MyPageInfo(userVoList);
@@ -224,9 +227,13 @@ public class UserServiceImpl implements UserService {
         //这里将密码加密成暗文
         BeanUtils.copyProperties(vo, tuser);
         tuser.setId(IDGeneratorUtils.getUUID32());
+        tuser.setMerchant(IDGeneratorUtils.getFlowNum());
         String encryptPass = new BCryptPasswordEncoder().encode(vo.getPassword());
         tuser.setCreateTime(new Date());
         tuser.setPassword(encryptPass);
+        UserVo pVo = currentUser();
+        tuser.setCreateBy(pVo.getId());
+        tuser.setParentId(pVo.getId());
         tuser.setStatus(0);
         log.info("添加用户中....,参数为[" + tuser.toString() + "]");
         tUserMapper.insertSelective(tuser);
@@ -307,6 +314,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserVo> findByDepartmentId(String departmentId) {
         return null;
+    }
+
+    @Override
+    public UserVo currentUser() {
+        try {
+            UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            UserVo vo = getUserByUserName(user.getUsername());
+           return vo;
+
+        }catch (Exception e){
+            throw new BizException(ExceptionCode.TOKEN_ERROR);
+        }
     }
 
     @Override
