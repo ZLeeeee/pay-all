@@ -54,7 +54,7 @@ public class RechargesServiceImpl implements RechargesService {
         tWallet.setResidualAmount(newAmount.doubleValue());
         log.info("当前用户为[" + user.getUsername() + "]");
         vo.setCreateBy(user.getId());
-        //vo.setUserId(user.getId());
+        vo.setUserId(user.getId());
         String orderNo = "C"+ IDGeneratorUtils.getFlowNum();
         log.info("充值单号为[" + vo.toString() + "]");
         vo.setOrderno(orderNo);

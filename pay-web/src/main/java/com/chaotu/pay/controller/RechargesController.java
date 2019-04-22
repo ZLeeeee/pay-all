@@ -89,7 +89,7 @@ public class RechargesController {
         PageVo pageVo = rechargesQo.getPageVo();
         RechargeVo rechargeVo = rechargesQo.getRechargeVo();
         SearchVo searchVo = rechargesQo.getSearchVo();
-        //rechargeVo.setUserId(tUserService.currentUser().getId());
+        rechargeVo.setUserId(tUserService.currentUser().getId());
         MyPageInfo<RechargeVo> pageInfo = null;
         try {
             pageInfo = rechargesService.findByCondition(pageVo,searchVo,rechargeVo);
