@@ -7,8 +7,10 @@ import com.chaotu.pay.dao.TRechargesMapper;
 import com.chaotu.pay.enums.ExceptionCode;
 import com.chaotu.pay.po.TRecharges;
 
+import com.chaotu.pay.po.TWallet;
 import com.chaotu.pay.service.RechargesService;
 
+import com.chaotu.pay.service.WalletService;
 import com.chaotu.pay.vo.*;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.math.BigDecimal;
@@ -32,14 +35,23 @@ public class RechargesServiceImpl implements RechargesService {
     @Autowired
     private TRechargesMapper tRechargesMapper;
 
+    @Autowired
+    private WalletService walletService;
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void add(RechargeVo vo,UserVo user ) {
         log.info("账号充值开始,入参为[" + vo.toString() + "]");
         if(vo.getActualAmount().equals(new BigDecimal(0)))
             throw new BizException(ExceptionCode.REQUEST_PARAM_ERROR);
-
+        TWallet wallet = new TWallet();
+        wallet.setUserId(user.getId());
+        wallet.setType("1");
+        TWallet tWallet = walletService.selectOne(wallet);
+        Double oldAmount = tWallet.getResidualAmount();
+        BigDecimal newAmount = new BigDecimal(oldAmount).add(vo.getActualAmount()) ;
+        tWallet.setResidualAmount(newAmount.doubleValue());
         log.info("当前用户为[" + user.getUsername() + "]");
         vo.setCreateBy(user.getId());
         //vo.setUserId(user.getId());
@@ -48,7 +60,10 @@ public class RechargesServiceImpl implements RechargesService {
         vo.setOrderno(orderNo);
         TRecharges tRecharges = new TRecharges();
         BeanUtils.copyProperties(vo,tRecharges);
+        walletService.editAmount(wallet,newAmount.toString(),"0");
+        log.info("余额充值成功钱包id为["+wallet.getId()+"]");
         tRechargesMapper.insert(tRecharges);
+        log.info("记录增加成功");
         log.info("账号充值结束!");
 
     }
