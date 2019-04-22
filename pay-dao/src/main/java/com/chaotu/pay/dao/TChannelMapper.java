@@ -6,8 +6,9 @@ import com.chaotu.pay.vo.ChannelVo;
 
 public interface TChannelMapper extends MyMapper<TChannel> {
     /**
-     * 更新接口状态
+     * 修改通道
      * @param channelVo
      */
-    void updateStatus(ChannelVo channelVo);
+    void updateChannel(ChannelVo channelVo);
+
 }

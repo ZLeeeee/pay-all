@@ -41,11 +41,6 @@ public interface ChannelService {
      */
     void delChannel(String id);
 
-    /**
-     * 更改接口状态
-     * @param channelVo
-     */
-    void updateStatus(ChannelVo channelVo);
 
 
 }

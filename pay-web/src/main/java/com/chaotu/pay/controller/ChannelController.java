@@ -65,25 +65,10 @@ public class ChannelController {
      * @return
      */
     @RequestMapping(value = "/del/{id}",method = RequestMethod.DELETE)
-    public Message delChannel(String id){
+    public Message delChannel(@PathVariable String id){
         channelService.delChannel(id);
         return ResponseUtil.responseBody("删除通道成功");
     }
-
-    /**
-     * 更改接口状态
-     * @param channelVo
-     * @return
-     */
-    @PostMapping("/update")
-    public Message updateStatus(@RequestBody ChannelVo channelVo){
-        channelService.updateStatus(channelVo);
-        return ResponseUtil.responseBody("更改接口状态成功");
-    }
-
-
-
-
 
 
 }

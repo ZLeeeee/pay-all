@@ -3,6 +3,7 @@ package com.chaotu.pay.service;
 import com.chaotu.pay.po.TUserRates;
 import com.chaotu.pay.vo.MyPageInfo;
 
+import com.chaotu.pay.vo.UserRatesVo;
 import com.chaotu.pay.vo.UserVo;
 
 
@@ -20,7 +21,7 @@ public interface UserRatesService {
      * 获取所有UserRates
      * @return
      */
-    List<TUserRates> getAllUserRates();
+    List<UserRatesVo> getAllUserRates();
 
 
     /**
@@ -65,7 +66,7 @@ public interface UserRatesService {
      * @param userVo
      * @return
      */
-    List<TUserRates> getUserRatesByUser(UserVo userVo);
+    List<UserRatesVo> getUserRatesByUser(UserVo userVo);
 
     /**
      * 查询UserRates行数

@@ -22,9 +22,9 @@ public class ChannelVo {
 
     private String signkey;
 
-    private String channelname;
+    private String channelName;
 
-    private String channelcode;
+    private String channelCode;
 
     private String refererdomain;
 

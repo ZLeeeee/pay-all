@@ -7,6 +7,7 @@ import com.chaotu.pay.service.UserRatesService;
 import com.chaotu.pay.service.UserService;
 import com.chaotu.pay.vo.MyPageInfo;
 
+import com.chaotu.pay.vo.UserRatesVo;
 import com.chaotu.pay.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,7 @@ public class UserRatesServiceImpl implements UserRatesService {
     }
 
     @Override
-    public List<TUserRates> getUserRatesByUser(UserVo userVo) {
+    public List<UserRatesVo> getUserRatesByUser(UserVo userVo) {
         return userRatesMapper.getUserRatesByUser(userVo);
     }
 
@@ -67,7 +68,7 @@ public class UserRatesServiceImpl implements UserRatesService {
     }
 
     @Override
-    public List<TUserRates> getAllUserRates() {
+    public List<UserRatesVo> getAllUserRates() {
         return null;
     }
 }

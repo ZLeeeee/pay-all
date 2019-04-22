@@ -31,5 +31,11 @@ public interface TUserMapper extends MyMapper<TUser> {
      */
     int countUserByRole(UserVo userVo);
 
+    /***
+     * 获取所有子用户
+     * @param parents
+     * @return
+     */
+
     List<TUser> getUserByParents(@Param("parents") List<String> parents);
 }

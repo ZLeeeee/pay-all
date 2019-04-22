@@ -69,7 +69,7 @@ public class UserRatesController {
      *
      * @return
      */
-    @PostMapping("/get/byUserId")
+    @PostMapping("/get/byId")
     public Message getUserRates(@RequestBody TUserRates userRates) {
         if (userRates.getId() == 0) {
             return ResponseUtil.responseBody("-1", "参数有误");
