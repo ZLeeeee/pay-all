@@ -68,6 +68,9 @@
     <if test="status != null and status != ''">
       and o.status = #{status}
     </if>
+    <if test="userId != null and userId != ''">
+      and o.user_id = #{userId}
+    </if>
   </select>
 
   <select id="getGeneralAccount" parameterType="com.chaotu.pay.vo.OrderVo" resultType="java.util.Map">
@@ -101,6 +104,9 @@
     </if>
     <if test="status != null and status != ''">
       and o.status = #{status}
+    </if>
+    <if test="userId != null and userId != ''">
+      and o.user_id = #{userId}
     </if>
   </select>
 
