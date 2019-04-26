@@ -33,16 +33,14 @@ public class RechargesServiceImpl implements RechargesService {
 
     @Override
     public MyPageInfo<RechargeVo> findAllByPage(PageVo pageVo,RechargeVo vo) {
+        PageHelper.startPage(pageVo.getPageNumber(),pageVo.getPageSize());
         Example example = new Example(TRecharges.class);
         //查询结果按创建时间排序
         example.setOrderByClause("create_time");
         Example.Criteria criteria = example.createCriteria();
-        /*if(vo!=null){
-            criteria.andLike("merchant",vo.getMerchant());
-        }*/
-        PageHelper.startPage(pageVo.getPageNumber(),pageVo.getPageSize());
-        int count = tRechargesMapper.selectCountByExample(example);
+
         List<TRecharges> tRecharges = tRechargesMapper.findAll();;
+        int count = tRechargesMapper.selectCountByExample(example);
         List<RechargeVo> rechargeVoList = MyBeanUtils.copyList(tRecharges, RechargeVo.class);
 
         MyPageInfo<RechargeVo> pageInfo = new MyPageInfo<>(rechargeVoList);
