@@ -39,7 +39,7 @@ public class PaymentController {
      * @return
      */
     @PostMapping("/add")
-    public Message addPayment(PaymentVo paymentVo,MultipartFile file) throws Exception{
+    public Message addPayment(PaymentVo paymentVo,  MultipartFile file) throws Exception{
         paymentService.addPayment(paymentVo,file);
         return ResponseUtil.responseBody("添加支付方式成功");
     }

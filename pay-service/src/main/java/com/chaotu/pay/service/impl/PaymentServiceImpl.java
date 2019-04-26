@@ -1,6 +1,5 @@
 package com.chaotu.pay.service.impl;
 
-import com.chaotu.pay.common.utils.Base64Util;
 import com.chaotu.pay.common.utils.MyBeanUtils;
 import com.chaotu.pay.dao.TChannelMapper;
 import com.chaotu.pay.dao.TChannelPaymentsMapper;
@@ -14,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Encoder;
@@ -53,7 +51,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void addPayment(PaymentVo paymentVo,MultipartFile file) throws Exception{
+    public void addPayment(PaymentVo paymentVo, MultipartFile file) throws Exception{
         log.info("添加支付方式，入参paymentVo=["+paymentVo.toString()+"]");
         TChannelPayments payments = new TChannelPayments();
         BeanUtils.copyProperties(paymentVo,payments);
@@ -67,26 +65,14 @@ public class PaymentServiceImpl implements PaymentService {
             throw new BizException(ExceptionCode.DATA_AREADY_EXIST.getCode(),ExceptionCode.DATA_AREADY_EXIST.getMsg());
         }
 
-        try {
-            if(!file.isEmpty()){
-                String oldFilename = file.getOriginalFilename();//获取原文件名
-                String path = "F:/upload";//保存文件的路径
-                String randomStr = UUID.randomUUID().toString();//获取随机字符串
-                //拼接新文件名
-                String newFileName = randomStr+oldFilename.substring(oldFilename.lastIndexOf("."));
-                File newFile = new File(path,newFileName);
-                if(!newFile.getParentFile().exists()){
-                    newFile.getParentFile().mkdirs();
-                }
-                //将上传文件写到服务器上指定的文件
-                file.transferTo(newFile);
-                //通过base64来转换图片
-                /*BASE64Encoder encoder = new BASE64Encoder();
-                String imageStr = encoder.encode(newFile.getBytes());*/
-                payments.setIco(newFile.getPath());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(!file.isEmpty()){
+            String oldFileName = file.getOriginalFilename();//获取原文件名
+            String path = "F:/upload";//指定路径
+            String randomStr = UUID.randomUUID().toString().replace("-","");
+            String newFileName = randomStr+oldFileName.substring(oldFileName.lastIndexOf("."));
+            File newFile = new File(path,newFileName);
+            file.transferTo(newFile);//将文件上传到服务器的文件上
+            payments.setIco(newFile.getPath());
         }
 
         payments.setCreateTime(new Date());
