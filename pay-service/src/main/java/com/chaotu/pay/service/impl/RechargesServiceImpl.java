@@ -44,7 +44,7 @@ public class RechargesServiceImpl implements RechargesService {
     public void add(RechargeVo vo,UserVo user ) {
         log.info("账号充值开始,入参为[" + vo.toString() + "]");
         if(vo.getActualAmount().equals(new BigDecimal(0)))
-            throw new BizException(ExceptionCode.REQUEST_PARAM_ERROR);
+             throw new BizException(ExceptionCode.REQUEST_PARAM_ERROR);
         TWallet wallet = new TWallet();
         wallet.setUserId(user.getId());
         wallet.setType("1");
@@ -78,14 +78,12 @@ public class RechargesServiceImpl implements RechargesService {
 
     @Override
     public MyPageInfo<RechargeVo> findAllByPage(PageVo pageVo,RechargeVo vo) {
+        PageHelper.startPage(pageVo.getPageNumber(),pageVo.getPageSize());
         Example example = new Example(TRecharges.class);
         //查询结果按创建时间排序
         example.setOrderByClause("create_time");
         Example.Criteria criteria = example.createCriteria();
-        /*if(vo!=null){
-            criteria.andLike("merchant",vo.getMerchant());
-        }*/
-        PageHelper.startPage(pageVo.getPageNumber(),pageVo.getPageSize());
+
         int count = tRechargesMapper.selectCountByExample(example);
         List<TRecharges> tRecharges = tRechargesMapper.findAll();
         List<RechargeVo> rechargeVoList = MyBeanUtils.copyList(tRecharges, RechargeVo.class);
