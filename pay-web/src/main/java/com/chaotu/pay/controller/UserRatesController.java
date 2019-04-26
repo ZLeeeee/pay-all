@@ -89,7 +89,7 @@ public class UserRatesController {
             return ResponseUtil.responseBody("-1", "参数有误");
         } else {
             userRatesService.editUserRates(userRates);
-            return ResponseUtil.responseBody("1","修改成功");
+            return ResponseUtil.responseBody("修改成功");
         }
     }
     /**
@@ -103,7 +103,7 @@ public class UserRatesController {
         } else{
             List<TUser> users = userService.findByParentId(qo.getUserId());
             userRatesService.editUserRatesByUserId(qo.getUserRatesVo(),qo.getUserId());
-            return ResponseUtil.responseBody("1","修改成功");
+            return ResponseUtil.responseBody("修改成功");
         }
     }
 }

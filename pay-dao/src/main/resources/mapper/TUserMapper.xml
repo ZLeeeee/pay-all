@@ -25,6 +25,7 @@
     <result column="payPassword" jdbcType="VARCHAR" property="paypassword" />
     <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
     <result column="parent_name" jdbcType="VARCHAR" property="parentName" />
+    <result column="payPassword" jdbcType="VARCHAR" property="payPassword" />
   </resultMap>
 
   <resultMap id="VoResultMap" type="com.chaotu.pay.vo.UserVo">
@@ -53,6 +54,7 @@
     <result column="parent_name" jdbcType="VARCHAR" property="parentName" />
     <result column="amount" jdbcType="VARCHAR" property="amount" />
     <result column="payAmount" jdbcType="VARCHAR" property="payAmount" />
+    <result column="payPassword" jdbcType="VARCHAR" property="payPassword" />
   </resultMap>
 
   <select id="findAll" parameterType="com.chaotu.pay.vo.UserVo" resultMap="BaseResultMap">

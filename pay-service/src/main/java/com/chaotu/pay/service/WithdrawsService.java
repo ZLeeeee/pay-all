@@ -15,4 +15,5 @@ import java.util.Map;
 
 public interface WithdrawsService {
     Map<String, Object> findByCondition(PageVo pageVo, SearchVo searchVo, WithdrawsVo withdrawsVo) throws ParseException;
+    void add(WithdrawsVo vo);
 }
