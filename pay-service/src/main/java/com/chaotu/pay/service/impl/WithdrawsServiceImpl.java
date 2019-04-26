@@ -3,15 +3,18 @@ package com.chaotu.pay.service.impl;
 import com.chaotu.pay.dao.TWithdrawsMapper;
 import com.chaotu.pay.enums.ExceptionCode;
 import com.chaotu.pay.po.TWithdraws;
+import com.chaotu.pay.service.UserService;
 import com.chaotu.pay.service.WithdrawsService;
 import com.chaotu.pay.vo.*;
 import com.github.pagehelper.PageHelper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +26,8 @@ import java.util.Map;
  **/
 @Service
 public class WithdrawsServiceImpl implements WithdrawsService {
+    @Autowired
+    private UserService userService;
     @Autowired
     private TWithdrawsMapper tWithdrawsMapper;
     @Override
@@ -63,5 +68,14 @@ public class WithdrawsServiceImpl implements WithdrawsService {
             throw new BizException(ExceptionCode.UNKNOWN_ERROR);
         }*/
 
+    }
+
+    @Override
+    public void add(WithdrawsVo vo) {
+        TWithdraws withdraws = new TWithdraws();
+        BeanUtils.copyProperties(vo,withdraws);
+        withdraws.setCreateTime(new Date());
+        withdraws.setUserId(userService.currentUser().getId());
+        tWithdrawsMapper.insert(withdraws);
     }
 }

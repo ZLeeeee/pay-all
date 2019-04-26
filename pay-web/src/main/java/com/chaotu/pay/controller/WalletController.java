@@ -57,7 +57,7 @@ public class WalletController {
             return ResponseUtil.responseBody("-1","参数有误");
         int i = walletService.editAmount(wallet.getWalletVo(),wallet.getAmount(),wallet.getOption());
         if(i > 0)
-            return ResponseUtil.responseBody("1","修改余额成功");
+            return ResponseUtil.responseBody("修改余额成功");
         else
             return ResponseUtil.responseBody("-1","余额不足");
     }

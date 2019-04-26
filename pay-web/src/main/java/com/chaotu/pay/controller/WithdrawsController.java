@@ -5,12 +5,14 @@ import com.chaotu.pay.qo.WithdrawsQo;
 import com.chaotu.pay.service.WithdrawsService;
 import com.chaotu.pay.vo.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Map;
 
@@ -44,5 +46,18 @@ public class WithdrawsController {
             e.printStackTrace();
         }
         return ResponseUtil.responseBody(pageInfo);
+    }
+    /**
+     * 插入结算申请
+     * @return
+     */
+    @PostMapping("/add")
+    public Message add(@RequestBody WithdrawsVo vo){
+
+
+        if(StringUtils.isBlank(vo.getBankcardno())||vo.getToamount().equals(new BigDecimal(0)))
+            return ResponseUtil.responseBody("-1", "参数有误");
+        withdrawsService.add(vo);
+        return ResponseUtil.responseBody("申请已提交!");
     }
 }

@@ -2,28 +2,22 @@ package com.chaotu.pay.controller;
 
 import com.chaotu.pay.common.utils.ResponseUtil;
 import com.chaotu.pay.enums.ExceptionCode;
+import com.chaotu.pay.qo.AccountBankCardsQo;
 import com.chaotu.pay.qo.AccountPhonesQo;
-import com.chaotu.pay.qo.UserQo;
+import com.chaotu.pay.service.AccountBankCardsService;
 import com.chaotu.pay.service.AccountPhonesService;
-import com.chaotu.pay.service.UserService;
 import com.chaotu.pay.vo.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.ModelMap;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.text.ParseException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @Description:
@@ -32,13 +26,13 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 @RestController
-@RequestMapping("/accountPhones")
-@CacheConfig(cacheNames = "accountPhones")
+@RequestMapping("/accountBankCards")
+@CacheConfig(cacheNames = "accountBankCards")
 @Transactional
-public class AccountPhonesController {
+public class AccountBankCardsController {
 
     @Autowired
-    private AccountPhonesService accountPhonesService;
+    private AccountBankCardsService accountBankCardsService;
 
 
     @Autowired
@@ -52,13 +46,13 @@ public class AccountPhonesController {
      * @return
      */
     @PostMapping("/all")
-    public Message getAllUser(@RequestBody AccountPhonesQo qo){
+    public Message getAllUser(@RequestBody AccountBankCardsQo qo){
         PageVo pageVo = qo.getPageVo();
         SearchVo searchVo = qo.getSearchVo();
-        AccountPhonesVo vo = qo.getAccountPhonesVo();
-        MyPageInfo<AccountPhonesVo> pageInfo = null;
+        AccountBankCardsVo vo = qo.getAccountBankCardsVo();
+        MyPageInfo<AccountBankCardsVo> pageInfo = null;
         try {
-            pageInfo = accountPhonesService.findByCondition(pageVo,searchVo,vo);
+            pageInfo = accountBankCardsService.findByCondition(pageVo,searchVo,vo);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -67,11 +61,11 @@ public class AccountPhonesController {
 
 
     @PostMapping("/add")
-    public Message add(@RequestBody AccountPhonesVo vo){
-        if(vo==null){
+    public Message add(@RequestBody AccountBankCardsVo vo){
+        if(StringUtils.isBlank(vo.getCardno())||StringUtils.isBlank(vo.getAccounttype())||StringUtils.isBlank(vo.getPhoneId())||StringUtils.isBlank(vo.getBankAccount())){
             throw new BizException(ExceptionCode.REQUEST_PARAM_ERROR);
         }
-        accountPhonesService.addAccountPhonesVo(vo);
+        accountBankCardsService.addAccountBankCardsVo(vo);
         return ResponseUtil.responseBody("添加成功");
     }
 
@@ -84,9 +78,9 @@ public class AccountPhonesController {
     @RequestMapping(value = "/delByIds/{ids}",method = RequestMethod.DELETE)
     public Message delAllByIds(@PathVariable String[] ids){
         for(String id:ids){
-            accountPhonesService.delAccountPhonesVo(id);
+            accountBankCardsService.delAccountPhonesVo(id);
         }
-        return ResponseUtil.responseBody("删除成功");
+        return ResponseUtil.responseBody("删除用户成功");
     }
 
     /***
@@ -95,9 +89,9 @@ public class AccountPhonesController {
      * @return
      */
     @PostMapping("/edit")
-    public Message editUser(@RequestBody AccountPhonesVo vo){
-        accountPhonesService.editAccountPhonesVo(vo);
-        return ResponseUtil.responseBody("修改成功");
+    public Message editUser(@RequestBody AccountBankCardsVo vo){
+        accountBankCardsService.editAccountBankCards(vo);
+        return ResponseUtil.responseBody("修改用户成功");
     }
 
 

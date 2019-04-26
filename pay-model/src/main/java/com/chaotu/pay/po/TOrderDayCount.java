@@ -26,7 +26,7 @@ public class TOrderDayCount {
      * 用户id
      */
     @Column(name = "user_id")
-    private Long userId;
+    private String userId;
 
     /**
      * 代理id
@@ -157,7 +157,7 @@ public class TOrderDayCount {
      *
      * @return user_id - 用户id
      */
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
@@ -166,7 +166,7 @@ public class TOrderDayCount {
      *
      * @param userId 用户id
      */
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

@@ -19,7 +19,7 @@ public class RechargeVo {
 
     private Date udpateTime;
 
-    private Integer userId;
+    private String userId;
 
     private BigDecimal rechargeAmount;
 

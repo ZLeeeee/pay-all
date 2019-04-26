@@ -23,6 +23,12 @@ public class WalletServiceImpl implements WalletService {
     private TWalletMapper tWalletMapper;
 
     @Override
+    public TWallet selectOne(TWallet wallet) {
+        return tWalletMapper.selectOne(wallet);
+
+    }
+
+    @Override
     public int editAmount(TWallet wallet, String amount, String option) {
         switch(option){
             case "0":

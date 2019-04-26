@@ -21,6 +21,17 @@ public class TUser {
     @Column(name = "update_time")
     private Date updateTime;
 
+    @Column(name = "payPassword")
+    private String payPassword;
+
+    public String getPayPassword() {
+        return payPassword;
+    }
+
+    public void setPayPassword(String payPassword) {
+        this.payPassword = payPassword;
+    }
+
     /**
      * 地址
      */

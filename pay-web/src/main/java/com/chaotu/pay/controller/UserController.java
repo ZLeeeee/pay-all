@@ -151,7 +151,7 @@ public class UserController {
 //        if(!b){
 //            throw new BizException(ExceptionCode.REQUEST_PARAM_ERROR.getCode(),"用户名只能包含数字＋英文");
 //        }
-        vo.setMerchant(vo.getMerchant());
+       // vo.setMerchant(vo.getMerchant());
         userService.addUser(vo);
         return ResponseUtil.responseBody("添加成功");
     }
@@ -198,12 +198,48 @@ public class UserController {
      * @return
      */
     @PostMapping("/all/byRole")
-    public Message getAllAgent(@RequestBody UserQo userQo){
+    public Message getAllByRole(@RequestBody UserQo userQo){
 
         MyPageInfo<UserVo> pageInfo = null;
 
         pageInfo = userService.getUserByRole(userQo.getPageVo(),userQo.getUserVo());
 
         return ResponseUtil.responseBody(pageInfo);
+    }
+
+    @PostMapping("/all/byAgent")
+    public Message getAllByAgent(@RequestBody UserQo userQo){
+
+        MyPageInfo<UserVo> pageInfo = null;
+        UserVo userVo = userQo.getUserVo();
+        userVo.setParentId(userService.currentUser().getId());
+        pageInfo = userService.getUserByRole(userQo.getPageVo(),userVo);
+
+        return ResponseUtil.responseBody(pageInfo);
+    }
+    /**
+     * 修改密码
+     *
+     * @param map
+     * map 参数包含  id   password  newPass 三个参数
+     * @return
+     */
+    @PostMapping("/editPayPassword")
+    public Message editPayPassword(@RequestBody ModelMap map) {
+        String id = (String) map.get("id");
+        String password = (String) map.get("payPassword");
+        String newPassword = (String) map.get("newPass");
+
+        if(StringUtils.isEmpty(id)|| StringUtils.isEmpty(password)|| StringUtils.isEmpty(newPassword)){
+            throw new BizException(ExceptionCode.CONFIRM_PASSWORD_NOT_MATCH);
+        }
+        UserVo userVo = userService.getUserById(id);
+        if(!new BCryptPasswordEncoder().matches(password,userVo.getPayPassword())){
+            throw new BizException(ExceptionCode.OLD_PASSWORD_INCORRECT);
+        }
+        String newEncryptPass= new BCryptPasswordEncoder().encode(newPassword);
+        userVo.setPayPassword(newEncryptPass);
+        userService.updatePassord(userVo);
+        return ResponseUtil.responseBody("修改成功");
     }
 }

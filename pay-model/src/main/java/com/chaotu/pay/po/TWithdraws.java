@@ -26,7 +26,7 @@ public class TWithdraws {
      * 商户id
      */
     @Column(name = "user_id")
-    private Integer userId;
+    private String userId;
 
     /**
      * 商户所属代理id
@@ -201,7 +201,7 @@ public class TWithdraws {
      *
      * @return user_id - 商户id
      */
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
@@ -210,7 +210,7 @@ public class TWithdraws {
      *
      * @param userId 商户id
      */
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
