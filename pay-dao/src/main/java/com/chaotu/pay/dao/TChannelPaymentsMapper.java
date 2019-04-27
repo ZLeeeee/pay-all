@@ -19,5 +19,5 @@ public interface TChannelPaymentsMapper extends MyMapper<TChannelPayments> {
      * 查询所有支付方式
      * @return
      */
-    List findAll();
+    List<PaymentVo> findAll();
 }

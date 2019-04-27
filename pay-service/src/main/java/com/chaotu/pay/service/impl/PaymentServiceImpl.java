@@ -41,9 +41,8 @@ public class PaymentServiceImpl implements PaymentService {
         PageHelper.startPage(pageVo.getPageNumber(),pageVo.getPageSize());
         Example example = new Example(TChannelPayments.class);
         Example.Criteria criteria = example.createCriteria();
-        List tChannelPayments = channelPaymentsMapper.findAll();
+        List<PaymentVo> paymentVoList = channelPaymentsMapper.findAll();
         int count = channelPaymentsMapper.selectCountByExample(example);
-        List<PaymentVo> paymentVoList = MyBeanUtils.copyList(tChannelPayments, PaymentVo.class);
         MyPageInfo<PaymentVo> pageInfo = new MyPageInfo<>(paymentVoList);
         pageInfo.setPageNum(pageVo.getPageNumber());
         pageInfo.setTotalElements(count);
@@ -64,15 +63,18 @@ public class PaymentServiceImpl implements PaymentService {
             log.error("该支付名称或支付编码已存在");
             throw new BizException(ExceptionCode.DATA_AREADY_EXIST.getCode(),ExceptionCode.DATA_AREADY_EXIST.getMsg());
         }
-
-        if(!file.isEmpty()){
-            String oldFileName = file.getOriginalFilename();//获取原文件名
-            String path = "F:/upload";//指定路径
-            String randomStr = UUID.randomUUID().toString().replace("-","");
-            String newFileName = randomStr+oldFileName.substring(oldFileName.lastIndexOf("."));
-            File newFile = new File(path,newFileName);
-            file.transferTo(newFile);//将文件上传到服务器的文件上
-            payments.setIco(newFile.getPath());
+        try {
+            if(!file.isEmpty()){
+                String oldFileName = file.getOriginalFilename();//获取原文件名
+                String path = "F:/upload";//指定路径
+                String randomStr = UUID.randomUUID().toString().replace("-","");//获取随机字符串
+                String newFileName = randomStr+oldFileName.substring(oldFileName.lastIndexOf("."));//拼接新文件名
+                File newFile = new File(path,newFileName);
+                file.transferTo(newFile);//将文件上传到服务器的文件上
+                payments.setIco(newFile.getPath());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         payments.setCreateTime(new Date());
