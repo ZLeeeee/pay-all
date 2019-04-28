@@ -14,6 +14,7 @@
     <result column="signkey" jdbcType="VARCHAR" property="signkey" />
     <result column="channel_id" jdbcType="BIGINT" property="channelId" />
     <result column="channel_payment_id" jdbcType="BIGINT" property="channelPaymentId" />
+    <result column="account_type" jdbcType="CHAR" property="accountType" />
     <result column="status" jdbcType="CHAR" property="status" />
     <result column="order_num" jdbcType="INTEGER" property="orderNum" />
     <result column="dayQuota" jdbcType="DECIMAL" property="dayquota" />

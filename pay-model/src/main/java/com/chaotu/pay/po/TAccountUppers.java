@@ -44,6 +44,9 @@ public class TAccountUppers {
     @Column(name = "channel_payment_id")
     private Long channelPaymentId;
 
+    @Column(name = "account_type")
+    private String accountType;
+
     /**
      * 状态：0禁用。1启用
      */
@@ -211,6 +214,14 @@ public class TAccountUppers {
      */
     public void setChannelPaymentId(Long channelPaymentId) {
         this.channelPaymentId = channelPaymentId;
+    }
+
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
     }
 
     /**
