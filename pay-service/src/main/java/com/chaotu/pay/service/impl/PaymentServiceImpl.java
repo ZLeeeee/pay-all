@@ -18,9 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Encoder;
 import tk.mybatis.mapper.entity.Example;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 支付方式管理
@@ -39,9 +41,8 @@ public class PaymentServiceImpl implements PaymentService {
         PageHelper.startPage(pageVo.getPageNumber(),pageVo.getPageSize());
         Example example = new Example(TChannelPayments.class);
         Example.Criteria criteria = example.createCriteria();
-        List tChannelPayments = channelPaymentsMapper.findAll();
+        List<PaymentVo> paymentVoList = channelPaymentsMapper.findAll();
         int count = channelPaymentsMapper.selectCountByExample(example);
-        List<PaymentVo> paymentVoList = MyBeanUtils.copyList(tChannelPayments, PaymentVo.class);
         MyPageInfo<PaymentVo> pageInfo = new MyPageInfo<>(paymentVoList);
         pageInfo.setPageNum(pageVo.getPageNumber());
         pageInfo.setTotalElements(count);
@@ -49,7 +50,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void addPayment(PaymentVo paymentVo/*, MultipartFile file*/) throws Exception{
+    public void addPayment(PaymentVo paymentVo, MultipartFile file) throws Exception{
         log.info("添加支付方式，入参paymentVo=["+paymentVo.toString()+"]");
         TChannelPayments payments = new TChannelPayments();
         BeanUtils.copyProperties(paymentVo,payments);
@@ -62,21 +63,27 @@ public class PaymentServiceImpl implements PaymentService {
             log.error("该支付名称或支付编码已存在");
             throw new BizException(ExceptionCode.DATA_AREADY_EXIST.getCode(),ExceptionCode.DATA_AREADY_EXIST.getMsg());
         }
-        /*if(!file.isEmpty()){
-            //通过base64来转换图片
-            BASE64Encoder encoder = new BASE64Encoder();
-            String imageStr = encoder.encode(file.getBytes());
-            payments.setIco(imageStr);
-        }*/
+        try {
+            String oldFileName = file.getOriginalFilename();//获取原文件名
+            if(!file.isEmpty() && oldFileName!=null && oldFileName.length()>0){
+                String path = "F:/upload";//指定路径
+                String randomStr = UUID.randomUUID().toString().replace("-","");//获取随机字符串
+                String newFileName = randomStr+oldFileName.substring(oldFileName.lastIndexOf("."));//拼接新文件名
+                File newFile = new File(path,newFileName);
+                file.transferTo(newFile);//将文件上传到服务器的文件上
+                payments.setIco(newFile.getPath());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         payments.setCreateTime(new Date());
         payments.setPaymentname(paymentVo.getPaymentName());
         payments.setPaymentcode(paymentVo.getPaymentCode());
-        payments.setChannelId(paymentVo.getChannelId());
-        payments.setRunrate(paymentVo.getRunRate());
         payments.setCostrate(paymentVo.getCostRate());
-        payments.setMinamount(paymentVo.getMinAmount());
+        payments.setRunrate(paymentVo.getCostRate());
         payments.setMaxamount(paymentVo.getMaxAmount());
-        payments.setStatus(paymentVo.getStatus());
+        payments.setMinamount(paymentVo.getMinAmount());
         channelPaymentsMapper.insertSelective(payments);
         log.info("添加支付方式成功，参数payments=["+payments.toString()+"]");
     }

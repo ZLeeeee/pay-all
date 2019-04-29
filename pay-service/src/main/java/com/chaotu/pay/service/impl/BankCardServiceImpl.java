@@ -18,6 +18,9 @@ import tk.mybatis.mapper.entity.Example;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 银行卡管理
+ */
 @Slf4j
 @Service
 public class BankCardServiceImpl implements BankCradService {
@@ -62,11 +65,6 @@ public class BankCardServiceImpl implements BankCradService {
             throw new BizException(ExceptionCode.DATA_AREADY_EXIST.getCode(),ExceptionCode.DATA_AREADY_EXIST.getMsg());
         }
         bankCards.setCreateTime(new Date());
-        bankCards.setUserId(bankCardVo.getUserId());
-        bankCards.setBankId(bankCardVo.getBankId());
-        bankCards.setBankcardno(bankCardVo.getBankCardNo());
-        bankCards.setAccountname(bankCardVo.getAccountName());
-        bankCards.setBranchname(bankCardVo.getBranchName());
         bankCards.setStatus("0");//初始状态默认为禁用
         bankCardsMapper.insertSelective(bankCards);
         log.info("添加银行卡成功，参数bankCards=["+bankCards.toString()+"]");

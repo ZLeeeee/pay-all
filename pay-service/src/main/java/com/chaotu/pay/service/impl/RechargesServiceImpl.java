@@ -28,8 +28,11 @@ import java.text.ParseException;
 import java.util.Iterator;
 import java.util.List;
 
-@Service
+/**
+ * 商户充值管理
+ */
 @Slf4j
+@Service
 public class RechargesServiceImpl implements RechargesService {
 
     @Autowired
@@ -44,7 +47,7 @@ public class RechargesServiceImpl implements RechargesService {
     public void add(RechargeVo vo,UserVo user ) {
         log.info("账号充值开始,入参为[" + vo.toString() + "]");
         if(vo.getActualAmount().equals(new BigDecimal(0)))
-             throw new BizException(ExceptionCode.REQUEST_PARAM_ERROR);
+            throw new BizException(ExceptionCode.REQUEST_PARAM_ERROR);
         TWallet wallet = new TWallet();
         wallet.setUserId(user.getId());
         wallet.setType("1");
@@ -80,10 +83,7 @@ public class RechargesServiceImpl implements RechargesService {
     public MyPageInfo<RechargeVo> findAllByPage(PageVo pageVo,RechargeVo vo) {
         PageHelper.startPage(pageVo.getPageNumber(),pageVo.getPageSize());
         Example example = new Example(TRecharges.class);
-        //查询结果按创建时间排序
-        example.setOrderByClause("create_time");
         Example.Criteria criteria = example.createCriteria();
-
         int count = tRechargesMapper.selectCountByExample(example);
         List<TRecharges> tRecharges = tRechargesMapper.findAll();
         List<RechargeVo> rechargeVoList = MyBeanUtils.copyList(tRecharges, RechargeVo.class);
@@ -96,23 +96,28 @@ public class RechargesServiceImpl implements RechargesService {
 
     @Override
     public MyPageInfo<RechargeVo> search(PageVo pageVo, SearchVo searchVo,RechargeVo rechargeVo)  throws ParseException {
-        //去空格处理
-        if(!StringUtils.isEmpty(rechargeVo.getOrderno())){
-            String orderNo = rechargeVo.getOrderno().trim();
-            rechargeVo.setOrderno(orderNo);
-        }
-        if(!StringUtils.isEmpty(rechargeVo.getMerchant())){
-            String merchant = rechargeVo.getMerchant().trim();
-            rechargeVo.setMerchant(merchant);
+        if(rechargeVo!=null){
+            //去空格处理
+            if(!StringUtils.isEmpty(rechargeVo.getOrderno())){
+                String orderNo = rechargeVo.getOrderno().trim();
+                rechargeVo.setOrderno(orderNo);
+            }
+            if(!StringUtils.isEmpty(rechargeVo.getMerchant())){
+                String merchant = rechargeVo.getMerchant().trim();
+                rechargeVo.setMerchant(merchant);
+            }
         }
         Example example = new Example(TRecharges.class);
         Example.Criteria criteria = example.createCriteria();
-        //设置起止时间
-        if(!StringUtils.isEmpty(searchVo.getStartDate())){
-            rechargeVo.setStartDate(searchVo.getStartDate());
-        }
-        if(!StringUtils.isEmpty(searchVo.getEndDate())){
-            rechargeVo.setEndDate(searchVo.getEndDate());
+
+        if(searchVo!=null){
+            //设置起止时间
+            if(!StringUtils.isEmpty(searchVo.getStartDate())){
+                rechargeVo.setStartDate(searchVo.getStartDate());
+            }
+            if(!StringUtils.isEmpty(searchVo.getEndDate())){
+                rechargeVo.setEndDate(searchVo.getEndDate());
+            }
         }
         int count = tRechargesMapper.selectCountByExample(example);
 

@@ -23,7 +23,7 @@ public interface PaymentService {
     /**
      * 添加支付方式
      */
-    void addPayment(PaymentVo paymentVo/*, MultipartFile file*/) throws Exception;
+    void addPayment(PaymentVo paymentVo, MultipartFile file) throws Exception;
 
     /**
      * 修改支付方式

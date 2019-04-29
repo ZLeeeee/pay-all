@@ -31,6 +31,7 @@
     on
     r.user_id = u.id
     where 1=1
+
     <if test="orderno!=null and orderno!=''">
       and r.orderNo like concat('%',#{orderno},'%')
     </if>
@@ -49,7 +50,7 @@
     <if test="payStatus!=null and payStatus!=''">
       and r.pay_status = #{payStatus}
     </if>
-
+    ORDER BY create_time DESC
   </select>
 
   <!--查询所有用户充值-->
@@ -64,6 +65,7 @@
               on
                   r.user_id = u.id
         where 1=1
+        ORDER BY create_time DESC
   </select>
 
 </mapper>
