@@ -20,7 +20,7 @@ spring:
     username: root
     # Jasypt加密 可到common-utils中找到JasyptUtil加解密工具类生成加密结果 格式为ENC(加密结果)
     #password: ENC(F4B0s6u9xcDw3V+P0qC4CA==)
-    password: 123
+    password: root
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
     logSlowSql: true
@@ -139,3 +139,12 @@ pagehelper:
 # 日志
 logging:
   file: xboot-logs/xboot.log
+  # 显示sql语句
+  level:
+    com:
+      chaotu:
+        pay:
+          dao: debug
+
+
+
