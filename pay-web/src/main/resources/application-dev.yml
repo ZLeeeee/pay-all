@@ -139,3 +139,12 @@ pagehelper:
 # 日志
 logging:
   file: xboot-logs/xboot.log
+  # 显示sql语句
+  level:
+    com:
+      chaotu:
+        pay:
+          dao: debug
+
+
+
