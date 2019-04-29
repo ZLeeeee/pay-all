@@ -28,8 +28,11 @@ import java.text.ParseException;
 import java.util.Iterator;
 import java.util.List;
 
-@Service
+/**
+ * 商户充值管理
+ */
 @Slf4j
+@Service
 public class RechargesServiceImpl implements RechargesService {
 
     @Autowired
@@ -93,23 +96,28 @@ public class RechargesServiceImpl implements RechargesService {
 
     @Override
     public MyPageInfo<RechargeVo> search(PageVo pageVo, SearchVo searchVo,RechargeVo rechargeVo)  throws ParseException {
-        //去空格处理
-        if(!StringUtils.isEmpty(rechargeVo.getOrderno())){
-            String orderNo = rechargeVo.getOrderno().trim();
-            rechargeVo.setOrderno(orderNo);
-        }
-        if(!StringUtils.isEmpty(rechargeVo.getMerchant())){
-            String merchant = rechargeVo.getMerchant().trim();
-            rechargeVo.setMerchant(merchant);
+        if(rechargeVo!=null){
+            //去空格处理
+            if(!StringUtils.isEmpty(rechargeVo.getOrderno())){
+                String orderNo = rechargeVo.getOrderno().trim();
+                rechargeVo.setOrderno(orderNo);
+            }
+            if(!StringUtils.isEmpty(rechargeVo.getMerchant())){
+                String merchant = rechargeVo.getMerchant().trim();
+                rechargeVo.setMerchant(merchant);
+            }
         }
         Example example = new Example(TRecharges.class);
         Example.Criteria criteria = example.createCriteria();
-        //设置起止时间
-        if(!StringUtils.isEmpty(searchVo.getStartDate())){
-            rechargeVo.setStartDate(searchVo.getStartDate());
-        }
-        if(!StringUtils.isEmpty(searchVo.getEndDate())){
-            rechargeVo.setEndDate(searchVo.getEndDate());
+
+        if(searchVo!=null){
+            //设置起止时间
+            if(!StringUtils.isEmpty(searchVo.getStartDate())){
+                rechargeVo.setStartDate(searchVo.getStartDate());
+            }
+            if(!StringUtils.isEmpty(searchVo.getEndDate())){
+                rechargeVo.setEndDate(searchVo.getEndDate());
+            }
         }
         int count = tRechargesMapper.selectCountByExample(example);
 

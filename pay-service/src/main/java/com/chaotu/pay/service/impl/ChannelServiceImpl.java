@@ -22,6 +22,9 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 通道管理
+ */
 @Slf4j
 @Service
 public class ChannelServiceImpl implements ChannelService {
@@ -69,11 +72,6 @@ public class ChannelServiceImpl implements ChannelService {
         channel.setCreateTime(new Date());
         channel.setChannelname(channelVo.getChannelName());
         channel.setChannelcode(channelVo.getChannelCode());
-        channel.setMerchant(channelVo.getMerchant());
-        channel.setSignkey(channelVo.getSignkey());
-        channel.setChannelquota(channelVo.getChannelquota());
-        channel.setExtend(channelVo.getExtend());
-        channel.setStatus(channelVo.getStatus());
         channelMapper.insertSelective(channel);
         log.info("添加通道成功，参数channelVo=["+channel.toString()+"]");
     }

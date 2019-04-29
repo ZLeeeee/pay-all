@@ -64,8 +64,8 @@ public class PaymentServiceImpl implements PaymentService {
             throw new BizException(ExceptionCode.DATA_AREADY_EXIST.getCode(),ExceptionCode.DATA_AREADY_EXIST.getMsg());
         }
         try {
-            if(!file.isEmpty()){
-                String oldFileName = file.getOriginalFilename();//获取原文件名
+            String oldFileName = file.getOriginalFilename();//获取原文件名
+            if(!file.isEmpty() && oldFileName!=null && oldFileName.length()>0){
                 String path = "F:/upload";//指定路径
                 String randomStr = UUID.randomUUID().toString().replace("-","");//获取随机字符串
                 String newFileName = randomStr+oldFileName.substring(oldFileName.lastIndexOf("."));//拼接新文件名
@@ -80,12 +80,10 @@ public class PaymentServiceImpl implements PaymentService {
         payments.setCreateTime(new Date());
         payments.setPaymentname(paymentVo.getPaymentName());
         payments.setPaymentcode(paymentVo.getPaymentCode());
-        payments.setChannelId(paymentVo.getChannelId());
-        payments.setRunrate(paymentVo.getRunRate());
         payments.setCostrate(paymentVo.getCostRate());
-        payments.setMinamount(paymentVo.getMinAmount());
+        payments.setRunrate(paymentVo.getCostRate());
         payments.setMaxamount(paymentVo.getMaxAmount());
-        payments.setStatus(paymentVo.getStatus());
+        payments.setMinamount(paymentVo.getMinAmount());
         channelPaymentsMapper.insertSelective(payments);
         log.info("添加支付方式成功，参数payments=["+payments.toString()+"]");
     }
