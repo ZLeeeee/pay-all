@@ -20,22 +20,22 @@ public class PaymentVo {
 
     private Long channelId;
 
-    private String paymentName;
+    private String paymentname;
 
-    private String paymentCode;
+    private String paymentcode;
 
     private String ico;
 
-    private BigDecimal runRate;
+    private BigDecimal runrate;
 
-    private BigDecimal costRate;
+    private BigDecimal costrate;
 
-    private Integer minAmount;
+    private Integer minamount;
 
-    private Integer maxAmount;
+    private Integer maxamount;
 
     private String status;
 
-    private String channelName;
+    private String channelname;
 
 }

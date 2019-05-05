@@ -56,8 +56,8 @@ public class PaymentServiceImpl implements PaymentService {
         BeanUtils.copyProperties(paymentVo,payments);
         Example example = new Example(TChannelPayments.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("paymentname",paymentVo.getPaymentName());
-        criteria.andEqualTo("paymentcode",paymentVo.getPaymentCode());
+        criteria.andEqualTo("paymentname",paymentVo.getPaymentname());
+        criteria.andEqualTo("paymentcode",paymentVo.getPaymentcode());
         int count = channelPaymentsMapper.selectCountByExample(example);
         if(count>0){//数据存在
             log.error("该支付名称或支付编码已存在");
@@ -78,12 +78,6 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         payments.setCreateTime(new Date());
-        payments.setPaymentname(paymentVo.getPaymentName());
-        payments.setPaymentcode(paymentVo.getPaymentCode());
-        payments.setCostrate(paymentVo.getCostRate());
-        payments.setRunrate(paymentVo.getCostRate());
-        payments.setMaxamount(paymentVo.getMaxAmount());
-        payments.setMinamount(paymentVo.getMinAmount());
         channelPaymentsMapper.insertSelective(payments);
         log.info("添加支付方式成功，参数payments=["+payments.toString()+"]");
     }
@@ -91,9 +85,14 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public void editPayment(PaymentVo paymentVo) {
         log.info("修改支付方式，入参paymentVo=["+paymentVo.toString()+"]");
-        paymentVo.setUpdateTime(new Date());
-        channelPaymentsMapper.updatePayment(paymentVo);
-        log.info("修改支付方式成功，参数paymentVo=["+paymentVo.toString()+"]");
+        TChannelPayments payments = channelPaymentsMapper.selectByPrimaryKey(paymentVo.getId());
+        if(payments!=null){
+            paymentVo.setUpdateTime(new Date());
+            channelPaymentsMapper.updatePayment(paymentVo);
+            log.info("修改支付方式成功，参数paymentVo=["+paymentVo.toString()+"]");
+        }else{
+            log.error("未能找到需要修改的支付方式");
+        }
     }
 
     @Override
