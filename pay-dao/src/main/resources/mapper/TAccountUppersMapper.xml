@@ -46,7 +46,7 @@
   </resultMap>
 
   <!--查询所有通道商户-->
-  <select id="findAll" parameterType="com.chaotu.pay.vo.AccountUppersVo" resultMap="VoResultMap">
+  <select id="findAll"  resultMap="VoResultMap">
     SELECT
         tau.*,
         tc.channelName,
