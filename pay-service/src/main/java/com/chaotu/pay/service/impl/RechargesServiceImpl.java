@@ -25,6 +25,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -63,8 +64,12 @@ public class RechargesServiceImpl implements RechargesService {
         vo.setOrderno(orderNo);
         TRecharges tRecharges = new TRecharges();
         BeanUtils.copyProperties(vo,tRecharges);
+        tRecharges.setRechargeAmount(vo.getActualAmount());
+        tRecharges.setMerchant(user.getMerchant());
+        tRecharges.setPayStatus((byte)1);
+        tRecharges.setCreateTime(new Date());
         walletService.editAmount(wallet,newAmount.toString(),"0");
-        log.info("余额充值成功钱包id为["+wallet.getId()+"]");
+        log.info("余额充值成功钱包id为["+tWallet.getId()+"]");
         tRechargesMapper.insert(tRecharges);
         log.info("记录增加成功");
         log.info("账号充值结束!");

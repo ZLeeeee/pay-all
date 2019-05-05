@@ -75,7 +75,7 @@ public class RechargesController {
             return ResponseUtil.responseBody("-1","添加失败");
 
         }
-        return ResponseUtil.responseBody("1","添加成功");
+        return ResponseUtil.responseBody("0","添加成功");
     }
 
 
