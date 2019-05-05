@@ -31,11 +31,11 @@
         <if test="signkey!=null and signkey!=''">
             signkey=#{signkey},
         </if>
-        <if test="channelName!=null and channelName!=''">
-            channelName=#{channelName},
+        <if test="channelname!=null and channelname!=''">
+            channelName=#{channelname},
         </if>
-        <if test="channelCode!=null and channelCode!=''">
-            channelCode=#{channelCode},
+        <if test="channelcode!=null and channelcode!=''">
+            channelCode=#{channelcode},
         </if>
         <if test="extend!=null and extend!=''">
             extend=#{extend},

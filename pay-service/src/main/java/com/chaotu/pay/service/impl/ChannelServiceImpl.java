@@ -62,16 +62,14 @@ public class ChannelServiceImpl implements ChannelService {
         BeanUtils.copyProperties(channelVo,channel);
         Example example = new Example(TChannel.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("channelname",channelVo.getChannelName());
-        criteria.andEqualTo("channelcode",channelVo.getChannelCode());
+        criteria.andEqualTo("channelname",channelVo.getChannelname());
+        criteria.andEqualTo("channelcode",channelVo.getChannelcode());
         int count = channelMapper.selectCountByExample(example);
         if(count>0){//数据存在
             log.error("该通道名称或通道编码");
             throw new BizException(ExceptionCode.ROLE_AREADY_EXIST.getCode(),ExceptionCode.ROLE_AREADY_EXIST.getMsg());
         }
         channel.setCreateTime(new Date());
-        channel.setChannelname(channelVo.getChannelName());
-        channel.setChannelcode(channelVo.getChannelCode());
         channelMapper.insertSelective(channel);
         log.info("添加通道成功，参数channelVo=["+channel.toString()+"]");
     }
@@ -82,11 +80,14 @@ public class ChannelServiceImpl implements ChannelService {
             throw new BizException(ExceptionCode.REQUEST_PARAM_MISSING);
         }*/
         log.info("修改通道，入参cahnnelVo=["+channelVo.toString()+"]");
-        TChannel channel = new TChannel();
-        BeanUtils.copyProperties(channelVo,channel);
-        channelVo.setUpdateTime(new Date());
-        channelMapper.updateChannel(channelVo);
-        log.info("修改通道成功，参数channelVo=["+channelVo.toString()+"]");
+        TChannel channel = channelMapper.selectByPrimaryKey(channelVo.getId());
+        if (channel!=null){
+            channelVo.setUpdateTime(new Date());
+            channelMapper.updateChannel(channelVo);
+            log.info("修改通道成功，参数channelVo=["+channelVo.toString()+"]");
+        }else{
+            log.error("未能找到需要修改的通道");
+        }
     }
 
     @Override
@@ -97,7 +98,7 @@ public class ChannelServiceImpl implements ChannelService {
             channelMapper.deleteByPrimaryKey(id);
             log.info("删除通道成功，输出channel=["+channel.toString()+"]");
         }else{
-            log.info("未能找到需要删除的id="+id);
+            log.error("未能找到需要删除的id="+id);
         }
     }
 
