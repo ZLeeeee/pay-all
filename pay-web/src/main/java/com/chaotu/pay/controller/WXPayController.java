@@ -1,5 +1,6 @@
 package com.chaotu.pay.controller;
 
+import com.chaotu.pay.mq.MsgProducer;
 import com.chaotu.pay.service.WXPayService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Slf4j
 @RestController
@@ -23,6 +26,9 @@ public class WXPayController {
     @Autowired
     private WXPayService wxPayService;
 
+    @Autowired
+    private MsgProducer producer;
+
     /**
      * 订单支付异步通知
      * @param request
@@ -31,6 +37,7 @@ public class WXPayController {
      */
     @RequestMapping("/notify")
     public String WXPayBack(HttpServletRequest request, HttpServletResponse response){
+        producer.sendMsg("666666");
         String resXml = "";
         try {
             InputStream is = request.getInputStream();
@@ -62,5 +69,4 @@ public class WXPayController {
 
 
     }
-
 }

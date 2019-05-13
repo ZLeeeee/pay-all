@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chaotu.pay.dao.TPddOrderMapper">
+  <resultMap id="BaseResultMap" type="com.chaotu.pay.po.TPddOrder">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="order_sn" jdbcType="VARCHAR" property="orderSn" />
+    <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="sku_number" jdbcType="INTEGER" property="skuNumber" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="pdd_user_id" jdbcType="INTEGER" property="pddUserId" />
+    <result column="extension" jdbcType="VARCHAR" property="extension" />
+    <result column="access_token" jdbcType="VARCHAR" property="accessToken" />
+  </resultMap>
+</mapper>

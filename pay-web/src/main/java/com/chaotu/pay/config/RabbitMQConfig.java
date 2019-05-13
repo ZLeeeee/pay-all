@@ -1,10 +1,7 @@
 package com.chaotu.pay.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -48,6 +45,7 @@ public class RabbitMQConfig {
     public static final String EXCHANGE_A = "my-mq-exchange_A";
     public static final String EXCHANGE_B = "my-mq-exchange_B";
     public static final String EXCHANGE_C = "my-mq-exchange_C";
+    public static final String FANOUT_EXCHANGE_A = "my-mq-fanout_exchange_A";
 
 
     public static final String QUEUE_A = "QUEUE_A";
@@ -107,15 +105,29 @@ public class RabbitMQConfig {
         return new Queue(QUEUE_B, true); //队列持久
     }
 
-
     @Bean
+    public FanoutExchange fanoutExchange() {
+        return new FanoutExchange(RabbitMQConfig.FANOUT_EXCHANGE_A);
+    }
+
+    //把所有的队列都绑定到这个交换机上去
+    @Bean
+    public Binding bindingExchangeA(Queue queueA,FanoutExchange fanoutExchange) {
+        return BindingBuilder.bind(queueA).to(fanoutExchange);
+    }
+    @Bean
+    public Binding bindingExchangeB(Queue queueB,FanoutExchange fanoutExchange) {
+        return BindingBuilder.bind(queueB).to(fanoutExchange);
+    }
+
+    /*@Bean
     public Binding binding() {
         return BindingBuilder.bind(queueA()).to(defaultExchange()).with(ROUTINGKEY_A);
-    }
-    @Bean
+    }*/
+  /*  @Bean
     public Binding bindingB(){
         return BindingBuilder.bind(queueB()).to(defaultExchange()).with(ROUTINGKEY_B);
-    }
+    }*/
 
 
 

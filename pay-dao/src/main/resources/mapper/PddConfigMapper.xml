@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chaotu.pay.dao.PddConfigMapper">
+
+
+  <select id="getAllAntiContent" resultType="java.lang.String">
+    select antiContent from t_antiContent
+  </select>
+  <select id="getAllAccessToken" resultType="java.lang.String">
+    select accessToken from t_accessToken
+  </select>
+  <select id="getAllCreateOrderToken" resultType="java.lang.String">
+    select create_order_token from t_create_order_token
+  </select>
+
+
+
+</mapper>

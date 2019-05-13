@@ -3,7 +3,13 @@
 jasypt:
   encryptor:
     password: xboot
-
+pdd:
+  preOrderUrl: https://mobile.yangkeduo.com/proxy/api/order
+  aliPayUrl: https://mobile.yangkeduo.com/proxy/api/order/prepay
+  returnUrl: https://mobile.yangkeduo.com/transac_wappay_callback.html
+  clientId: 41dc767f963d412fa2b944ed21c4ac7d
+  clientSecret: 85d6e8f71f3014bbd91dbe99171d0cb6b5082322
+  code: 19a7318a9dd14bc4a0e39db0b1f7efa5fc9694bb
 server:
   port: 8080
   servlet:

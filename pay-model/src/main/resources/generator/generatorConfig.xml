@@ -24,8 +24,16 @@
 
         <javaClientGenerator targetPackage="com.chaotu.pay.dao" targetProject="../pay-dao/src/main/java" type="XMLMAPPER"/>
 
-
-        <table schema="pay" tableName="t_user_role">
+        <table schema="pay" tableName="t_pdd_goods">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="t_pdd_order">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="t_pdd_user">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <!--<table schema="pay" tableName="t_user_role">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
         <table schema="pay" tableName="t_user">
@@ -97,6 +105,6 @@
         </table>
         <table schema="pay" tableName="qrtz_blob_triggers">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
-        </table>
+        </table>-->
     </context>
 </generatorConfiguration>

@@ -29,6 +29,14 @@ public class MsgProducer implements RabbitTemplate.ConfirmCallback {
         //把消息放入ROUTINGKEY_A对应的队列当中去，对应的是队列A
         rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_A, RabbitMQConfig.ROUTINGKEY_A, content, correlationId);
     }
+    public void sendAll(String content) {
+        rabbitTemplate.convertAndSend(RabbitMQConfig.FANOUT_EXCHANGE_A,"", content);
+    }
+    public void sendSimpleMsg(String content) {
+        CorrelationData correlationId = new CorrelationData(IDGeneratorUtils.getUUID32());
+        //把消息放入ROUTINGKEY_A对应的队列当中去，对应的是队列A
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_A, "", content, correlationId);
+    }
     /**
      * 回调
      */
