@@ -1,10 +1,17 @@
 package com.chaotu.pay.config;
 
+import com.chaotu.pay.common.utils.JsonUtils;
 import com.chaotu.pay.mq.MsgProducer;
 import com.pdd.pop.sdk.http.PopAccessTokenClient;
 import com.pdd.pop.sdk.http.PopClient;
+import com.pdd.pop.sdk.http.api.request.PddLogisticsCompaniesGetRequest;
 import com.pdd.pop.sdk.http.api.request.PddOrderNumberListGetRequest;
+import com.pdd.pop.sdk.http.api.request.PddPmcUserPermitRequest;
+import com.pdd.pop.sdk.http.api.request.PddRefundAddressListGetRequest;
+import com.pdd.pop.sdk.http.api.response.PddLogisticsCompaniesGetResponse;
 import com.pdd.pop.sdk.http.api.response.PddOrderNumberListGetResponse;
+import com.pdd.pop.sdk.http.api.response.PddPmcUserPermitResponse;
+import com.pdd.pop.sdk.http.api.response.PddRefundAddressListGetResponse;
 import com.pdd.pop.sdk.http.token.AccessTokenResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +28,29 @@ import java.util.Date;
 @EnableScheduling
 public class ScheduledTasks{
     @Autowired
-    public ScheduledTasks (MsgProducer producer, PopClient client, PopAccessTokenClient accessTokenClient,@Value("pdd.code") String code){
+    public ScheduledTasks (MsgProducer producer, PopClient client, PopAccessTokenClient accessTokenClient,@Value("${pdd.accessToken}") String accessToken){
         this.producer = producer;
         this.client = client;
         try{
-            AccessTokenResponse accessTokenResponse = accessTokenClient.generate(code);
-            this.accessToken = accessTokenResponse.getAccessToken();
+
+            this.accessToken = accessToken;
+            PddLogisticsCompaniesGetRequest request = new PddLogisticsCompaniesGetRequest();
+            PddLogisticsCompaniesGetResponse response = client.syncInvoke(request);
+            log.info("订单公司: "+JsonUtils.getJosnFromObject(response));
+
+            PddRefundAddressListGetRequest getRequest = new PddRefundAddressListGetRequest();
+            PddRefundAddressListGetResponse getResponse = client.syncInvoke(getRequest, accessToken);
+            log.info("退货地址: "+JsonUtils.getJosnFromObject(getResponse));
+            PddPmcUserPermitRequest permitRequest = new PddPmcUserPermitRequest();
+            permitRequest.setTopics("pdd_trade_TradeLogisticsAddressChanged");
+            PddPmcUserPermitResponse permitResponse = client.syncInvoke(permitRequest, accessToken);
+            System.out.println("订阅消息: "+JsonUtils.getJosnFromObject(permitResponse));
+
         }catch (Exception e){
             log.error("获取AccessToken失败",e.getMessage());
         }
     }
+
     private String accessToken;
     private MsgProducer producer;
     private PopClient client;
@@ -38,7 +58,7 @@ public class ScheduledTasks{
     @Scheduled(cron = "0/5 * * * * ? ")
     public void reportCurrentByCron(){
         PddOrderNumberListGetRequest request = new PddOrderNumberListGetRequest();
-        request.setOrderStatus(5);
+        request.setOrderStatus(1);
         try{
             PddOrderNumberListGetResponse response = client.syncInvoke(request, accessToken);
             response.getOrderSnListGetResponse().getOrderSnList().forEach((item)->{
@@ -47,8 +67,6 @@ public class ScheduledTasks{
         }catch (Exception e){
             log.error("请求未发货订单失败",e.getMessage());
         }
-        producer.sendAll(new Date().toString());
-        System.out.println(new Date());
     }
 
 

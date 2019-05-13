@@ -26,7 +26,10 @@ public class Consumer {
     UserService userService;
     @RabbitListener(queues = RabbitMQConfig.QUEUE_A)
     public void processMessage(String content) {
-        TPddOrder order = JsonUtils.getObjectTFromJson(content, TPddOrder.class);
+        TPddOrder o = new TPddOrder();
+        o.setOrderSn(content);
+        TPddOrder order = orderService.get(o);
+
         log.info(content+"AAAAAAA");
     }
     @RabbitListener(queues = RabbitMQConfig.QUEUE_B)
