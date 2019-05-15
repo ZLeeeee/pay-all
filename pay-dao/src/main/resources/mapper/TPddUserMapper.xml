@@ -9,5 +9,8 @@
     <result column="pdduid" jdbcType="VARCHAR" property="pdduid" />
     <result column="address_id" jdbcType="BIGINT" property="addressId" />
     <result column="status" jdbcType="BIT" property="status" />
+    <result column="accessToken" jdbcType="VARCHAR" property="accesstoken" />
+    <result column="extar" jdbcType="VARCHAR" property="extar" />
+    <result column="mark" jdbcType="VARCHAR" property="mark" />
   </resultMap>
 </mapper>

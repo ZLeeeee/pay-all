@@ -17,5 +17,23 @@
     <result column="pdd_user_id" jdbcType="INTEGER" property="pddUserId" />
     <result column="extension" jdbcType="VARCHAR" property="extension" />
     <result column="access_token" jdbcType="VARCHAR" property="accessToken" />
+    <result column="notify_url" jdbcType="VARCHAR" property="notifyUrl" />
+    <result column="notify_times" jdbcType="INTEGER" property="notifyTimes" />
   </resultMap>
+
+  <select id="getByTimeAndStatus" parameterType="java.util.Map" resultMap="BaseResultMap">
+   select * from t_pdd_order where create_time &lt;#{endTime} and status = #{status}
+
+  </select>
+
+  <select id="getByOrderSn" parameterType="java.lang.String" resultMap="BaseResultMap">
+   select * from t_pdd_order where order_sn = #{orderSn}
+
+  </select>
+
+  <update id="updateByOrderSn" parameterType="com.chaotu.pay.po.TPddOrder">
+   update t_pdd_order set status = #{status} where order_sn = #{orderSn}
+
+  </update>
+
 </mapper>

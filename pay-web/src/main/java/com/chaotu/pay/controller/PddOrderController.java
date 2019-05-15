@@ -6,13 +6,14 @@ import com.chaotu.pay.po.TPddOrder;
 import com.chaotu.pay.service.PddGoodsService;
 import com.chaotu.pay.service.PddOrderService;
 import com.chaotu.pay.vo.Message;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+import java.util.Map;
+@Slf4j
 @RestController
 @RequestMapping("/pddOrder")
 public class PddOrderController {
@@ -21,6 +22,7 @@ public class PddOrderController {
 
     @PostMapping("/pay")
     public Message all(@RequestBody TPddOrder order){
+        order.setCreateTime(new Date());
         String returnUrl = service.pay(order);
         if(StringUtils.isNotBlank(returnUrl))
             return ResponseUtil.responseBody(returnUrl);
@@ -30,5 +32,12 @@ public class PddOrderController {
     public Message get(@RequestBody TPddOrder order){
         return ResponseUtil.responseBody(service.get(order));
     }
+
+    @PostMapping("/notify")
+    public Message notify(@RequestBody Map<String,Object> map){
+        log.info("1111");
+        return ResponseUtil.responseBody("111");
+    }
+
 
 }

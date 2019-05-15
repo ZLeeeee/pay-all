@@ -1,6 +1,7 @@
 package com.chaotu.pay.config;
 
 import com.chaotu.pay.common.utils.JsonUtils;
+import com.chaotu.pay.mq.MsgProducer;
 import com.pdd.pop.sdk.http.PopAccessTokenClient;
 import com.pdd.pop.sdk.http.PopClient;
 import com.pdd.pop.sdk.http.PopHttpClient;
@@ -8,6 +9,7 @@ import com.pdd.pop.sdk.message.MessageHandler;
 import com.pdd.pop.sdk.message.WsClient;
 import com.pdd.pop.sdk.message.model.Message;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +20,8 @@ public class PddSDKConfig {
     private String clientId;
     @Value("${pdd.clientSecret}")
     private String clientSecret;
+    @Autowired
+    private MsgProducer producer;
     @Bean
     public PopClient popClient(){
         PopClient client = new PopHttpClient(clientId, clientSecret);
@@ -35,7 +39,9 @@ public class PddSDKConfig {
         WsClient ws = new WsClient(
                 clientId,
                 clientSecret,
-                message -> log.info(JsonUtils.getJosnFromObject(message))
+                (message) ->{ String msg = JsonUtils.getJosnFromObject(message);
+                log.info("pdd回调: "+msg);
+                producer.sendAll(msg);}
                 );
         ws.connect();
         return ws;

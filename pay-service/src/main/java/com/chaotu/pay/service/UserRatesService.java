@@ -77,4 +77,6 @@ public interface UserRatesService {
 
     void editUserRatesByUserId(TUserRates userRates,String userId);
 
+    TUserRates get(TUserRates userRates);
+
 }

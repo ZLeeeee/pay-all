@@ -19,13 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 import java.math.BigDecimal;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -45,9 +43,6 @@ public class PddOrderServiceImpl implements PddOrderService {
     @Autowired
     @Qualifier("antiContentChoser")
     Choser<String> antiContentChoser;
-    @Autowired
-    @Qualifier("accessTokenChoser")
-    Choser<String> accessTokenChoser;
     @Autowired
     @Qualifier("createOrderTokenChoser")
     Choser<String> createOrderTokenChoser;
@@ -72,8 +67,34 @@ public class PddOrderServiceImpl implements PddOrderService {
     }
 
     @Override
+    public void updateByOrderSn(TPddOrder order) {
+        mapper.updateByOrderSn(order);
+    }
+
+    @Override
+    public List<TPddOrder> getAllPaiedOrders() {
+        Map<String,Object> map = new HashMap<>();
+        map.put("endTime",new Date(System.currentTimeMillis()-60*1000*30));
+        map.put("status",2);
+        return mapper.getByTimeAndStatus(map);
+    }
+
+    @Override
+    public List<TPddOrder> getAllSentOrders() {
+        Map<String,Object> map = new HashMap<>();
+        map.put("endTime",new Date(System.currentTimeMillis()-1000*3600*3));
+        map.put("status",3);
+        return mapper.getByTimeAndStatus(map);
+    }
+
+    @Override
     public TPddOrder get(TPddOrder order) {
         return mapper.selectOne(order);
+    }
+
+    @Override
+    public TPddOrder getByOrderSn(String orderSn) {
+        return mapper.getByOrderSn(orderSn);
     }
 
     @Override
@@ -87,8 +108,8 @@ public class PddOrderServiceImpl implements PddOrderService {
         PddOrderVo vo = new PddOrderVo();
         TPddUser pddUser = pddUserChoser.chose();
         String antiContent = antiContentChoser.chose();
-        String accessToken = accessTokenChoser.chose();
         String createOrderToken = createOrderTokenChoser.chose();
+        String accessToken = pddUser.getAccesstoken();
         vo.setAddress_id(pddUser.getAddressId());
         List<PddGoodsVo> list = new ArrayList<>();
         vo.setAddress_id(pddUser.getAddressId());
@@ -144,7 +165,7 @@ public class PddOrderServiceImpl implements PddOrderService {
             mapper.updateByPrimaryKey(order);
             return sb.toString();
         }catch (Exception e){
-            order.setStatus(new Byte("4"));
+            order.setStatus(new Byte("5"));
             mapper.updateByPrimaryKey(order);
             return null;
         }

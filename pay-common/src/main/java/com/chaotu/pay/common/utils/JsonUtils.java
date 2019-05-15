@@ -34,6 +34,7 @@ public final class JsonUtils
         {
             Gson gson = new Gson();
             jsonResult = gson.toJson(obj);
+
         }
         return jsonResult;
     }

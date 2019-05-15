@@ -71,4 +71,9 @@ public class UserRatesServiceImpl implements UserRatesService {
     public List<UserRatesVo> getAllUserRates() {
         return null;
     }
+
+    @Override
+    public TUserRates get(TUserRates userRates) {
+        return userRatesMapper.selectOne(userRates);
+    }
 }

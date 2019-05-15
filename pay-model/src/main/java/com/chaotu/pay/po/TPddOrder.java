@@ -28,7 +28,7 @@ public class TPddOrder {
     private BigDecimal amount;
 
     /**
-     * 订单状态(0未支付,1待发货/已支付,2已发货/未签收,3已签收/已到账)
+     * 订单状态(0未请求,1未支付,2待发货/已支付,3已发货/未签收,4已签收/已到账,5异常)
      */
     private Byte status;
 
@@ -69,6 +69,18 @@ public class TPddOrder {
 
     @Column(name = "access_token")
     private String accessToken;
+
+    /**
+     * 回调地址
+     */
+    @Column(name = "notify_url")
+    private String notifyUrl;
+
+    /**
+     * 已回调次数
+     */
+    @Column(name = "notify_times")
+    private Integer notifyTimes;
 
     /**
      * @return id
@@ -139,18 +151,18 @@ public class TPddOrder {
     }
 
     /**
-     * 获取订单状态(0未支付,1待发货/已支付,2已发货/未签收,3已签收/已到账)
+     * 获取订单状态(0未请求,1未支付,2待发货/已支付,3已发货/未签收,4已签收/已到账,5异常)
      *
-     * @return status - 订单状态(0未支付,1待发货/已支付,2已发货/未签收,3已签收/已到账)
+     * @return status - 订单状态(0未请求,1未支付,2待发货/已支付,3已发货/未签收,4已签收/已到账,5异常)
      */
     public Byte getStatus() {
         return status;
     }
 
     /**
-     * 设置订单状态(0未支付,1待发货/已支付,2已发货/未签收,3已签收/已到账)
+     * 设置订单状态(0未请求,1未支付,2待发货/已支付,3已发货/未签收,4已签收/已到账,5异常)
      *
-     * @param status 订单状态(0未支付,1待发货/已支付,2已发货/未签收,3已签收/已到账)
+     * @param status 订单状态(0未请求,1未支付,2待发货/已支付,3已发货/未签收,4已签收/已到账,5异常)
      */
     public void setStatus(Byte status) {
         this.status = status;
@@ -276,5 +288,41 @@ public class TPddOrder {
      */
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    /**
+     * 获取回调地址
+     *
+     * @return notify_url - 回调地址
+     */
+    public String getNotifyUrl() {
+        return notifyUrl;
+    }
+
+    /**
+     * 设置回调地址
+     *
+     * @param notifyUrl 回调地址
+     */
+    public void setNotifyUrl(String notifyUrl) {
+        this.notifyUrl = notifyUrl;
+    }
+
+    /**
+     * 获取已回调次数
+     *
+     * @return notify_times - 已回调次数
+     */
+    public Integer getNotifyTimes() {
+        return notifyTimes;
+    }
+
+    /**
+     * 设置已回调次数
+     *
+     * @param notifyTimes 已回调次数
+     */
+    public void setNotifyTimes(Integer notifyTimes) {
+        this.notifyTimes = notifyTimes;
     }
 }

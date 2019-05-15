@@ -10,8 +10,7 @@ import com.chaotu.pay.vo.AccountUppersVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
-
+import tk.mybatis.mapper.entity.Example;
 
 
 import java.util.List;
@@ -21,22 +20,21 @@ import java.util.concurrent.ConcurrentHashMap;
 @Configuration
 public class ChoserFactory {
     @Autowired
-    public ChoserFactory(TAccountUppersMapper uppersMapper, PddConfigMapper configMapper, TPddUserMapper userMapper){
+    public ChoserFactory(TAccountUppersMapper uppersMapper, PddConfigMapper configMapper, TPddUserMapper mapper){
         this.map = new ConcurrentHashMap<>();
         List<AccountUppersVo> vos = uppersMapper.findAll();
-        List<TPddUser> users = userMapper.selectAll();
-        List<String> accessTokens = configMapper.getAllAccessToken();
+        Example example = new Example(TPddUser.class);
+        example.createCriteria().andEqualTo("status",true);
+        List<TPddUser> users = mapper.selectByExample(example);
         List<String> antiContents = configMapper.getAllAntiContent();
         List<String> createOrderTokens = configMapper.getAllCreateOrderToken();
         Choser upperChoser = new RoundChoser(vos);
-        Choser accessTokenChoser = new RoundChoser(accessTokens);
         Choser antiContentChoser = new RoundChoser(antiContents);
         Choser createOrderTokenChoser = new RoundChoser(createOrderTokens);
         Choser pddUserChoser = new RoundChoser(users);
         map.put("pddUserChoser",pddUserChoser);
         map.put("accountUpperChroser",upperChoser);
         map.put("createOrderTokenChoser",createOrderTokenChoser);
-        map.put("accessTokenChoser",accessTokenChoser);
         map.put("antiContentChoser",antiContentChoser);
 
     }
@@ -52,10 +50,6 @@ public class ChoserFactory {
     @Bean("antiContentChoser")
     public Choser antiContentChroser(){
         return map.get("antiContentChoser");
-    }
-    @Bean("accessTokenChoser")
-    public Choser accessTokenChroser(){
-        return map.get("accessTokenChoser");
     }
     @Bean("createOrderTokenChoser")
     public Choser createOrderTokenChoser(){

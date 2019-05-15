@@ -2,6 +2,7 @@ package com.chaotu.pay.service;
 
 import com.chaotu.pay.po.TPddOrder;
 
+import java.util.List;
 import java.util.Map;
 
 public interface PddOrderService {
@@ -36,4 +37,12 @@ public interface PddOrderService {
      * @return
      */
     TPddOrder get(TPddOrder order);
+
+    void updateByOrderSn(TPddOrder order);
+
+    List<TPddOrder> getAllPaiedOrders();
+
+    List<TPddOrder> getAllSentOrders();
+
+    TPddOrder getByOrderSn(String o);
 }

@@ -25,6 +25,22 @@ public class TPddUser {
     private Boolean status;
 
     /**
+     * 拼多多的accessToken
+     */
+    @Column(name = "accessToken")
+    private String accesstoken;
+
+    /**
+     * 扩展字段(json)
+     */
+    private String extar;
+
+    /**
+     * 备注
+     */
+    private String mark;
+
+    /**
      * @return id
      */
     public Integer getId() {
@@ -90,5 +106,59 @@ public class TPddUser {
      */
     public void setStatus(Boolean status) {
         this.status = status;
+    }
+
+    /**
+     * 获取拼多多的accessToken
+     *
+     * @return accessToken - 拼多多的accessToken
+     */
+    public String getAccesstoken() {
+        return accesstoken;
+    }
+
+    /**
+     * 设置拼多多的accessToken
+     *
+     * @param accesstoken 拼多多的accessToken
+     */
+    public void setAccesstoken(String accesstoken) {
+        this.accesstoken = accesstoken;
+    }
+
+    /**
+     * 获取扩展字段(json)
+     *
+     * @return extar - 扩展字段(json)
+     */
+    public String getExtar() {
+        return extar;
+    }
+
+    /**
+     * 设置扩展字段(json)
+     *
+     * @param extar 扩展字段(json)
+     */
+    public void setExtar(String extar) {
+        this.extar = extar;
+    }
+
+    /**
+     * 获取备注
+     *
+     * @return mark - 备注
+     */
+    public String getMark() {
+        return mark;
+    }
+
+    /**
+     * 设置备注
+     *
+     * @param mark 备注
+     */
+    public void setMark(String mark) {
+        this.mark = mark;
     }
 }
