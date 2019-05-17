@@ -10,11 +10,39 @@ public class TPddOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
+    public String getUserOrderSn() {
+        return userOrderSn;
+    }
+
+    public void setUserOrderSn(String userOrderSn) {
+        this.userOrderSn = userOrderSn;
+    }
+
     /**
      * 拼多多订单号
      */
     @Column(name = "order_sn")
     private String orderSn;
+
+    public int getSendTimes() {
+        return sendTimes;
+    }
+
+    public void setSendTimes(int sendTimes) {
+        this.sendTimes = sendTimes;
+    }
+
+    /**
+     * 消息发送次数
+     */
+    @Column(name = "send_times")
+    private int sendTimes;
+
+    /**
+     * 拼多多订单号
+     */
+    @Column(name = "user_order_sn")
+    private String userOrderSn;
 
     /**
      * 商品id

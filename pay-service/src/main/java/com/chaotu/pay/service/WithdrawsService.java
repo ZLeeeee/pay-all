@@ -1,5 +1,6 @@
 package com.chaotu.pay.service;
 
+import com.chaotu.pay.po.TWithdraws;
 import com.chaotu.pay.vo.PageVo;
 import com.chaotu.pay.vo.SearchVo;
 import com.chaotu.pay.vo.WithdrawsVo;
@@ -16,4 +17,7 @@ import java.util.Map;
 public interface WithdrawsService {
     Map<String, Object> findByCondition(PageVo pageVo, SearchVo searchVo, WithdrawsVo withdrawsVo) throws ParseException;
     void add(WithdrawsVo vo);
+    void update(TWithdraws withdraws);
+
+    void pass(TWithdraws vo);
 }

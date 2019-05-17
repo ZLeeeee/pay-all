@@ -25,4 +25,6 @@ public interface WalletService {
     int editAmount(TWallet wallet, String amount, String option);
 
     TWallet selectOne(TWallet wallet);
+
+    void add(TWallet wallet);
 }

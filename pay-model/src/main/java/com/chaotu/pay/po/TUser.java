@@ -1,5 +1,6 @@
 package com.chaotu.pay.po;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.*;
 
@@ -23,6 +24,17 @@ public class TUser {
 
     @Column(name = "payPassword")
     private String payPassword;
+
+    @Column(name = "rate")
+    private BigDecimal rate;
+
+    public BigDecimal getRate() {
+        return rate;
+    }
+
+    public void setRate(BigDecimal rate) {
+        this.rate = rate;
+    }
 
     public String getPayPassword() {
         return payPassword;

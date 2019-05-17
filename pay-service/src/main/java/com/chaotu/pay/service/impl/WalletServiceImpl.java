@@ -61,4 +61,8 @@ public class WalletServiceImpl implements WalletService {
         return 0;
     }
 
+    @Override
+    public void add(TWallet wallet) {
+        tWalletMapper.insert(wallet);
+    }
 }

@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/goods")
 public class PddGoodsController {
@@ -17,7 +22,16 @@ public class PddGoodsController {
     PddGoodsService service;
     @PostMapping("/all")
     public Message all(){
-        return ResponseUtil.responseBody(service.getAllGoods());
+        List<TPddGoods> allGoods = service.getAllGoods();
+        List<Map<String,Object>> result = new ArrayList<>();
+        allGoods.forEach((g)->{
+            Map<String,Object> map = new HashMap<>();
+            map.put("id",g.getId());
+            map.put("amount",g.getAmount());
+            map.put("stock",g.getStock());
+            result.add(map);
+        });
+        return ResponseUtil.responseBody(result);
     }
     @PostMapping("/add")
     public Message all(@RequestBody TPddGoods goods){

@@ -9,6 +9,7 @@ import com.chaotu.pay.dao.TUserRoleMapper;
 import com.chaotu.pay.enums.ExceptionCode;
 import com.chaotu.pay.po.*;
 import com.chaotu.pay.service.UserService;
+import com.chaotu.pay.service.WalletService;
 import com.chaotu.pay.vo.*;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,8 @@ public class UserServiceImpl implements UserService {
     private TUserRoleMapper tUserRoleMapper;
     @Autowired
     private TPermissionMapper tPermissionMapper;
+    @Autowired
+    WalletService walletService;
 
     @Override
     public int countUserByRole(UserVo userVo) {
@@ -226,7 +229,8 @@ public class UserServiceImpl implements UserService {
         log.info("验证用户唯一性通过，");
         //这里将密码加密成暗文
         BeanUtils.copyProperties(vo, tuser);
-        tuser.setId(IDGeneratorUtils.getUUID32());
+        String uuid32 = IDGeneratorUtils.getUUID32();
+        tuser.setId(uuid32);
         tuser.setMerchant(IDGeneratorUtils.getFlowNum());
         String encryptPass = new BCryptPasswordEncoder().encode(vo.getPassword());
         tuser.setCreateTime(new Date());
@@ -250,6 +254,19 @@ public class UserServiceImpl implements UserService {
                 log.debug("保存用户-角色成功，结果:" + tUserRole);
             }
         }
+        TWallet wallet = new TWallet();
+        TWallet wallet2 = new TWallet();
+        wallet.setUserId(uuid32);
+        wallet2.setUserId(uuid32);
+        wallet.setType("1");
+        wallet2.setType("2");
+        Date date = new Date();
+        wallet.setCreateTime(date);
+        wallet2.setCreateTime(date);
+        wallet.setCreateBy(pVo.getId());
+        wallet2.setCreateBy(pVo.getId());
+        walletService.add(wallet);
+        walletService.add(wallet2);
         log.info("添加用户成功");
     }
 

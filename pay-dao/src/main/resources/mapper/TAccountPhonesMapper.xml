@@ -88,7 +88,7 @@
     </if>
     </if>
     <if test="searchVo!=null">
-    <if test="searchVo.startTime!=null and searchVo.startTime!=''">
+    <if test="searchVo.startDate!=null and searchVo.startDate!=''">
       and adc.create_time = #{searchVo.startTime}
     </if>
     </if>

@@ -4,6 +4,7 @@ import com.chaotu.pay.common.utils.ResponseUtil;
 import com.chaotu.pay.enums.ExceptionCode;
 import com.chaotu.pay.qo.UserQo;
 import com.chaotu.pay.service.UserService;
+import com.chaotu.pay.service.WalletService;
 import com.chaotu.pay.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,8 @@ public class UserController {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+
 
     /**
      * 多条件分页获取用户列表

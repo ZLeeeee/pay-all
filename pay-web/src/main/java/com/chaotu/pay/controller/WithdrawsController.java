@@ -1,6 +1,7 @@
 package com.chaotu.pay.controller;
 
 import com.chaotu.pay.common.utils.ResponseUtil;
+import com.chaotu.pay.po.TWithdraws;
 import com.chaotu.pay.qo.WithdrawsQo;
 import com.chaotu.pay.service.WithdrawsService;
 import com.chaotu.pay.vo.*;
@@ -55,9 +56,32 @@ public class WithdrawsController {
     public Message add(@RequestBody WithdrawsVo vo){
 
 
-        if(StringUtils.isBlank(vo.getBankcardno())||vo.getToamount().equals(new BigDecimal(0)))
-            return ResponseUtil.responseBody("-1", "参数有误");
-        withdrawsService.add(vo);
+        if(StringUtils.isBlank(vo.getUserId())||StringUtils.isBlank(vo.getBankcardno())||vo.getWithdrawamount().equals(new BigDecimal(0)))
+            return ResponseUtil.responseBody("-1", "参数有误！");
+        try{
+            withdrawsService.add(vo);
+        }catch (IllegalArgumentException e){
+            return ResponseUtil.responseBody("-1", "余额不足！");
+        }
         return ResponseUtil.responseBody("申请已提交!");
+    }
+    /**
+     * 编辑结算申请
+     * @return
+     */
+    @PostMapping("/update")
+    public Message add(@RequestBody TWithdraws vo){
+        withdrawsService.update(vo);
+        return ResponseUtil.responseBody("申请已提交!");
+    }
+
+    /**
+     * 通过结算申请
+     * @return
+     */
+    @PostMapping("/pass")
+    public Message pass(@RequestBody TWithdraws vo){
+        withdrawsService.pass(vo);
+        return ResponseUtil.responseBody("申请已结算!");
     }
 }

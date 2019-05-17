@@ -2,8 +2,10 @@ package com.chaotu.pay.service.impl;
 
 import com.chaotu.pay.dao.TWithdrawsMapper;
 import com.chaotu.pay.enums.ExceptionCode;
+import com.chaotu.pay.po.TWallet;
 import com.chaotu.pay.po.TWithdraws;
 import com.chaotu.pay.service.UserService;
+import com.chaotu.pay.service.WalletService;
 import com.chaotu.pay.service.WithdrawsService;
 import com.chaotu.pay.vo.*;
 import com.github.pagehelper.PageHelper;
@@ -14,6 +16,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +33,8 @@ public class WithdrawsServiceImpl implements WithdrawsService {
     private UserService userService;
     @Autowired
     private TWithdrawsMapper tWithdrawsMapper;
+    @Autowired
+    private WalletService walletService;
     @Override
     public Map<String, Object> findByCondition(PageVo pageVo, SearchVo searchVo, WithdrawsVo withdrawsVo) {
         Example example = new Example(TWithdraws.class);
@@ -73,9 +78,38 @@ public class WithdrawsServiceImpl implements WithdrawsService {
     @Override
     public void add(WithdrawsVo vo) {
         TWithdraws withdraws = new TWithdraws();
+        TWallet w = new TWallet();
+        w.setUserId(vo.getUserId());
+        w.setType("2");
+        TWallet wallet = walletService.selectOne(w);
+        Double residualAmount = wallet.getResidualAmount();
+        BigDecimal rate = new BigDecimal(5);
+        if (vo.getWithdrawamount().add(rate).compareTo(new BigDecimal(residualAmount)) <0 )
+            throw new IllegalArgumentException("余额不足");
+        String userId = userService.currentUser().getId();
         BeanUtils.copyProperties(vo,withdraws);
+        withdraws.setWithdrawrate(rate);
+        withdraws.setToamount(withdraws.getWithdrawamount().subtract(rate));
+        withdraws.setStatus((byte)0);
+        withdraws.setCreateBy(userId);
         withdraws.setCreateTime(new Date());
-        withdraws.setUserId(userService.currentUser().getId());
+        withdraws.setUserId(userId);
         tWithdrawsMapper.insert(withdraws);
+    }
+
+    @Override
+    public void update(TWithdraws withdraws) {
+        tWithdrawsMapper.updateByPrimaryKey(withdraws);
+    }
+
+    @Override
+    public void pass(TWithdraws vo) {
+        TWithdraws withdraws = tWithdrawsMapper.selectByPrimaryKey(vo);
+        withdraws.setStatus((byte)2);
+        TWallet w = new TWallet();
+        w.setUserId(vo.getUserId());
+        w.setType("2");
+        walletService.editAmount(w,withdraws.getWithdrawamount().toString(),"1");
+        tWithdrawsMapper.updateByPrimaryKey(withdraws);
     }
 }

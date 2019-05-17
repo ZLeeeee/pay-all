@@ -2,9 +2,12 @@ package com.chaotu.pay.config;
 
 import com.chaotu.pay.common.utils.JsonUtils;
 import com.chaotu.pay.mq.MsgProducer;
+import com.pdd.pop.sdk.common.util.JsonUtil;
 import com.pdd.pop.sdk.http.PopAccessTokenClient;
 import com.pdd.pop.sdk.http.PopClient;
 import com.pdd.pop.sdk.http.PopHttpClient;
+import com.pdd.pop.sdk.http.api.request.PddPmcUserPermitRequest;
+import com.pdd.pop.sdk.http.api.response.PddPmcUserPermitResponse;
 import com.pdd.pop.sdk.message.MessageHandler;
 import com.pdd.pop.sdk.message.WsClient;
 import com.pdd.pop.sdk.message.model.Message;
@@ -22,6 +25,8 @@ public class PddSDKConfig {
     private String clientSecret;
     @Autowired
     private MsgProducer producer;
+    @Value("${pdd.accessToken}")
+    private String accessToken;
     @Bean
     public PopClient popClient(){
         PopClient client = new PopHttpClient(clientId, clientSecret);
@@ -34,8 +39,9 @@ public class PddSDKConfig {
                 clientSecret);
         return client;
     }
-    @Bean
+    /*@Bean
     public WsClient wsClient(){
+        init();
         WsClient ws = new WsClient(
                 clientId,
                 clientSecret,
@@ -46,4 +52,14 @@ public class PddSDKConfig {
         ws.connect();
         return ws;
     }
+    void init(){
+        PddPmcUserPermitRequest request = new PddPmcUserPermitRequest();
+        try{
+            PddPmcUserPermitResponse response = popClient().syncInvoke(request, accessToken);
+            System.out.println(JsonUtil.transferToJson(response));
+        }catch ( Exception e){
+
+        }
+
+    }*/
 }

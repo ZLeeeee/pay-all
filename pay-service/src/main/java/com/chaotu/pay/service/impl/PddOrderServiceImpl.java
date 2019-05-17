@@ -56,7 +56,7 @@ public class PddOrderServiceImpl implements PddOrderService {
 
     @Override
     public void edit(TPddOrder order) {
-        mapper.updateByPrimaryKey(order);
+        mapper.updateByPrimaryKeySelective(order);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class PddOrderServiceImpl implements PddOrderService {
     @Override
     public List<TPddOrder> getAllPaiedOrders() {
         Map<String,Object> map = new HashMap<>();
-        map.put("endTime",new Date(System.currentTimeMillis()-60*1000*30));
+        map.put("endTime",new Date(/*System.currentTimeMillis()-60*1000*30*/));
         map.put("status",2);
         return mapper.getByTimeAndStatus(map);
     }
@@ -98,7 +98,7 @@ public class PddOrderServiceImpl implements PddOrderService {
     }
 
     @Override
-    public String pay(TPddOrder order) {
+    public Map<String,Object> pay(TPddOrder order) {
         BigDecimal amount = order.getAmount();
         Integer skuNumber = order.getSkuNumber();
         Integer goodsId = order.getGoodsId();
@@ -134,6 +134,7 @@ public class PddOrderServiceImpl implements PddOrderService {
         order.setStatus(new Byte("0"));
         order.setSkuNumber(skuNumber);
         order.setAccessToken(accessToken);
+        order.setNotifyTimes(0);
         mapper.insert(order);
         try {
         Sender<Map<String,String>> sender = new PddSender<>(preOrderUrl+"?pdduid="+pddUser.getPdduid(),vo,accessToken);
@@ -163,11 +164,26 @@ public class PddOrderServiceImpl implements PddOrderService {
             order.setStatus(new Byte("1"));
             order.setOrderSn(order_sn);
             mapper.updateByPrimaryKey(order);
-            return sb.toString();
+            Map<String,Object> resultMap = new HashMap<>();
+            resultMap.put("success","1");
+            resultMap.put("userOrderSn",order.getUserOrderSn());
+            resultMap.put("orderSn",id);
+            resultMap.put("amount",amount);
+            resultMap.put("userId",order.getUserId());
+            resultMap.put("qrCode",sb.toString());
+            return resultMap;
         }catch (Exception e){
-            order.setStatus(new Byte("5"));
+            order.setStatus(new Byte("-1"));
             mapper.updateByPrimaryKey(order);
-            return null;
+            Map<String,Object> resultMap = new HashMap<>();
+            resultMap.put("success","0");
+            resultMap.put("errCode","-1");
+            return resultMap;
         }
+    }
+
+    @Override
+    public List<TPddOrder> getByTimeAndStatus(Map<String, Object> map) {
+        return mapper.getByTimeAndStatus(map);
     }
 }

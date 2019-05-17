@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 @Slf4j
 @RestController
@@ -21,12 +22,18 @@ public class PddOrderController {
     PddOrderService service;
 
     @PostMapping("/pay")
-    public Message all(@RequestBody TPddOrder order){
-        order.setCreateTime(new Date());
-        String returnUrl = service.pay(order);
-        if(StringUtils.isNotBlank(returnUrl))
-            return ResponseUtil.responseBody(returnUrl);
-        return ResponseUtil.responseBody("1","请求失败");
+    public Map<String,Object> all(@RequestBody TPddOrder order){
+        try{
+            order.setCreateTime(new Date());
+            Map<String,Object> resultMap = service.pay(order);
+            return resultMap;
+        }catch (Exception e){
+            Map<String,Object> resultMap = new HashMap<>();
+            resultMap.put("success","0");
+            resultMap.put("errCode","-1");
+            return resultMap;
+        }
+
     }
     @PostMapping("/get")
     public Message get(@RequestBody TPddOrder order){
@@ -39,5 +46,18 @@ public class PddOrderController {
         return ResponseUtil.responseBody("111");
     }
 
+    @GetMapping("/get/${userOrderSn}")
+    public Map<String, Object> getByUserOrderSn(@PathVariable String userOrderSn){
+        TPddOrder order = new TPddOrder();
+        order.setUserOrderSn(userOrderSn);
+        TPddOrder order1 = service.get(order);
+        Map<String,Object> result = new HashMap<>();
+        Map<String,Object> map = new HashMap<>();
+        map.put("orderSn",order1.getId());
+        map.put("amount",order1.getAmount());
+        map.put("success",(order1.getStatus()>1&&order1.getStatus()<5)?"1":"0");
+        map.put("userOrderSn",userOrderSn);
+        return result;
+    }
 
 }

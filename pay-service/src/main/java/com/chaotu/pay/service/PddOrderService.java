@@ -16,7 +16,7 @@ public interface PddOrderService {
      * 创建订单
      * @param order
      */
-    String pay(TPddOrder order);
+    Map<String,Object> pay(TPddOrder order);
 
     /***
      * 修改
@@ -43,6 +43,8 @@ public interface PddOrderService {
     List<TPddOrder> getAllPaiedOrders();
 
     List<TPddOrder> getAllSentOrders();
+
+    List<TPddOrder> getByTimeAndStatus(Map<String,Object> map);
 
     TPddOrder getByOrderSn(String o);
 }

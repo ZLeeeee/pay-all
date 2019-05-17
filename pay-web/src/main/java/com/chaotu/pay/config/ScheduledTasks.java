@@ -3,12 +3,19 @@ package com.chaotu.pay.config;
 import com.chaotu.pay.common.sender.PddMerchantSender;
 import com.chaotu.pay.common.sender.PddSender;
 import com.chaotu.pay.common.sender.Sender;
+import com.chaotu.pay.common.utils.DateUtil;
+import com.chaotu.pay.common.utils.JsonUtils;
+import com.chaotu.pay.mq.MsgProducer;
 import com.chaotu.pay.po.TPddOrder;
 import com.chaotu.pay.po.TPddUser;
 import com.chaotu.pay.service.PddOrderService;
 import com.chaotu.pay.service.PddUserService;
 import com.chaotu.pay.vo.PddMerchantParamsVo;
 import com.pdd.pop.sdk.http.PopClient;
+import com.pdd.pop.sdk.http.api.request.PddLogisticsOnlineCreateRequest;
+import com.pdd.pop.sdk.http.api.request.PddOrderNumberListGetRequest;
+import com.pdd.pop.sdk.http.api.response.PddLogisticsOnlineCreateResponse;
+import com.pdd.pop.sdk.http.api.response.PddOrderNumberListGetResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -17,10 +24,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
@@ -58,9 +62,11 @@ public class ScheduledTasks{
     private String sentUrl;
     @Value("${pdd.accessToken}")
     private String accessToken;
+    @Autowired
+    MsgProducer producer;
 /*    @Autowired
     private MsgProducer producer;*/
-    private static final AtomicLong trackingNumber = new AtomicLong(67789839);
+    private static final AtomicLong TRACKINGNUMBER = new AtomicLong(821267789900L);
     @Autowired
     private PopClient client;
     @Autowired
@@ -75,13 +81,11 @@ public class ScheduledTasks{
 
         if(orders != null && !orders.isEmpty()) {
         orders.stream().parallel().forEach((o) -> {
-                try {
-                    /*PddRefundAddressListGetRequest request1 = new PddRefundAddressListGetRequest();
-                    PddRefundAddressListGetResponse response1 = client.syncInvoke(request1, accessToken);
-                    PddLogisticsOnlineCreateRequest request = new PddLogisticsOnlineCreateRequest();
-                    request.setTrackingNumber("8212"+trackingNumber.getAndIncrement());
+                /*try {
+                    *//*PddLogisticsOnlineCreateRequest request = new PddLogisticsOnlineCreateRequest();
+                    request.setTrackingNumber("821267789903");
                     request.setShippingId(85);
-                    request.setReturnId("7347875");
+                    request.setReturnId("1_1_405326111");
                     request.setDeliveryPhone("18292568962");
                     request.setDeliveryName("李伟杰");
                     request.setDeliveryAddress("陕西省西安市雁塔区科技四路南窑头社区28排二单元701");
@@ -93,14 +97,14 @@ public class ScheduledTasks{
                             o.setStatus((byte) 3);
                             service.edit(o);
                         }
-                    }*/
+                    }*//*
                     PddMerchantParamsVo vo = new PddMerchantParamsVo();
                     List<Map<String,Object>> list = new ArrayList<>();
                     Map<String, Object> params = new HashMap<>();
                     params.put("orderSn", o.getOrderSn());
                     params.put("shippingId", 85);
                     params.put("shippingName", "圆通快递");
-                    params.put("trackingNumber", "8212"+trackingNumber.getAndIncrement());
+                    params.put("trackingNumber", String.valueOf(TRACKINGNUMBER.getAndIncrement()));
                     params.put("deliveryType", 0);
                     params.put("returnAddressId", "2_1_405326111");
                     params.put("importTime", 0);
@@ -115,19 +119,22 @@ public class ScheduledTasks{
                     Sender<Map<String,Object>> sender = new PddMerchantSender<>(sentUrl,vo,cookie);
                     Map<String, Object> result = sender.send();
                     if (result != null) {
-                        o.setStatus((byte) 3);
-                        service.edit(o);
+                        if(Boolean.valueOf(result.get("success").toString())){
+                            o.setStatus((byte) 3);
+                            service.edit(o);
+                        }
                     }
                 } catch (Exception e) {
                     o.setStatus((byte) 3);
                     service.edit(o);
                     log.error("发货失败,订单号:"+o.getOrderSn(), e.getMessage());
-                }
+                }*/
+            send(o);
             });
         }
 
     }
-    @Scheduled(cron = "0/15 * * * * ? ")
+    @Scheduled(cron = "0/30 * * * * ? ")
     public void confirmSend(){
         List<TPddOrder> orders = service.getAllSentOrders();
         if(orders != null && !orders.isEmpty()) {
@@ -144,14 +151,79 @@ public class ScheduledTasks{
                         service.edit(o);
                     }
                 } catch (Exception e) {
+                    log.error("发货失败,订单号:"+o.getOrderSn(), e.getMessage());
                     o.setStatus((byte)4);
                     service.edit(o);
-                    log.error("发货失败,订单号:"+o.getOrderSn(), e.getMessage());
                 }
+                send(o);
             });
         }
 
     }
+    @Scheduled(cron = "0/5 * * * * ? ")
+    public void getPaiedOrder(){
+        try {
+            PddOrderNumberListGetRequest request = new PddOrderNumberListGetRequest();
+            request.setOrderStatus(1);
+            PddOrderNumberListGetResponse response = client.syncInvoke(request, accessToken);
+            if(response.getOrderSnListGetResponse()==null)
+                return;
+            List<PddOrderNumberListGetResponse.OrderSnListGetResponseOrderSnListItem> orderSnList = response.getOrderSnListGetResponse().getOrderSnList();
+            if (orderSnList != null) {
+                orderSnList.stream().parallel().forEach((o)->{
+                    TPddOrder order = service.getByOrderSn(o.getOrderSn());
+                    if(order.getStatus()==1&&order.getSendTimes()==0) {
+                        order.setSendTimes(1);
+                        service.edit(order);
+                        producer.sendAll(JsonUtils.getJsonStrFromObj(order));
+                    }else if (order.getCreateTime().before(new Date(System.currentTimeMillis()-1000*60*10))&&order.getSendTimes()<10) {
+                        send(order);
+                        order.setSendTimes(order.getSendTimes()+1);
+                        service.edit(order);
+                    }
+                       /* order.setStatus(new Byte("2"));
+                        service.updateByOrderSn(order);*/
 
+                });
+            }
+        }catch (Exception e){
+
+        }
+    }
+
+    private void send(TPddOrder o){
+        try {
+            PddMerchantParamsVo vo = new PddMerchantParamsVo();
+            List<Map<String,Object>> list = new ArrayList<>();
+            Map<String, Object> params = new HashMap<>();
+            params.put("orderSn", o.getOrderSn());
+            params.put("shippingId", 85);
+            params.put("shippingName", "圆通快递");
+            params.put("trackingNumber", String.valueOf(TRACKINGNUMBER.getAndIncrement()));
+            params.put("deliveryType", 0);
+            params.put("returnAddressId", "2_1_405326111");
+            params.put("importTime", 0);
+            list.add(params);
+            vo.setFunctionType(3);
+            vo.setIsSingleShipment(1);
+            vo.setOverWrite(1);
+            vo.setVirtualGoods(false);
+            vo.setOperateFrom("MMS");
+            vo.setOrderShipRequestList(list);
+
+            Sender<Map<String,Object>> sender = new PddMerchantSender<>(sentUrl,vo,cookie);
+            Map<String, Object> result = sender.send();
+            if (result != null) {
+                if(Boolean.valueOf(result.get("success").toString())){
+                    o.setStatus((byte) 3);
+                    service.edit(o);
+                }
+            }
+        } catch (Exception e) {
+            o.setStatus((byte) 3);
+            service.edit(o);
+            log.error("发货失败,订单号:"+o.getOrderSn(), e.getMessage());
+        }
+    }
 
 }

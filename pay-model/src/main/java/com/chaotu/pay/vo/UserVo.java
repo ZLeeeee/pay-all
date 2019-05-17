@@ -2,6 +2,7 @@ package com.chaotu.pay.vo;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -63,4 +64,5 @@ public class UserVo {
     private String parentId;
     private Double amount;
     private Double payAmount;
+    private BigDecimal rate;
 }

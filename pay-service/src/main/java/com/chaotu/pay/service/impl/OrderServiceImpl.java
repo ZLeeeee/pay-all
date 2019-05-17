@@ -93,5 +93,8 @@ public class OrderServiceImpl implements OrderService {
         return tOrderMapper.updateStatus(orderVo);
     }
 
-
+    @Override
+    public void add(TOrder order) {
+        tOrderMapper.insert(order);
+    }
 }

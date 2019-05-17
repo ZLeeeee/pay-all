@@ -1,5 +1,6 @@
 package com.chaotu.pay.service;
 
+import com.chaotu.pay.po.TOrder;
 import com.chaotu.pay.vo.*;
 
 import java.text.ParseException;
@@ -29,4 +30,6 @@ public interface OrderService {
      * @return
      */
     int updateStatus(OrderVo orderVo);
+
+    void add(TOrder order);
 }
