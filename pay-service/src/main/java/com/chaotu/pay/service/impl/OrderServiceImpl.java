@@ -6,6 +6,7 @@ import com.chaotu.pay.dao.TOrderMapper;
 import com.chaotu.pay.enums.ExceptionCode;
 import com.chaotu.pay.po.TOrder;
 import com.chaotu.pay.service.OrderService;
+import com.chaotu.pay.service.UserService;
 import com.chaotu.pay.vo.*;
 import com.github.pagehelper.PageHelper;
 import lombok.Data;
@@ -33,6 +34,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private TOrderMapper tOrderMapper;
+    @Autowired
+    private UserService userService;
 
     @Override
     public Map<String,Object> findByCondition(PageVo pageVo, SearchVo searchVo, OrderVo orderVo){
@@ -48,9 +51,16 @@ public class OrderServiceImpl implements OrderService {
         if(!StringUtils.isEmpty(searchVo.getEndDate())){
             orderVo.setEndTime(searchVo.getStartDate());
         }
+        UserVo userVo = userService.currentUser();
+        String userId = userVo.getId();
+        if("682265633886208".equalsIgnoreCase(userId))
+            userId = null;
+        if(null == orderVo)
+            orderVo = new OrderVo();
 
+        orderVo.setUserId(userId);
 
-       /* try {*/
+        /* try {*/
             PageHelper.startPage(pageVo.getPageNumber(),pageVo.getPageSize());
             //获取所有订单
             List<TOrder> orderList = tOrderMapper.findAll(orderVo);

@@ -56,7 +56,7 @@ public class WithdrawsController {
     public Message add(@RequestBody WithdrawsVo vo){
 
 
-        if(StringUtils.isBlank(vo.getUserId())||StringUtils.isBlank(vo.getBankcardno())||vo.getWithdrawamount().equals(new BigDecimal(0)))
+        if(StringUtils.isBlank(vo.getBankcardno())||vo.getWithdrawamount().equals(new BigDecimal(0)))
             return ResponseUtil.responseBody("-1", "参数有误！");
         try{
             withdrawsService.add(vo);

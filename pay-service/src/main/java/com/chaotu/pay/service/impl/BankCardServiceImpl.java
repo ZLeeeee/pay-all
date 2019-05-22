@@ -7,6 +7,7 @@ import com.chaotu.pay.enums.ExceptionCode;
 import com.chaotu.pay.po.TBank;
 import com.chaotu.pay.po.TBankCards;
 import com.chaotu.pay.service.BankCradService;
+import com.chaotu.pay.service.UserService;
 import com.chaotu.pay.vo.*;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,8 @@ import java.util.List;
 @Slf4j
 @Service
 public class BankCardServiceImpl implements BankCradService {
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private TBankCardsMapper bankCardsMapper;
@@ -55,7 +58,12 @@ public class BankCardServiceImpl implements BankCradService {
     public void addBankCard(BankCardVo bankCardVo) {
         log.info("添加银行卡，入参bankCardVo=["+bankCardVo.toString()+"]");
         TBankCards bankCards = new TBankCards();
-        BeanUtils.copyProperties(bankCardVo,bankCards);
+        bankCards.setCreateTime(new Date());
+        bankCards.setStatus("1");
+        bankCards.setBankcardno(bankCardVo.getBankCardNo());
+        bankCards.setBranchname(bankCardVo.getBranchName());
+        bankCards.setBankId(bankCardVo.getBankId());
+        bankCards.setUserId(userService.currentUser().getId());
         Example example = new Example(TBankCards.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("bankcardno",bankCardVo.getBankCardNo());
@@ -65,7 +73,6 @@ public class BankCardServiceImpl implements BankCradService {
             throw new BizException(ExceptionCode.DATA_AREADY_EXIST.getCode(),ExceptionCode.DATA_AREADY_EXIST.getMsg());
         }
         bankCards.setCreateTime(new Date());
-        bankCards.setStatus("0");//初始状态默认为禁用
         bankCardsMapper.insertSelective(bankCards);
         log.info("添加银行卡成功，参数bankCards=["+bankCards.toString()+"]");
 
@@ -95,5 +102,10 @@ public class BankCardServiceImpl implements BankCradService {
         }
     }
 
-
+    @Override
+    public List<BankCardVo> findAllByUser() {
+        BankCardVo bankCards = new BankCardVo();
+        bankCards.setUserId(userService.currentUser().getId());
+        return bankCardsMapper.findAllByCondition(bankCards);
+    }
 }

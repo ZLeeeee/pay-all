@@ -38,4 +38,6 @@ public interface TUserMapper extends MyMapper<TUser> {
      */
 
     List<TUser> getUserByParents(@Param("parents") List<String> parents);
+
+    UserVo getUser(UserVo userVo);
 }

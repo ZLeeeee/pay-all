@@ -24,4 +24,6 @@ public interface TBankCardsMapper extends MyMapper<TBankCards> {
      * @param bankCardVo
      */
     void editBankCard(BankCardVo bankCardVo);
+
+    List<BankCardVo> findAllByCondition(BankCardVo bankCardVo);
 }

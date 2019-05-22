@@ -429,4 +429,9 @@ public class UserServiceImpl implements UserService {
         int i = tUserMapper.selectCountByExample(example);
         return i > 0;
     }
+
+    @Override
+    public UserVo getUser(UserVo userVo) {
+        return tUserMapper.getUser(userVo);
+    }
 }

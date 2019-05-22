@@ -3,6 +3,7 @@ package com.chaotu.pay.common.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.SimplePropertyPreFilter;
 import com.google.gson.Gson;
@@ -61,6 +62,19 @@ public final class JsonUtils
         if (null != obj)
         {
             return (T) obj;
+        }
+        return null;
+    }
+    public static <T> T getObjectFromJson(String json, Class<T> classT)
+    {
+        T obj = null;
+        if (null != json && !"".equals(json.trim()))
+        {
+            obj = JSON.parseObject(json,new TypeReference<T>(){});
+        }
+        if (null != obj)
+        {
+            return obj;
         }
         return null;
     }

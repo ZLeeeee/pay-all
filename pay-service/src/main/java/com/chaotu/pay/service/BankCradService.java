@@ -46,4 +46,5 @@ public interface BankCradService {
      */
     void delBankCard(String id);
 
+    List<BankCardVo> findAllByUser();
 }

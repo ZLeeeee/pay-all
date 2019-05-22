@@ -71,6 +71,7 @@
     <if test="userId != null and userId != ''">
       and o.user_id = #{userId}
     </if>
+    order by create_time desc
   </select>
 
   <select id="getGeneralAccount" parameterType="com.chaotu.pay.vo.OrderVo" resultType="java.util.Map">

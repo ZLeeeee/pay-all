@@ -2,6 +2,7 @@ package com.chaotu.pay.common.sender;
 
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
@@ -15,7 +16,7 @@ import org.apache.http.util.EntityUtils;
 import java.nio.charset.Charset;
 
 @Slf4j
-public class PddSender<T> implements Sender {
+public class PddSender<T> implements Sender<T> {
 
     public PddSender(String url,Object param,String accessToken){
         HttpClient client = new DefaultHttpClient();
@@ -42,6 +43,23 @@ public class PddSender<T> implements Sender {
             }else{
                 String result = EntityUtils.toString(response.getEntity(),"UTF-8");
                 return JSON.parseObject(result,new TypeReference<T>(){});
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+    @Override
+    public T send(Class<T> clzz) {
+        try{
+            HttpResponse response = client.execute(post);
+            int statusCode = response.getStatusLine().getStatusCode();
+            if(statusCode != HttpStatus.SC_OK){
+                log.info("请求出错: "+statusCode);
+            }else{
+                String result = EntityUtils.toString(response.getEntity(),"UTF-8");
+                return JSONObject.parseObject(result,clzz);
             }
         } catch (Exception e) {
             e.printStackTrace();

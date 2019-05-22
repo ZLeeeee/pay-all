@@ -3,6 +3,7 @@ package com.chaotu.pay.service;
 
 import com.chaotu.pay.po.TPddGoods;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface PddGoodsService {
@@ -31,4 +32,10 @@ public interface PddGoodsService {
      * @return
      */
     TPddGoods get(TPddGoods goods);
+
+    TPddGoods getByAccountIdAndAmount(int accountId, BigDecimal amount);
+
+    List<TPddGoods> findByCondition(TPddGoods goods);
+
+    void edit(TPddGoods goods);
 }

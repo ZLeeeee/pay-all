@@ -11,5 +11,6 @@
     <result column="group_id" jdbcType="VARCHAR" property="groupId" />
     <result column="amount" jdbcType="DECIMAL" property="amount" />
     <result column="stock" jdbcType="INTEGER" property="stock" />
+    <result column="pdd_account_id" jdbcType="INTEGER" property="pddAccountId" />
   </resultMap>
 </mapper>

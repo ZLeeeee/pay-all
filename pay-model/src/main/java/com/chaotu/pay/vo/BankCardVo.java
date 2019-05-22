@@ -35,4 +35,6 @@ public class BankCardVo {
 
     private String ico;
 
+    private String userName;
+
 }

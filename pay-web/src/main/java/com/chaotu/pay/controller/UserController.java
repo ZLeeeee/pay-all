@@ -47,6 +47,18 @@ public class UserController {
     private EntityManager entityManager;
 
 
+    /**
+     *获取当前登录用户接口
+     * @return
+     */
+    @RequestMapping(value = "/get",method = RequestMethod.GET)
+    public Message getUser(){
+
+        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserVo userVo = new UserVo();
+        userVo.setUsername(user.getUsername());
+        return ResponseUtil.responseBody(userService.getUser(userVo));
+    }
 
     /**
      * 多条件分页获取用户列表
@@ -227,7 +239,7 @@ public class UserController {
      * map 参数包含  id   password  newPass 三个参数
      * @return
      */
-    @PostMapping("/editPayPassword")
+    /*@PostMapping("/editPayPassword")
     public Message editPayPassword(@RequestBody ModelMap map) {
         String id = (String) map.get("id");
         String password = (String) map.get("payPassword");
@@ -244,5 +256,7 @@ public class UserController {
         userVo.setPayPassword(newEncryptPass);
         userService.updatePassord(userVo);
         return ResponseUtil.responseBody("修改成功");
-    }
+    }*/
+
+
 }

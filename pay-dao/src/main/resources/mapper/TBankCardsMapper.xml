@@ -36,6 +36,7 @@
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="bankName" jdbcType="VARCHAR" property="bankName" />
     <result column="ico" jdbcType="VARCHAR" property="ico" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
 
   </resultMap>
 
@@ -53,6 +54,25 @@
       on
         bc.bank_id = b.id
     where 1=1
+  </select>
+
+  <!--查询所有银行卡信息-->
+  <select id="findAllByCondition" parameterType="com.chaotu.pay.vo.BankCardVo" resultMap="VoResultMap">
+    SELECT
+      b.code,
+      b.bankName,
+      b.ico,
+      u.username user_name,
+      bc.*
+    FROM
+      t_bank_cards bc
+      LEFT JOIN t_bank b
+        ON bc.bank_id = b.id
+      LEFT JOIN t_user u
+        ON u.id = bc.`user_id`
+    <if test="userId!=null and userId!=''">
+      where bc.`user_id`=#{userId}
+    </if>
   </select>
 
   <!--修改银行卡-->

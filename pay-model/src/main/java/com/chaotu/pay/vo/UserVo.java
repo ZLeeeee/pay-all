@@ -52,7 +52,7 @@ public class UserVo {
     private List<RoleVo> roles;
 
     private String roleIds;
-    private String payPassword;
+    //private String payPassword;
     private List<PermissionVo> permissions;
 
     private String startDate;

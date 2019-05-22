@@ -110,6 +110,20 @@ public class TPddOrder {
     @Column(name = "notify_times")
     private Integer notifyTimes;
 
+    public Integer getPddAccountId() {
+        return pddAccountId;
+    }
+
+    public void setPddAccountId(Integer pddAccountId) {
+        this.pddAccountId = pddAccountId;
+    }
+
+    /**
+     * 拼多多收款账号id
+     */
+    @Column(name = "pdd_account_id")
+    private Integer pddAccountId;
+
     /**
      * @return id
      */

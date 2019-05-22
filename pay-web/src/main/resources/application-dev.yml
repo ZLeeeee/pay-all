@@ -10,10 +10,11 @@ pdd:
   clientId: 41dc767f963d412fa2b944ed21c4ac7d
   clientSecret: 85d6e8f71f3014bbd91dbe99171d0cb6b5082322
   code: ba9eda7c693c4989b16af37a0fd1904801f8b598
-  accessToken: 81046bfd2d044218975e178bcfc77aed5b695d13
+  accessToken: 6b675a12c1b641a0b099e70f9cf5b227f724d780
   confirmUrl: http://mobile.yangkeduo.com/proxy/api/order/
   sentUrl: https://mms.pinduoduo.com/robot/shop/orders/shipping
-  cookie: api_uid=rBQRx1yz47mcSTK/hlv9Ag==; _ga=GA1.2.1766181771.1557195658; _nano_fp=XpdynqXolpEynqXbXC_4UEMP~eTwcBe01S1Z~_Gc; pt_691035c2=uid=tdc1zC0-4i5h/o5kOtte6Q&nid=0&vid=uWvcpatpLuNDsu0ZQ6g2Gw&vn=2&pvn=1&sact=1557889437383&to_flag=0&pl=HJPHbMMwQ-lnEQahY4iRFA*pt*1557889437383; PASS_ID=1-vQL+YgrGW3BAJpOKN7PnC3xzpalSTnRRNRfgZCKSkxZuuHWwMDA/SmNKm+0r/QOzN2IMygwg9lxtyn9g2RO2lQ_405326111_33339236
+  orderListUrl: https://mms.pinduoduo.com/mars/shop/orderList
+  cookie: api_uid=rBQRx1yz47mcSTK/hlv9Ag==; _ga=GA1.2.1766181771.1557195658; _nano_fp=XpdynqXolpEynqXbXC_4UEMP~eTwcBe01S1Z~_Gc; pt_691035c2=uid=tdc1zC0-4i5h/o5kOtte6Q&nid=0&vid=uWvcpatpLuNDsu0ZQ6g2Gw&vn=2&pvn=1&sact=1557889437383&to_flag=0&pl=HJPHbMMwQ-lnEQahY4iRFA*pt*1557889437383; accesstoken=9183389ca483885eca701be625e088ea4ea59500e8f64; PASS_ID=1-XU1WnLjc7Cs7OuNix3WYa5XRqo5F/Ghg96dZzzpMhA/fEUQqOBFvXZ+QJXwgBLk9ylwlw2n0l8SmhhdlhLvIXQ_581782377_34449056
 server:
   port: 8080
   servlet:

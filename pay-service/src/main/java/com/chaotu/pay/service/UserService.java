@@ -114,4 +114,6 @@ public interface UserService {
     List<TUser> findByParentId(String parentId);
 
     UserVo currentUser();
+
+    UserVo getUser(UserVo userVo);
 }

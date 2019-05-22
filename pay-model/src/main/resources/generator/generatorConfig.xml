@@ -30,7 +30,10 @@
         <table schema="pay" tableName="t_pdd_order">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>-->
-        <table schema="pay" tableName="t_pdd_user">
+        <!--<table schema="pay" tableName="t_pdd_user">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>-->
+        <table schema="pay" tableName="t_pdd_account">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
         <!--<table schema="pay" tableName="t_user_role">

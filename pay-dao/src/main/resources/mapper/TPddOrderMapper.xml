@@ -21,6 +21,7 @@
     <result column="notify_times" jdbcType="INTEGER" property="notifyTimes" />
     <result column="user_order_no" jdbcType="VARCHAR" property="userOrderNo" />
     <result column="send_times" jdbcType="INTEGER" property="sendTimes" />
+    <result column="pdd_account_id" jdbcType="INTEGER" property="pddAccountId" />
   </resultMap>
 
   <select id="getByTimeAndStatus" parameterType="java.util.Map" resultMap="BaseResultMap">

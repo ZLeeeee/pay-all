@@ -32,13 +32,13 @@ public class PddSDKConfig {
         PopClient client = new PopHttpClient(clientId, clientSecret);
         return client;
     }
-    @Bean
+  /*  @Bean
     public PopAccessTokenClient popAccessTokenClient(){
         PopAccessTokenClient client = new PopAccessTokenClient(
                 clientId,
                 clientSecret);
         return client;
-    }
+    }*/
     /*@Bean
     public WsClient wsClient(){
         init();

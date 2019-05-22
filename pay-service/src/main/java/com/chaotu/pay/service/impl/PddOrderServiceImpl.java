@@ -6,9 +6,11 @@ import com.chaotu.pay.common.sender.PddSender;
 import com.chaotu.pay.common.sender.Sender;
 import com.chaotu.pay.common.utils.IDGeneratorUtils;
 import com.chaotu.pay.dao.TPddOrderMapper;
+import com.chaotu.pay.po.TPddAccount;
 import com.chaotu.pay.po.TPddGoods;
 import com.chaotu.pay.po.TPddOrder;
 import com.chaotu.pay.po.TPddUser;
+import com.chaotu.pay.service.PddAccountService;
 import com.chaotu.pay.service.PddGoodsService;
 import com.chaotu.pay.service.PddOrderService;
 import com.chaotu.pay.vo.PddGoodsVo;
@@ -41,6 +43,8 @@ public class PddOrderServiceImpl implements PddOrderService {
     @Autowired
     PddGoodsService goodsService;
     @Autowired
+    PddAccountService accountService;
+    @Autowired
     @Qualifier("antiContentChoser")
     Choser<String> antiContentChoser;
     @Autowired
@@ -49,6 +53,9 @@ public class PddOrderServiceImpl implements PddOrderService {
     @Autowired
     @Qualifier("pddUserChoser")
     Choser<TPddUser> pddUserChoser;
+    @Autowired
+    @Qualifier("pddAccountChoser")
+    Choser<TPddAccount> pddAccountChoser;
     @Override
     public void add(TPddOrder order) {
         mapper.insert(order);
@@ -99,12 +106,33 @@ public class PddOrderServiceImpl implements PddOrderService {
 
     @Override
     public Map<String,Object> pay(TPddOrder order) {
-        BigDecimal amount = order.getAmount();
+        TPddAccount account = null;
+        if(pddAccountChoser.size()>0)
+            account = pddAccountChoser.chose();
+        else
+            throw new IllegalArgumentException("无可用收款账号");
+        if(account.getTodayAmount().compareTo(account.getLimitAmount())>0){
+            TPddAccount a = new TPddAccount();
+            a.setId(account.getId());
+            a.setStatus(false);
+            accountService.update(a);
+            if(pddAccountChoser.size()>0)
+                account = pddAccountChoser.chose();
+            else
+                throw new IllegalArgumentException("无可用收款账号");
+        }
+        TPddGoods g = new TPddGoods();
+        g.setAmount(order.getAmount());
+        g.setPddAccountId(account.getId());
+        TPddGoods good = goodsService.get(g);
+        if(good == null)
+            throw new IllegalArgumentException("订单总价与商品价格与数量不符");
+       /* BigDecimal amount = order.getAmount();
         Integer skuNumber = order.getSkuNumber();
         Integer goodsId = order.getGoodsId();
         TPddGoods good = goodsService.getById(goodsId);
         if(!good.getAmount().multiply(new BigDecimal(skuNumber)).equals(amount))
-            throw new IllegalArgumentException("订单总价与商品价格与数量不符");
+            throw new IllegalArgumentException("订单总价与商品价格与数量不符");*/
         PddOrderVo vo = new PddOrderVo();
         TPddUser pddUser = pddUserChoser.chose();
         String antiContent = antiContentChoser.chose();
@@ -118,12 +146,12 @@ public class PddOrderServiceImpl implements PddOrderService {
         PddGoodsVo goodVo = new PddGoodsVo();
         goodVo.setGoods_id(good.getGoodsId().toString());
         goodVo.setSku_id(good.getSkuId());
-        goodVo.setSku_number(skuNumber);
+        goodVo.setSku_number(1);
         list.add(goodVo);
         vo.setGoods(list);
         Map<String,Object> attr = new HashMap<>();
         attr.put("create_order_token",createOrderToken);
-        attr.put("order_amount",amount);
+        attr.put("order_amount",order.getAmount());
         attr.put("original_front_env",0);
         attr.put("PTRACER-TRACE-UUID","4641841400000000000000#1557210294996#st2-glb-382");
         vo.setAttribute_fields(attr);
@@ -132,9 +160,10 @@ public class PddOrderServiceImpl implements PddOrderService {
         order.setGoodsId(good.getId());
         order.setPddUserId(pddUser.getId());
         order.setStatus(new Byte("0"));
-        order.setSkuNumber(skuNumber);
+        order.setSkuNumber(1);
         order.setAccessToken(accessToken);
         order.setNotifyTimes(0);
+        order.setPddAccountId(account.getId());
         mapper.insert(order);
         try {
         Sender<Map<String,String>> sender = new PddSender<>(preOrderUrl+"?pdduid="+pddUser.getPdduid(),vo,accessToken);
@@ -163,12 +192,12 @@ public class PddOrderServiceImpl implements PddOrderService {
             sb.deleteCharAt(sb.length() - 1);
             order.setStatus(new Byte("1"));
             order.setOrderSn(order_sn);
-            mapper.updateByPrimaryKey(order);
+            mapper.updateByPrimaryKeySelective(order);
             Map<String,Object> resultMap = new HashMap<>();
             resultMap.put("success","1");
             resultMap.put("userOrderSn",order.getUserOrderSn());
             resultMap.put("orderSn",id);
-            resultMap.put("amount",amount);
+            resultMap.put("amount",order.getAmount());
             resultMap.put("userId",order.getUserId());
             resultMap.put("qrCode",sb.toString());
             return resultMap;

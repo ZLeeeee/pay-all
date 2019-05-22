@@ -39,6 +39,11 @@ public class BankCardController {
         return ResponseUtil.responseBody(bankCradService.findAllByPage(pageVo));
     }
 
+    @PostMapping("/all/byUser")
+    public Message findAllByUser(){
+        return ResponseUtil.responseBody(bankCradService.findAllByUser());
+    }
+
     /**
      * 添加银行卡
      * @param bankCardVo

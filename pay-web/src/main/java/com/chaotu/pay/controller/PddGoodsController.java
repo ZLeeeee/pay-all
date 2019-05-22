@@ -38,4 +38,14 @@ public class PddGoodsController {
         service.add(goods);
         return ResponseUtil.responseBody("添加成功");
     }
+
+    @PostMapping("/edit")
+    public Message edit(@RequestBody TPddGoods goods){
+        service.edit(goods);
+        return ResponseUtil.responseBody("修改成功");
+    }
+    @PostMapping("/get")
+    public Message get(@RequestBody TPddGoods goods){
+        return ResponseUtil.responseBody(service.findByCondition(goods));
+    }
 }

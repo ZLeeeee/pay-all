@@ -52,12 +52,20 @@ public class WithdrawsServiceImpl implements WithdrawsService {
         }
 
        /* try {*/
-            PageHelper.startPage(pageVo.getPageNumber(), pageVo.getPageSize());
-            List<TWithdraws> withdrawsList = tWithdrawsMapper.findAll(withdrawsVo);
+        PageHelper.startPage(pageVo.getPageNumber(), pageVo.getPageSize());
+        UserVo userVo = userService.currentUser();
+        String userId = userVo.getId();
+        if(!"682265633886208".equals(userId)){
+            example.createCriteria().andEqualTo("userId",userId);
+            withdrawsVo.setUserId(userId);
+        }
+        List<TWithdraws> withdrawsList = tWithdrawsMapper.findAll(withdrawsVo);
+
+
             int count = tWithdrawsMapper.selectCountByExample(example);
 
             Map<String,Object> generalAccount = tWithdrawsMapper.getGeneralAccount(withdrawsVo);
-            generalAccount.put("allcount", withdrawsList.size());
+            generalAccount.put("allcount", count/*=nullwithdrawsList.size()*/);
             Map<String,Object> map = new HashMap<>();
 
             MyPageInfo info = new MyPageInfo(withdrawsList);
@@ -79,14 +87,15 @@ public class WithdrawsServiceImpl implements WithdrawsService {
     public void add(WithdrawsVo vo) {
         TWithdraws withdraws = new TWithdraws();
         TWallet w = new TWallet();
-        w.setUserId(vo.getUserId());
+        String userId = userService.currentUser().getId();
+        w.setUserId(userId);
         w.setType("2");
         TWallet wallet = walletService.selectOne(w);
         Double residualAmount = wallet.getResidualAmount();
         BigDecimal rate = new BigDecimal(5);
-        if (vo.getWithdrawamount().add(rate).compareTo(new BigDecimal(residualAmount)) <0 )
+        if (vo.getWithdrawamount().add(rate).compareTo(new BigDecimal(residualAmount)) >0 )
             throw new IllegalArgumentException("余额不足");
-        String userId = userService.currentUser().getId();
+
         BeanUtils.copyProperties(vo,withdraws);
         withdraws.setWithdrawrate(rate);
         withdraws.setToamount(withdraws.getWithdrawamount().subtract(rate));
@@ -94,6 +103,7 @@ public class WithdrawsServiceImpl implements WithdrawsService {
         withdraws.setCreateBy(userId);
         withdraws.setCreateTime(new Date());
         withdraws.setUserId(userId);
+        walletService.editAmount(wallet,withdraws.getWithdrawamount().add( new BigDecimal(5)).toString(),"1");
         tWithdrawsMapper.insert(withdraws);
     }
 
@@ -109,7 +119,7 @@ public class WithdrawsServiceImpl implements WithdrawsService {
         TWallet w = new TWallet();
         w.setUserId(vo.getUserId());
         w.setType("2");
-        walletService.editAmount(w,withdraws.getWithdrawamount().toString(),"1");
+        //walletService.editAmount(w,withdraws.getWithdrawamount().toString(),"1");
         tWithdrawsMapper.updateByPrimaryKey(withdraws);
     }
 }

@@ -1,5 +1,6 @@
 package com.chaotu.pay.mq;
 
+import com.alibaba.fastjson.JSONObject;
 import com.chaotu.pay.common.sender.PddSender;
 import com.chaotu.pay.common.sender.Sender;
 import com.chaotu.pay.common.utils.JsonUtils;
@@ -33,6 +34,8 @@ public class Consumer {
     WalletService walletService;
     @Autowired
     OrderService tOrderService;
+    @Autowired
+    PddAccountService accountService;
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE_A)
     public void processMessage(String content) {
@@ -40,8 +43,13 @@ public class Consumer {
        /* Map<String,Object> map = JsonUtils.parseJSON2Map(content);
         String tid = (String) JsonUtils.parseJSON2Map((String) map.get("content")).get("tid");*/
        // TPddOrder order = orderService.getByOrderSn(content);
-        TPddOrder order = JsonUtils.getObjectTFromJson(content,TPddOrder.class);
-        order.setStatus((byte)2);
+
+        //TPddOrder order1 = JsonUtils.getObjectFromJson(content,TPddOrder.class);
+        TPddOrder order =JSONObject.parseObject(content,TPddOrder.class);
+       /* order.setStatus((byte)2);*/
+        TPddOrder order1 = new TPddOrder();
+        order1.setId(order.getId());
+        order1.setStatus((byte)2);
         TWallet wallet = new TWallet();
         wallet.setUserId(order.getUserId());
         wallet.setType("2");
@@ -54,23 +62,29 @@ public class Consumer {
         o.setUnderorderno(order.getUserOrderSn());
         o.setOnorderno(order.getOrderSn());
         o.setOrderno(order.getId());
+        o.setMerchant(user.getUsername());
         BigDecimal sysAmount = order.getAmount().multiply(user.getRate());
         o.setSysamount(sysAmount);
         BigDecimal userAmount = order.getAmount().subtract(sysAmount);
         o.setUseramount(userAmount);
         o.setStatus((byte)1);
+        TPddAccount account = accountService.findByid(order.getPddAccountId());
+        accountService.updateAmount(order.getAmount(),account);
         tOrderService.add(o);
         walletService.editAmount(wallet, userAmount.toString(),"0");
-        orderService.updateByOrderSn(order);
+        orderService.edit(order1);
     }
     @RabbitListener(queues = RabbitMQConfig.QUEUE_B)
     public void processMessage2(String content) {
         log.info("订单: "+content+"回调开始");
        /* Map<String,Object> map = JsonUtils.parseJSON2Map(content);
         String tid = (String) JsonUtils.parseJSON2Map((String) map.get("content")).get("tid");*/
-        TPddOrder order = JsonUtils.getObjectTFromJson(content,TPddOrder.class);
+        TPddOrder order =JSONObject.parseObject(content,TPddOrder.class);
+
         if (order == null)
             return;
+        TPddOrder order1 = new TPddOrder();
+        order1.setId(order.getId());
         try {
             Map<String,Object> params = new HashMap<>();
             params.put("success","1");
@@ -82,12 +96,12 @@ public class Consumer {
             Sender<Map<String, Object>> sender = new PddSender<>(order.getNotifyUrl(),params  ,null);
             Map<String, Object> result = sender.send();
             if (result != null) {
-                order.setNotifyTimes(6);
-                orderService.edit(order);
+                order1.setNotifyTimes(6);
+                orderService.edit(order1);
             }
         }catch (Exception e){
-            order.setNotifyTimes(1);
-            orderService.edit(order);
+            order1.setNotifyTimes(1);
+            orderService.edit(order1);
             log.info("订单: "+content+"回调异常");
         }
         log.info("订单: "+content+"回调结束");

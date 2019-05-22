@@ -16,6 +16,20 @@ public class TPddGoods {
     private Long skuId;
 
     /**
+     * 商品规格id
+     */
+    @Column(name = "pdd_account_id")
+    private int pddAccountId;
+
+    public int getPddAccountId() {
+        return pddAccountId;
+    }
+
+    public void setPddAccountId(int pddAccountId) {
+        this.pddAccountId = pddAccountId;
+    }
+
+    /**
      * 拼多多商品id
      */
     @Column(name = "goods_id")

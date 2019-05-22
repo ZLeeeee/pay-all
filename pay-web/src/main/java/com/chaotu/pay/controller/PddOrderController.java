@@ -46,7 +46,7 @@ public class PddOrderController {
         return ResponseUtil.responseBody("111");
     }
 
-    @GetMapping("/get/${userOrderSn}")
+    @GetMapping("/get/{userOrderSn}")
     public Map<String, Object> getByUserOrderSn(@PathVariable String userOrderSn){
         TPddOrder order = new TPddOrder();
         order.setUserOrderSn(userOrderSn);
