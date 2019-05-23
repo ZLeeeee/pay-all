@@ -52,13 +52,14 @@ public class WithdrawsServiceImpl implements WithdrawsService {
         }
 
        /* try {*/
-        PageHelper.startPage(pageVo.getPageNumber(), pageVo.getPageSize());
+
         UserVo userVo = userService.currentUser();
         String userId = userVo.getId();
         if(!"682265633886208".equals(userId)){
             example.createCriteria().andEqualTo("userId",userId);
             withdrawsVo.setUserId(userId);
         }
+        PageHelper.startPage(pageVo.getPageNumber(), pageVo.getPageSize());
         List<TWithdraws> withdrawsList = tWithdrawsMapper.findAll(withdrawsVo);
 
 
@@ -87,7 +88,8 @@ public class WithdrawsServiceImpl implements WithdrawsService {
     public void add(WithdrawsVo vo) {
         TWithdraws withdraws = new TWithdraws();
         TWallet w = new TWallet();
-        String userId = userService.currentUser().getId();
+        UserVo userVo = userService.currentUser();
+        String userId = userVo.getId();
         w.setUserId(userId);
         w.setType("2");
         TWallet wallet = walletService.selectOne(w);
@@ -103,6 +105,7 @@ public class WithdrawsServiceImpl implements WithdrawsService {
         withdraws.setCreateBy(userId);
         withdraws.setCreateTime(new Date());
         withdraws.setUserId(userId);
+        withdraws.setAccountname(userVo.getUsername());
         walletService.editAmount(wallet,withdraws.getWithdrawamount().add( new BigDecimal(5)).toString(),"1");
         tWithdrawsMapper.insert(withdraws);
     }

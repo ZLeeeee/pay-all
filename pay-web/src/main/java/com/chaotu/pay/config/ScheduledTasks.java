@@ -98,6 +98,7 @@ public class ScheduledTasks{
 
         if(orders != null && !orders.isEmpty()) {
             orders.stream().parallel().forEach((o) -> {
+                log.info("收货开始,订单号: "+o.getOrderSn());
                 TPddOrder order1 = new TPddOrder();
                 order1.setId(o.getId());
                 try {
@@ -110,14 +111,28 @@ public class ScheduledTasks{
                     if (result != null) {
                         order1.setStatus((byte)4);
                         service.edit(order1);
+                        log.info("收货成功");
+                    }else if(o.getSendTimes()<10){
+                        log.error("收货失败,订单号:"+o.getOrderSn());
+                        order1.setStatus((byte)3);
+                        order1.setSendTimes(o.getSendTimes()+1);
+                        service.edit(order1);
+                        order1.setPddAccountId(o.getPddAccountId());
+                        order1.setOrderSn(o.getOrderSn());
+                        order1.setId(o.getId());
+                        send(o);
                     }
                 } catch (Exception e) {
                     log.error("收货失败,订单号:"+o.getOrderSn(), e.getMessage());
-                    order1.setStatus((byte)3);
+                    order1.setStatus((byte)2);
                     order1.setSendTimes(o.getSendTimes()+1);
                     service.edit(order1);
+                    order1.setPddAccountId(o.getPddAccountId());
+                    order1.setOrderSn(o.getOrderSn());
+                    order1.setId(o.getId());
+                    //send(o);
                 }
-                //send(o);
+                //
             });
         }
 
@@ -238,6 +253,12 @@ public class ScheduledTasks{
             service.edit(o);
             log.error("发货失败,订单号:"+o.getOrderSn(), e.getMessage());
         }
+    }
+    //发货
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void updateTodayAmount(){
+       accountService.updateTodayAmountByStatus();
+
     }
 
 }
