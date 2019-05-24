@@ -91,6 +91,7 @@ public class PddOrderServiceImpl implements PddOrderService {
         Map<String,Object> map = new HashMap<>();
         map.put("endTime",new Date(System.currentTimeMillis()-1000*3600*3));
         map.put("status",3);
+        map.put("sendTimes",11);
         return mapper.getByTimeAndStatus(map);
     }
 

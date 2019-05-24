@@ -39,40 +39,44 @@ public class Consumer {
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE_A)
     public void processMessage(String content) {
-        log.info("订单: "+content+"已支付");
+        try {
+            log.info("订单: " + content + "已支付");
        /* Map<String,Object> map = JsonUtils.parseJSON2Map(content);
         String tid = (String) JsonUtils.parseJSON2Map((String) map.get("content")).get("tid");*/
-       // TPddOrder order = orderService.getByOrderSn(content);
+            // TPddOrder order = orderService.getByOrderSn(content);
 
-        //TPddOrder order1 = JsonUtils.getObjectFromJson(content,TPddOrder.class);
-        TPddOrder order =JSONObject.parseObject(content,TPddOrder.class);
-       /* order.setStatus((byte)2);*/
-        TPddOrder order1 = new TPddOrder();
-        order1.setId(order.getId());
-        order1.setStatus((byte)2);
-        TWallet wallet = new TWallet();
-        wallet.setUserId(order.getUserId());
-        wallet.setType("2");
-        UserVo user = userService.getUserById(order.getUserId());
-        TOrder o = new TOrder();
-        o.setCreateTime(new Date());
-        o.setOnorderno(order.getId());
-        o.setUserId(user.getId());
-        o.setAmount(order.getAmount());
-        o.setUnderorderno(order.getUserOrderSn());
-        o.setOnorderno(order.getOrderSn());
-        o.setOrderno(order.getId());
-        o.setMerchant(user.getUsername());
-        BigDecimal sysAmount = order.getAmount().multiply(user.getRate());
-        o.setSysamount(sysAmount);
-        BigDecimal userAmount = order.getAmount().subtract(sysAmount);
-        o.setUseramount(userAmount);
-        o.setStatus((byte)1);
-        TPddAccount account = accountService.findByid(order.getPddAccountId());
-        accountService.updateAmount(order.getAmount(),account);
-        tOrderService.add(o);
-        walletService.editAmount(wallet, userAmount.toString(),"0");
-        orderService.edit(order1);
+            //TPddOrder order1 = JsonUtils.getObjectFromJson(content,TPddOrder.class);
+            TPddOrder order = JSONObject.parseObject(content, TPddOrder.class);
+            /* order.setStatus((byte)2);*/
+            TPddOrder order1 = new TPddOrder();
+            order1.setId(order.getId());
+            order1.setStatus((byte) 2);
+            TWallet wallet = new TWallet();
+            wallet.setUserId(order.getUserId());
+            wallet.setType("2");
+            UserVo user = userService.getUserById(order.getUserId());
+            TOrder o = new TOrder();
+            o.setCreateTime(new Date());
+            o.setOnorderno(order.getId());
+            o.setUserId(user.getId());
+            o.setAmount(order.getAmount());
+            o.setUnderorderno(order.getUserOrderSn());
+            o.setOnorderno(order.getOrderSn());
+            o.setOrderno(order.getId());
+            o.setMerchant(user.getUsername());
+            BigDecimal sysAmount = order.getAmount().multiply(user.getRate());
+            o.setSysamount(sysAmount);
+            BigDecimal userAmount = order.getAmount().subtract(sysAmount);
+            o.setUseramount(userAmount);
+            o.setStatus((byte) 1);
+            TPddAccount account = accountService.findByid(order.getPddAccountId());
+            accountService.updateAmount(order.getAmount(), account);
+            tOrderService.add(o);
+            walletService.editAmount(wallet, userAmount.toString(), "0");
+            orderService.edit(order1);
+        }catch (Exception e){
+            log.error("订单:"+content+"接收异常");
+        }
     }
     @RabbitListener(queues = RabbitMQConfig.QUEUE_B)
     public void processMessage2(String content) {

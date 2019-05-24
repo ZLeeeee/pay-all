@@ -2,11 +2,10 @@ package com.chaotu.pay.controller;
 
 import com.chaotu.pay.common.utils.ResponseUtil;
 import com.chaotu.pay.po.TPddAccount;
-import com.chaotu.pay.service.BankCradService;
 import com.chaotu.pay.service.PddAccountService;
-import com.chaotu.pay.vo.BankCardVo;
 import com.chaotu.pay.vo.Message;
 import com.chaotu.pay.vo.PageVo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -60,6 +59,9 @@ public class PddAccountController {
      */
     @PostMapping("/edit")
     public Message editBankCard(@RequestBody TPddAccount account){
+        if("".equals(account.getCookie())) {
+           ResponseUtil.responseBody("1","cookie不可为空");
+        }
         accountService.update(account);
         return ResponseUtil.responseBody("更新成功");
     }
