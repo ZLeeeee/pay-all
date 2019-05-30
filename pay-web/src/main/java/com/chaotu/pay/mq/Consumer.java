@@ -58,12 +58,6 @@ public class Consumer {
             TOrder o = new TOrder();
             o.setCreateTime(new Date());
             o.setOnorderno(order.getId());
-            o.setUserId(user.getId());
-            o.setAmount(order.getAmount());
-            o.setUnderorderno(order.getUserOrderSn());
-            o.setOnorderno(order.getOrderSn());
-            o.setOrderno(order.getId());
-            o.setMerchant(user.getUsername());
             BigDecimal sysAmount = order.getAmount().multiply(user.getRate());
             o.setSysamount(sysAmount);
             BigDecimal userAmount = order.getAmount().subtract(sysAmount);
@@ -71,7 +65,7 @@ public class Consumer {
             o.setStatus((byte) 1);
             TPddAccount account = accountService.findByid(order.getPddAccountId());
             accountService.updateAmount(order.getAmount(), account);
-            tOrderService.updateaByUnderOrderNo(o);
+            tOrderService.updateaByOrderNo(o);
             walletService.editAmount(wallet, userAmount.toString(), "0");
             orderService.edit(order1);
         }catch (Exception e){

@@ -32,5 +32,5 @@ public interface OrderService {
     int updateStatus(OrderVo orderVo);
 
     void add(TOrder order);
-    void updateaByUnderOrderNo(TOrder order);
+    void updateaByOrderNo(TOrder order);
 }

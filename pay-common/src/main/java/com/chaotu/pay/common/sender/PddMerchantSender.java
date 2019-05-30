@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -28,6 +29,10 @@ public class PddMerchantSender<T> implements Sender<T> {
         // 发送Json格式的数据请求
         entity.setContentType("application/json");
         post.setEntity(entity);
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(5000).setConnectionRequestTimeout(2000)
+                .setSocketTimeout(5000).build();
+        post.setConfig(requestConfig);
         this.post = post;
         this.client = client;
     }

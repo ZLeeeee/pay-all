@@ -8,6 +8,7 @@ import com.chaotu.pay.po.TOrder;
 import com.chaotu.pay.service.OrderService;
 import com.chaotu.pay.service.UserService;
 import com.chaotu.pay.vo.*;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +40,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Map<String,Object> findByCondition(PageVo pageVo, SearchVo searchVo, OrderVo orderVo){
-        Example example = new Example(TOrder.class);
-        Example.Criteria criteria = example.createCriteria();
+
 
         //通过时间查询所有订单
         //如果时间为空，则为当日00:00:00至当前时间
@@ -61,18 +61,24 @@ public class OrderServiceImpl implements OrderService {
         orderVo.setUserId(userId);
 
         /* try {*/
-            PageHelper.startPage(pageVo.getPageNumber(),pageVo.getPageSize());
-            //获取所有订单
+        Page<Object> p = PageHelper.startPage(pageVo.getPageNumber(), pageVo.getPageSize());
+        //获取所有订单
             List<TOrder> orderList = tOrderMapper.findAll(orderVo);
+        if("682265633886208".equalsIgnoreCase(userVo.getId())){
+            for (TOrder tOrder:orderList
+                 ) {
+                tOrder.setCreateBy("1");
+            }
+        }
+
             //获取订单总数量
-            int count = tOrderMapper.selectCountByExample(example);
             Map<String,Object> generalAccount = tOrderMapper.getGeneralAccount(orderVo);
             Map<String, Object> map = new HashMap<>();
 
 
             MyPageInfo info = new MyPageInfo(orderList);
             if(!CollectionUtils.isEmpty(orderList)){
-                info.setTotal(count);
+                info.setTotal(p.getTotal());
                 info.setPageNum(pageVo.getPageNumber());
             }
             map.put("pageInfo", info);
@@ -109,12 +115,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateaByUnderOrderNo(TOrder order) {
+    public void updateaByOrderNo(TOrder order) {
         Example example = new Example(TOrder.class);
         Example.Criteria criteria = example.createCriteria();
 
-        criteria.andEqualTo("underorderno",order.getUnderorderno());
+        criteria.andEqualTo("orderno",order.getOnorderno());
 
-        tOrderMapper.updateByExample(order,example);
+        tOrderMapper.updateByExampleSelective(order,example);
     }
 }

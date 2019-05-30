@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -20,7 +21,11 @@ public class PddSender<T> implements Sender<T> {
 
     public PddSender(String url,Object param,String accessToken){
         HttpClient client = new DefaultHttpClient();
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(5000).setConnectionRequestTimeout(2000)
+                .setSocketTimeout(5000).build();
         HttpPost post = new HttpPost(url);
+        post.setConfig(requestConfig);
         post.setHeader("Content-type", "application/json; charset=utf-8");
         post.setHeader("accessToken", accessToken);
         StringEntity entity = new StringEntity(JSON.toJSONString(param), Charset.forName("UTF-8"));

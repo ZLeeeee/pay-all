@@ -31,6 +31,10 @@ spring:
     port: 5672
     username: guest
     password: guest
+    listener:
+      simple:
+        concurrency: 10
+        max-concurrency: 20
   # 数据源
   datasource:
     url: jdbc:mysql://localhost:3306/pay-all?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true
