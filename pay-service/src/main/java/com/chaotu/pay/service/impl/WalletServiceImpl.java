@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Slf4j
@@ -35,8 +36,8 @@ public class WalletServiceImpl implements WalletService {
                 List<TWallet> wallets = tWalletMapper.select(wallet);
                 if(wallets.size()>0){
                     TWallet wallet1 = wallets.get(0);
-                    double amountD = Double.parseDouble(amount);
-                    wallet1.setResidualAmount(wallet1.getResidualAmount()+amountD);
+                    BigDecimal amountD = new BigDecimal(amount);
+                    wallet1.setResidualAmount(wallet1.getResidualAmount().add(amountD));
                     tWalletMapper.updateByPrimaryKey(wallet1);
                     return 1;
                 }
@@ -45,9 +46,9 @@ public class WalletServiceImpl implements WalletService {
                 List<TWallet> wallets2 = tWalletMapper.select(wallet);
                 if(wallets2.size()>0){
                     TWallet wallet1 = wallets2.get(0);
-                    double amountD = Double.parseDouble(amount);
-                    if(wallet1.getResidualAmount()-amountD>0){
-                        wallet1.setResidualAmount(wallet1.getResidualAmount()-amountD);
+                    BigDecimal amountD = new BigDecimal(amount);
+                    if(wallet1.getResidualAmount().compareTo(amountD)>0){
+                        wallet1.setResidualAmount(wallet1.getResidualAmount().subtract(amountD));
                         tWalletMapper.updateByPrimaryKey(wallet1);
                         return 1;
                     }else{

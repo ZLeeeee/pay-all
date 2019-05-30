@@ -23,6 +23,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.*;
 
@@ -265,6 +266,8 @@ public class UserServiceImpl implements UserService {
         wallet2.setCreateTime(date);
         wallet.setCreateBy(pVo.getId());
         wallet2.setCreateBy(pVo.getId());
+        wallet.setResidualAmount(new BigDecimal(0));
+        wallet2.setResidualAmount(new BigDecimal(0));
         walletService.add(wallet);
         walletService.add(wallet2);
         log.info("添加用户成功");

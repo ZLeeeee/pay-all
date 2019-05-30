@@ -107,4 +107,14 @@ public class OrderServiceImpl implements OrderService {
     public void add(TOrder order) {
         tOrderMapper.insert(order);
     }
+
+    @Override
+    public void updateaByUnderOrderNo(TOrder order) {
+        Example example = new Example(TOrder.class);
+        Example.Criteria criteria = example.createCriteria();
+
+        criteria.andEqualTo("underorderno",order.getUnderorderno());
+
+        tOrderMapper.updateByExample(order,example);
+    }
 }

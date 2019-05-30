@@ -53,9 +53,9 @@ public class RechargesServiceImpl implements RechargesService {
         wallet.setUserId(user.getId());
         wallet.setType("1");
         TWallet tWallet = walletService.selectOne(wallet);
-        Double oldAmount = tWallet.getResidualAmount();
-        BigDecimal newAmount = new BigDecimal(oldAmount).add(vo.getActualAmount()) ;
-        tWallet.setResidualAmount(newAmount.doubleValue());
+        BigDecimal oldAmount = tWallet.getResidualAmount();
+        BigDecimal newAmount = oldAmount.add(vo.getActualAmount()) ;
+        tWallet.setResidualAmount(newAmount);
         log.info("当前用户为[" + user.getUsername() + "]");
         vo.setCreateBy(user.getId());
         vo.setUserId(user.getId());

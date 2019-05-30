@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 /**
  * 银行卡信息管理
  */
@@ -48,7 +51,11 @@ public class PddAccountController {
      */
     @PostMapping("/add")
     public Message addBankCard(@RequestBody TPddAccount account){
+        account.setTodayAmount(new BigDecimal(0));
+        account.setTotalAmount(new BigDecimal(0));
+        account.setCreateTime(new Date());
         accountService.insert(account);
+
         return ResponseUtil.responseBody("添加成功");
     }
 
@@ -62,6 +69,7 @@ public class PddAccountController {
         if("".equals(account.getCookie())) {
            ResponseUtil.responseBody("1","cookie不可为空");
         }
+
         accountService.update(account);
         return ResponseUtil.responseBody("更新成功");
     }

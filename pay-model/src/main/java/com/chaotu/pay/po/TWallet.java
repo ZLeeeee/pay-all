@@ -1,5 +1,6 @@
 package com.chaotu.pay.po;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.*;
 
@@ -49,7 +50,7 @@ public class TWallet {
      * 余额
      */
     @Column(name = "residual_amount")
-    private Double residualAmount;
+    private BigDecimal residualAmount;
 
     /**
      * 类型(1充值,2收益)
@@ -183,7 +184,7 @@ public class TWallet {
      *
      * @return residual_amount - 余额
      */
-    public Double getResidualAmount() {
+    public BigDecimal getResidualAmount() {
         return residualAmount;
     }
 
@@ -192,7 +193,7 @@ public class TWallet {
      *
      * @param residualAmount 余额
      */
-    public void setResidualAmount(Double residualAmount) {
+    public void setResidualAmount(BigDecimal residualAmount) {
         this.residualAmount = residualAmount;
     }
 

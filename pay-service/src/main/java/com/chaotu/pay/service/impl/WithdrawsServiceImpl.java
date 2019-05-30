@@ -66,6 +66,10 @@ public class WithdrawsServiceImpl implements WithdrawsService {
             int count = tWithdrawsMapper.selectCountByExample(example);
 
             Map<String,Object> generalAccount = tWithdrawsMapper.getGeneralAccount(withdrawsVo);
+            if(generalAccount == null){
+                generalAccount = new HashMap<>();
+
+            }
             generalAccount.put("allcount", count/*=nullwithdrawsList.size()*/);
             Map<String,Object> map = new HashMap<>();
 
@@ -93,9 +97,9 @@ public class WithdrawsServiceImpl implements WithdrawsService {
         w.setUserId(userId);
         w.setType("2");
         TWallet wallet = walletService.selectOne(w);
-        Double residualAmount = wallet.getResidualAmount();
+        BigDecimal residualAmount = wallet.getResidualAmount();
         BigDecimal rate = new BigDecimal(5);
-        if (vo.getWithdrawamount().add(rate).compareTo(new BigDecimal(residualAmount)) >0 )
+        if (vo.getWithdrawamount().add(rate).compareTo(residualAmount) >0 )
             throw new IllegalArgumentException("余额不足");
 
         BeanUtils.copyProperties(vo,withdraws);

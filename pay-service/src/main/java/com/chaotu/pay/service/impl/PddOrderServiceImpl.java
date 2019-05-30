@@ -6,16 +6,12 @@ import com.chaotu.pay.common.sender.PddSender;
 import com.chaotu.pay.common.sender.Sender;
 import com.chaotu.pay.common.utils.IDGeneratorUtils;
 import com.chaotu.pay.dao.TPddOrderMapper;
-import com.chaotu.pay.po.TPddAccount;
-import com.chaotu.pay.po.TPddGoods;
-import com.chaotu.pay.po.TPddOrder;
-import com.chaotu.pay.po.TPddUser;
-import com.chaotu.pay.service.PddAccountService;
-import com.chaotu.pay.service.PddGoodsService;
-import com.chaotu.pay.service.PddOrderService;
+import com.chaotu.pay.po.*;
+import com.chaotu.pay.service.*;
 import com.chaotu.pay.vo.PddGoodsVo;
 import com.chaotu.pay.vo.PddOrderVo;
 import com.chaotu.pay.vo.PddPreOrderVo;
+import com.chaotu.pay.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,6 +34,10 @@ public class PddOrderServiceImpl implements PddOrderService {
     @Value("${pdd.returnUrl}")
     private String returnUrl;
 
+    @Autowired
+    OrderService tOrderService;
+    @Autowired
+    UserService userService;
     @Autowired
     TPddOrderMapper mapper;
     @Autowired
@@ -123,6 +123,7 @@ public class PddOrderServiceImpl implements PddOrderService {
             else
                 throw new IllegalArgumentException("无可用收款账号");
         }
+
         TPddGoods g = new TPddGoods();
         g.setAmount(order.getAmount());
         g.setPddAccountId(account.getId());
@@ -167,6 +168,21 @@ public class PddOrderServiceImpl implements PddOrderService {
         order.setNotifyTimes(0);
         order.setPddAccountId(account.getId());
         mapper.insert(order);
+        UserVo user = userService.getUserById(order.getUserId());
+        TOrder o = new TOrder();
+        o.setCreateTime(new Date());
+        o.setUserId(order.getUserId());
+        o.setAmount(order.getAmount());
+        o.setUnderorderno(order.getUserOrderSn());
+        o.setOnorderno(order.getOrderSn());
+        o.setOrderno(order.getId());
+        o.setMerchant(user.getUsername());
+        BigDecimal sysAmount = order.getAmount().multiply(user.getRate());
+        o.setSysamount(sysAmount);
+        BigDecimal userAmount = order.getAmount().subtract(sysAmount);
+        o.setUseramount(userAmount);
+        o.setStatus((byte) 0);
+        tOrderService.add(o);
         try {
         Sender<Map<String,String>> sender = new PddSender<>(preOrderUrl+"?pdduid="+pddUser.getPdduid(),vo,accessToken);
         Map<String,String> m = sender.send();
@@ -216,5 +232,29 @@ public class PddOrderServiceImpl implements PddOrderService {
     @Override
     public List<TPddOrder> getByTimeAndStatus(Map<String, Object> map) {
         return mapper.getByTimeAndStatus(map);
+    }
+
+    @Override
+    public List<TPddOrder> getAllByNotifyTimesAndStatus() {
+        return mapper.getAllByNotifyTimesAndStatus();
+    }
+
+    @Override
+    public void sendNotify(String id) {
+        TPddOrder order = getById(id);
+        Map<String,Object> params = new HashMap<>();
+        params.put("success","1");
+        params.put("orderSn",order.getId());
+        params.put("amount",order.getAmount());
+        params.put("userOrderSn",order.getUserOrderSn());
+        //params.put("endTime",order.getUpdateTime());
+        params.put("userId",order.getUserId());
+        PddSender<Map<String,Object>> sender = new PddSender<>(order.getNotifyUrl(),params,"");
+        Map<String, Object> result = sender.send();
+        if(result != null){
+            order.setNotifyTimes(6);
+            edit(order);
+        }
+
     }
 }

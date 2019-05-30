@@ -10,4 +10,6 @@ public interface TPddOrderMapper extends MyMapper<TPddOrder> {
     List<TPddOrder> getByTimeAndStatus(Map<String,Object> params);
     TPddOrder getByOrderSn(String orderSn);
     void updateByOrderSn(TPddOrder order);
+
+    List<TPddOrder> getAllByNotifyTimesAndStatus();
 }

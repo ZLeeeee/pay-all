@@ -71,7 +71,7 @@ public class Consumer {
             o.setStatus((byte) 1);
             TPddAccount account = accountService.findByid(order.getPddAccountId());
             accountService.updateAmount(order.getAmount(), account);
-            tOrderService.add(o);
+            tOrderService.updateaByUnderOrderNo(o);
             walletService.editAmount(wallet, userAmount.toString(), "0");
             orderService.edit(order1);
         }catch (Exception e){
@@ -83,6 +83,7 @@ public class Consumer {
         log.info("订单: "+content+"回调开始");
        /* Map<String,Object> map = JsonUtils.parseJSON2Map(content);
         String tid = (String) JsonUtils.parseJSON2Map((String) map.get("content")).get("tid");*/
+
         TPddOrder order =JSONObject.parseObject(content,TPddOrder.class);
 
         if (order == null)
@@ -95,7 +96,7 @@ public class Consumer {
             params.put("orderSn",order.getId());
             params.put("amount",order.getAmount());
             params.put("userOrderSn",order.getUserOrderSn());
-            params.put("endTime",order.getUpdateTime());
+            //params.put("endTime",order.getUpdateTime());
             params.put("userId",order.getUserId());
             Sender<Map<String, Object>> sender = new PddSender<>(order.getNotifyUrl(),params  ,null);
             Map<String, Object> result = sender.send();

@@ -47,5 +47,8 @@ public interface PddOrderService {
     List<TPddOrder> getByTimeAndStatus(Map<String,Object> map);
 
     TPddOrder getByOrderSn(String o);
+    List<TPddOrder> getAllByNotifyTimesAndStatus();
+
+    void sendNotify(String id);
 
 }

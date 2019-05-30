@@ -41,4 +41,9 @@
 
   </update>
 
+  <select id="getAllByNotifyTimesAndStatus"  resultMap="BaseResultMap">
+   select * from t_pdd_order where status > 1 and notify_times &lt; 6
+
+  </select>
+
 </mapper>

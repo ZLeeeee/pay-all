@@ -176,7 +176,39 @@ public class ScheduledTasks{
         accounts.parallelStream().forEach((a)->getSentOrder(a));
 
     }
+    //获取已支付订单
+   /* @Scheduled(cron = "0/5 * * * * ? ")
+    public void notifyUser(){
+        List<TPddOrder> list = service.getAllByNotifyTimesAndStatus();
+        list.parallelStream().forEach((a)->sendNotify(a));
 
+    }*/
+    private void sendNotify(TPddOrder order){
+        if (order == null)
+            return;
+        log.info("订单: "+order.getOrderSn()+"回调开始");
+        TPddOrder order1 = new TPddOrder();
+        order1.setId(order.getId());
+        try {
+            Map<String,Object> params = new HashMap<>();
+            params.put("success","1");
+            params.put("orderSn",order.getId());
+            params.put("amount",order.getAmount());
+            params.put("userOrderSn",order.getUserOrderSn());
+            params.put("userId",order.getUserId());
+            Sender<Map<String, Object>> sender = new PddSender<>(order.getNotifyUrl(),params  ,null);
+            Map<String, Object> result = sender.send();
+            if (result != null) {
+                order1.setNotifyTimes(6);
+                service.edit(order1);
+            }
+        }catch (Exception e){
+            order1.setNotifyTimes(1+order.getNotifyTimes());
+            service.edit(order1);
+            log.info("订单: "+order.getOrderSn()+"回调异常");
+        }
+        log.info("订单: "+order.getOrderSn()+"回调结束");
+    }
     private void getSentOrder(TPddAccount account){
         try {
             long now = System.currentTimeMillis()/1000;

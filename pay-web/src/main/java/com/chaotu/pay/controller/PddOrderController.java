@@ -60,4 +60,14 @@ public class PddOrderController {
         return result;
     }
 
+    @PostMapping("/send/notify/{id}")
+    public Message sendNotify(@PathVariable String id){
+        try{
+            service.sendNotify(id);
+        }catch (Exception e){
+            return ResponseUtil.responseBody("-1","回调异常");
+        }
+
+        return ResponseUtil.responseBody("111");
+    }
 }
