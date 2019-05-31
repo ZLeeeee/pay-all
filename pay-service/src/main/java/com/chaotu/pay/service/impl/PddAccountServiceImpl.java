@@ -74,7 +74,8 @@ public class PddAccountServiceImpl implements PddAccountService {
     }
 
     @Override
-    public void updateAmount(BigDecimal amount, TPddAccount account) {
+    public synchronized void updateAmount(BigDecimal amount, int id) {
+        TPddAccount account = findByid(id);
         BigDecimal todayAmount = account.getTodayAmount().add(amount);
         BigDecimal totalAmount = account.getTotalAmount().add(amount);
         account.setTodayAmount(todayAmount);
@@ -86,7 +87,7 @@ public class PddAccountServiceImpl implements PddAccountService {
     public void delete(TPddAccount account) {
         mapper.deleteByPrimaryKey(account);
         Example example = new Example(TPddGoods.class);
-        example.createCriteria().andEqualTo("pddAccountId",account.getId());
+        example.createCriteria().andEqualTo("id",account.getId());
         mapper.deleteByExample(example);
     }
 

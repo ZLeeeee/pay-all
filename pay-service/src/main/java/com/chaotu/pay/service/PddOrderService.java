@@ -50,5 +50,6 @@ public interface PddOrderService {
     List<TPddOrder> getAllByNotifyTimesAndStatus();
 
     void sendNotify(String id);
-
+    List<TPddOrder> findAll();
+    void updateByIsHistory(TPddOrder order);
 }

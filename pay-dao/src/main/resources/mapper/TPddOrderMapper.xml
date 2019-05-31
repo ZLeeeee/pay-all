@@ -22,6 +22,7 @@
     <result column="user_order_sn" jdbcType="VARCHAR" property="userOrderSn" />
     <result column="send_times" jdbcType="INTEGER" property="sendTimes" />
     <result column="pdd_account_id" jdbcType="INTEGER" property="pddAccountId" />
+    <result column="is_history" jdbcType="INTEGER" property="isHistory" />
   </resultMap>
 
   <select id="getByTimeAndStatus" parameterType="java.util.Map" resultMap="BaseResultMap">

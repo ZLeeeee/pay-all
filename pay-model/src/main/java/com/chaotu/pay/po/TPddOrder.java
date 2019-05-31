@@ -124,6 +124,18 @@ public class TPddOrder {
     @Column(name = "pdd_account_id")
     private Integer pddAccountId;
 
+
+    @Column(name = "is_history")
+    private int isHistory;
+
+    public int getIsHistory() {
+        return isHistory;
+    }
+
+    public void setIsHistory(int isHistory) {
+        this.isHistory = isHistory;
+    }
+
     /**
      * @return id
      */

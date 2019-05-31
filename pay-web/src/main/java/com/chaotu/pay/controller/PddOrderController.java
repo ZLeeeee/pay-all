@@ -1,13 +1,11 @@
 package com.chaotu.pay.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.chaotu.pay.common.utils.ResponseUtil;
-import com.chaotu.pay.po.TPddGoods;
 import com.chaotu.pay.po.TPddOrder;
-import com.chaotu.pay.service.PddGoodsService;
 import com.chaotu.pay.service.PddOrderService;
 import com.chaotu.pay.vo.Message;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +19,7 @@ public class PddOrderController {
     @Autowired
     PddOrderService service;
 
+
     @PostMapping("/pay")
     public Map<String,Object> all(@RequestBody TPddOrder order){
         try{
@@ -31,6 +30,7 @@ public class PddOrderController {
             Map<String,Object> resultMap = new HashMap<>();
             resultMap.put("success","0");
             resultMap.put("errCode","-1");
+            log.error("下单失败["+ JSON.toJSONString(order) +"]"+e);
             return resultMap;
         }
 

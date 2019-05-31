@@ -34,6 +34,7 @@
     <result column="paymentName" jdbcType="VARCHAR" property="paymentname" />
     <result column="extend" jdbcType="VARCHAR" property="extend" />
     <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="is_history" jdbcType="INTEGER" property="isHistory" />
   </resultMap>
   
   <select id="findAll" parameterType="com.chaotu.pay.vo.OrderVo" resultMap="BaseResultMap">
@@ -45,7 +46,7 @@
       and o.create_time &lt;= #{endTime}
     </if>
     <if test="orderno != null and orderno != ''">
-      and o.orderNo
+      and o.orderNo = #{orderno}
     </if>
     <if test="underorderno != null and underorderno != ''">
       and o.underOrderNo like CONCAT('%',#{underorderno},'%')
@@ -65,9 +66,13 @@
     <if test="channelPaymentId != null and channelPaymentId != ''">
       and o.channel_payment_id = #{channelPaymentId}
     </if>
-    <if test="status != null and status != ''">
+    <if test="status !=-1">
       and o.status = #{status}
     </if>
+    <if test="isHistory !=-1">
+      and o.is_history = #{isHistory}
+    </if>
+
     <if test="userId != null and userId != ''">
       and o.user_id = #{userId}
     </if>
@@ -83,7 +88,7 @@
       and o.create_time &lt;= #{endTime}
     </if>
     <if test="orderno != null and orderno != ''">
-      and o.orderNo
+      and o.orderNo = #{orderno}
     </if>
     <if test="underorderno != null and underorderno != ''">
       and o.underOrderNo like CONCAT('%',#{underorderno},'%')
@@ -103,11 +108,14 @@
     <if test="channelPaymentId != null and channelPaymentId != ''">
       and o.channel_payment_id = #{channelPaymentId}
     </if>
-    <if test="status != null and status != ''">
+    <if test=" status !=-1">
       and o.status = #{status}
     </if>
     <if test="userId != null and userId != ''">
       and o.user_id = #{userId}
+    </if>
+    <if test="isHistory !=-1">
+      and o.is_history = #{isHistory}
     </if>
   </select>
 

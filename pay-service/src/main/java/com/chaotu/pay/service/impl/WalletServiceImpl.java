@@ -30,17 +30,19 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public int editAmount(TWallet wallet, String amount, String option) {
+    public synchronized int editAmount(TWallet wallet, String amount, String option) {
         switch(option){
             case "0":
+
                 List<TWallet> wallets = tWalletMapper.select(wallet);
-                if(wallets.size()>0){
+                if (wallets.size() > 0) {
                     TWallet wallet1 = wallets.get(0);
                     BigDecimal amountD = new BigDecimal(amount);
                     wallet1.setResidualAmount(wallet1.getResidualAmount().add(amountD));
                     tWalletMapper.updateByPrimaryKey(wallet1);
                     return 1;
                 }
+
                 break;
             case "1":
                 List<TWallet> wallets2 = tWalletMapper.select(wallet);

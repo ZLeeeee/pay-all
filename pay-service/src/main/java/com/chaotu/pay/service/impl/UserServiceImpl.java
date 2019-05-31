@@ -11,6 +11,7 @@ import com.chaotu.pay.po.*;
 import com.chaotu.pay.service.UserService;
 import com.chaotu.pay.service.WalletService;
 import com.chaotu.pay.vo.*;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -92,14 +93,13 @@ public class UserServiceImpl implements UserService {
 
 
         PageHelper.startPage(pageVo.getPageNumber(), pageVo.getPageSize(), true);
-
-
         List<UserVo> userVoList = tUserMapper.getUserByRole(userVo);
         MyPageInfo info = new MyPageInfo(userVoList);
-        if(!CollectionUtils.isEmpty(userVoList)){
-            info.setTotalElements(countUserByRole(userVo));
+       /* if(!CollectionUtils.isEmpty(userVoList)){
+            //info.setTotalElements(countUserByRole(userVo));
+            //info.setTotal(pageObj.getTotal());
             info.setPageNum(pageVo.getPageNumber());
-        }
+        }*/
         return info;
 
     }

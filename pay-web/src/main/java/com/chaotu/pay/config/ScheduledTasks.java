@@ -5,9 +5,11 @@ import com.chaotu.pay.common.sender.PddSender;
 import com.chaotu.pay.common.sender.Sender;
 import com.chaotu.pay.common.utils.JsonUtils;
 import com.chaotu.pay.mq.MsgProducer;
+import com.chaotu.pay.po.TOrder;
 import com.chaotu.pay.po.TPddAccount;
 import com.chaotu.pay.po.TPddOrder;
 import com.chaotu.pay.po.TPddUser;
+import com.chaotu.pay.service.OrderService;
 import com.chaotu.pay.service.PddAccountService;
 import com.chaotu.pay.service.PddOrderService;
 import com.chaotu.pay.service.PddUserService;
@@ -75,6 +77,9 @@ public class ScheduledTasks {
 
     @Autowired
     private PddUserService userService;
+
+    @Autowired
+    private OrderService orderService;
 
     //发货
     @Scheduled(cron = "0/30 * * * * ? ")
@@ -223,8 +228,12 @@ public class ScheduledTasks {
             params.put("groupEndTime", now);
             PddMerchantSender<PddOrderResponse> sender = new PddMerchantSender<>(orderListUrl, params, account.getCookie());
             PddOrderResponse response = sender.send(PddOrderResponse.class);
-            if (response.getErrorCode() != 1000000)
+            if (response.getErrorCode() != 1000000){
+                account.setStatus(false);
+                account.setMark(response.getErrorMsg());
+                accountService.update(account);
                 return;
+            }
             List<Map<String, Object>> orderSnList = response.getResult().getPageItems();
             if (orderSnList != null) {
                 orderSnList.parallelStream().forEach((o) -> {
@@ -292,6 +301,9 @@ public class ScheduledTasks {
     @Scheduled(cron = "0 0 0 * * ?")
     public void updateTodayAmount() {
         accountService.updateTodayAmountByStatus();
+        TOrder order = new TOrder();
+        order.setIsHistory(1);
+        orderService.updateByIsHistory(order);
 
     }
 

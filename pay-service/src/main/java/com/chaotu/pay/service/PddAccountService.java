@@ -14,7 +14,7 @@ public interface PddAccountService {
     void insert(TPddAccount account);
     void update(TPddAccount account);
     TPddAccount findByid(int id);
-    void updateAmount(BigDecimal amount,TPddAccount account);
+    void updateAmount(BigDecimal amount,int id);
 
     MyPageInfo<TPddAccount> findAllByPage(PageVo pageVo);
 

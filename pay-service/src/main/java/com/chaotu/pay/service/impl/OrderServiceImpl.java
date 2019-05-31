@@ -7,6 +7,7 @@ import com.chaotu.pay.enums.ExceptionCode;
 import com.chaotu.pay.po.TOrder;
 import com.chaotu.pay.service.OrderService;
 import com.chaotu.pay.service.UserService;
+import com.chaotu.pay.service.WalletService;
 import com.chaotu.pay.vo.*;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -53,6 +54,7 @@ public class OrderServiceImpl implements OrderService {
         }
         UserVo userVo = userService.currentUser();
         String userId = userVo.getId();
+
         if("682265633886208".equalsIgnoreCase(userId))
             userId = null;
         if(null == orderVo)
@@ -121,6 +123,13 @@ public class OrderServiceImpl implements OrderService {
 
         criteria.andEqualTo("orderno",order.getOnorderno());
 
+        tOrderMapper.updateByExampleSelective(order,example);
+    }
+
+    @Override
+    public void updateByIsHistory(TOrder order) {
+        Example example = new Example(TOrder.class);
+        example.createCriteria().andEqualTo("isHistory",0);
         tOrderMapper.updateByExampleSelective(order,example);
     }
 }

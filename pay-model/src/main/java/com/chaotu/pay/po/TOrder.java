@@ -152,6 +152,22 @@ public class TOrder {
     @Column(name = "paymentName")
     private String paymentname;
 
+    public int getIsHistory() {
+        return isHistory;
+    }
+
+    public void setIsHistory(int isHistory) {
+        this.isHistory = isHistory;
+    }
+
+    /**
+     * 是否为历史
+     */
+    @Column(name = "is_history")
+    private int isHistory;
+
+
+
     /**
      * 扩展字段,存储json
      */

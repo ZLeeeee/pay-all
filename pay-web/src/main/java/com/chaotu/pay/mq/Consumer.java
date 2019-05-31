@@ -37,7 +37,7 @@ public class Consumer {
     @Autowired
     PddAccountService accountService;
 
-    @RabbitListener(queues = RabbitMQConfig.QUEUE_A)
+    @RabbitListener(id = "a",queues = RabbitMQConfig.QUEUE_A)
     public void processMessage(String content) {
         try {
             log.info("订单: " + content + "已支付");
@@ -63,8 +63,9 @@ public class Consumer {
             BigDecimal userAmount = order.getAmount().subtract(sysAmount);
             o.setUseramount(userAmount);
             o.setStatus((byte) 1);
-            TPddAccount account = accountService.findByid(order.getPddAccountId());
-            accountService.updateAmount(order.getAmount(), account);
+
+            accountService.updateAmount(order.getAmount(), order.getPddAccountId());
+
             tOrderService.updateaByOrderNo(o);
             walletService.editAmount(wallet, userAmount.toString(), "0");
             orderService.edit(order1);
@@ -74,6 +75,7 @@ public class Consumer {
     }
     @RabbitListener(queues = RabbitMQConfig.QUEUE_B)
     public void processMessage2(String content) {
+
         log.info("订单: "+content+"回调开始");
        /* Map<String,Object> map = JsonUtils.parseJSON2Map(content);
         String tid = (String) JsonUtils.parseJSON2Map((String) map.get("content")).get("tid");*/

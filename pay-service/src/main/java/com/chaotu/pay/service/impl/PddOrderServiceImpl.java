@@ -1,5 +1,6 @@
 package com.chaotu.pay.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.chaotu.pay.common.choser.Choser;
 import com.chaotu.pay.common.sender.PddSender;
@@ -56,6 +57,8 @@ public class PddOrderServiceImpl implements PddOrderService {
     @Autowired
     @Qualifier("pddAccountChoser")
     Choser<TPddAccount> pddAccountChoser;
+    @Autowired
+    private WalletService walletService;
     @Override
     public void add(TPddOrder order) {
         mapper.insert(order);
@@ -81,7 +84,7 @@ public class PddOrderServiceImpl implements PddOrderService {
     @Override
     public List<TPddOrder> getAllPaiedOrders() {
         Map<String,Object> map = new HashMap<>();
-        map.put("endTime",new Date(/*System.currentTimeMillis()-60*1000*30*/));
+        map.put("endTime",new Date(System.currentTimeMillis()-60*1000*2));
         map.put("status",2);
         return mapper.getByTimeAndStatus(map);
     }
@@ -108,6 +111,8 @@ public class PddOrderServiceImpl implements PddOrderService {
 
     @Override
     public Map<String,Object> pay(TPddOrder order) {
+
+        log.info("开始创建订单，订单信息["+ JSON.toJSON(order)+"]");
         TPddAccount account = null;
         if(pddAccountChoser.size()>0)
             account = pddAccountChoser.chose();
@@ -167,6 +172,7 @@ public class PddOrderServiceImpl implements PddOrderService {
         order.setAccessToken(accessToken);
         order.setNotifyTimes(0);
         order.setPddAccountId(account.getId());
+        order.setIsHistory(0);
         mapper.insert(order);
         UserVo user = userService.getUserById(order.getUserId());
         TOrder o = new TOrder();
@@ -218,6 +224,7 @@ public class PddOrderServiceImpl implements PddOrderService {
             resultMap.put("amount",order.getAmount());
             resultMap.put("userId",order.getUserId());
             resultMap.put("qrCode",sb.toString());
+            log.info("开始创建订单success，订单信息["+ JSON.toJSON(order)+"]");
             return resultMap;
         }catch (Exception e){
             order.setStatus(new Byte("-1"));
@@ -225,6 +232,7 @@ public class PddOrderServiceImpl implements PddOrderService {
             Map<String,Object> resultMap = new HashMap<>();
             resultMap.put("success","0");
             resultMap.put("errCode","-1");
+            log.info("开始创建订单success，订单信息["+ JSON.toJSON(order)+"]");
             return resultMap;
         }
     }
@@ -254,7 +262,26 @@ public class PddOrderServiceImpl implements PddOrderService {
         if(result != null){
             order.setNotifyTimes(6);
             edit(order);
+            TWallet wallet = new TWallet();
+            wallet.setUserId(order.getUserId());
+            wallet.setType("2");
+            UserVo userVo = userService.getUserById(order.getUserId());
+            BigDecimal sysAmount = order.getAmount().multiply(userVo.getRate());
+            BigDecimal userAmount = order.getAmount().subtract(sysAmount);
+            walletService.editAmount(wallet, userAmount.toString(), "0");
         }
 
+    }
+
+    @Override
+    public List<TPddOrder> findAll() {
+        return mapper.selectAll();
+    }
+
+    @Override
+    public void updateByIsHistory(TPddOrder order) {
+        Example example = new Example(TPddOrder.class);
+        example.createCriteria().andEqualTo("isHistory",0);
+        mapper.updateByExampleSelective(order,example);
     }
 }

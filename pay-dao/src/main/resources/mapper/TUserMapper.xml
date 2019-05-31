@@ -90,6 +90,9 @@
     <if test="username!=null and username!=''">
       and u.username like concat('%',#{username},'%')
     </if>
+    <if test="merchant!=null and merchant!=''">
+      and u.merchant like concat('%',#{merchant},'%')
+    </if>
 
     <if test="status!=null and status!=''">
       and u.status = #{status}

@@ -25,6 +25,7 @@ public class OrderVo {
      */
     private String userId;
 
+    private int isHistory;
 
     /**
      * 商户号
