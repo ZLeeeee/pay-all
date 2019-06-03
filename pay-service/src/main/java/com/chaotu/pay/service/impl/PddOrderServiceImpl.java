@@ -112,7 +112,7 @@ public class PddOrderServiceImpl implements PddOrderService {
 
 
     @Override
-    public Map<String,Object> pay(PddOrderQo orderQo) {
+    public Map<Object,Object> pay(PddOrderQo orderQo) {
 
         TPddOrder order = new TPddOrder();
         BeanUtils.copyProperties(orderQo,order);
@@ -138,7 +138,7 @@ public class PddOrderServiceImpl implements PddOrderService {
         sortedMap.put("userId",order.getUserId());
         sortedMap.put("amount",order.getAmount());
         sortedMap.put("userOrderSn",order.getUserOrderSn());
-        sortedMap.put("userOrderSn",order.getNotifyUrl());
+        sortedMap.put("notifyUrl",order.getNotifyUrl());
         String sign = DigestUtil.createSign(sortedMap, key);
         String qoSign = orderQo.getSign();
         if(!StringUtils.equals(sign,qoSign)) {
@@ -234,19 +234,21 @@ public class PddOrderServiceImpl implements PddOrderService {
             order.setStatus(new Byte("1"));
             order.setOrderSn(order_sn);
             mapper.updateByPrimaryKeySelective(order);
-            Map<String,Object> resultMap = new HashMap<>();
+            SortedMap<Object,Object> resultMap = new TreeMap<>();
             resultMap.put("success","1");
             resultMap.put("userOrderSn",order.getUserOrderSn());
             resultMap.put("orderSn",id);
             resultMap.put("amount",order.getAmount());
             resultMap.put("userId",order.getUserId());
             resultMap.put("qrCode",sb.toString());
+            String resSing = DigestUtil.createSign(resultMap,key);
+            resultMap.put("sign",resSing);
             log.info("开始创建订单success，订单信息["+ JSON.toJSON(order)+"]");
             return resultMap;
         }catch (Exception e){
             order.setStatus(new Byte("-1"));
             mapper.updateByPrimaryKey(order);
-            Map<String,Object> resultMap = new HashMap<>();
+            Map<Object,Object> resultMap = new HashMap<>();
             resultMap.put("success","0");
             resultMap.put("errCode","-1");
             log.info("开始创建订单success，订单信息["+ JSON.toJSON(order)+"]");

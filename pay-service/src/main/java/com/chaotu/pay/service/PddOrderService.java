@@ -18,7 +18,7 @@ public interface PddOrderService {
      * 创建订单
      * @param order
      */
-    Map<String,Object> pay(PddOrderQo order);
+    Map<Object,Object> pay(PddOrderQo order);
 
     /***
      * 修改

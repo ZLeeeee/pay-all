@@ -22,14 +22,14 @@ public class PddOrderController {
 
 
     @PostMapping("/pay")
-    public Map<String,Object> all(@RequestBody PddOrderQo order){
+    public Map<Object,Object> all(@RequestBody PddOrderQo order){
         try{
 
             order.setCreateTime(new Date());
-            Map<String,Object> resultMap = service.pay(order);
+            Map<Object,Object> resultMap = service.pay(order);
             return resultMap;
         }catch (Exception e){
-            Map<String,Object> resultMap = new HashMap<>();
+            Map<Object,Object> resultMap = new HashMap<>();
             resultMap.put("success","0");
             resultMap.put("errCode","-1");
             log.error("下单失败["+ JSON.toJSONString(order) +"]"+e);
