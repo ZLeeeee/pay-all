@@ -3,6 +3,7 @@ package com.chaotu.pay.mq;
 import com.alibaba.fastjson.JSONObject;
 import com.chaotu.pay.common.sender.PddSender;
 import com.chaotu.pay.common.sender.Sender;
+import com.chaotu.pay.common.utils.DigestUtil;
 import com.chaotu.pay.common.utils.JsonUtils;
 import com.chaotu.pay.common.utils.ThreadPoolUtil;
 import com.chaotu.pay.config.RabbitMQConfig;
@@ -16,9 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @Slf4j
@@ -87,13 +86,17 @@ public class Consumer {
         TPddOrder order1 = new TPddOrder();
         order1.setId(order.getId());
         try {
-            Map<String,Object> params = new HashMap<>();
+            SortedMap<Object,Object> params = new TreeMap<>();
             params.put("success","1");
             params.put("orderSn",order.getId());
             params.put("amount",order.getAmount());
             params.put("userOrderSn",order.getUserOrderSn());
             //params.put("endTime",order.getUpdateTime());
             params.put("userId",order.getUserId());
+            UserVo user = userService.getUserById(order.getUserId());
+            String key = user.getSignKey();
+            String sign = DigestUtil.createSign(params, key);
+            params.put("sign",sign);
             Sender<Map<String, Object>> sender = new PddSender<>(order.getNotifyUrl(),params  ,null);
             Map<String, Object> result = sender.send();
             if (result != null) {

@@ -232,6 +232,7 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(vo, tuser);
         String uuid32 = IDGeneratorUtils.getUUID32();
         tuser.setId(uuid32);
+        tuser.setSignKey(IDGeneratorUtils.getUUID32());
         tuser.setMerchant(IDGeneratorUtils.getFlowNum());
         String encryptPass = new BCryptPasswordEncoder().encode(vo.getPassword());
         tuser.setCreateTime(new Date());

@@ -50,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         if(!StringUtils.isEmpty(searchVo.getEndDate())){
-            orderVo.setEndTime(searchVo.getStartDate());
+            orderVo.setEndTime(searchVo.getEndDate());
         }
         UserVo userVo = userService.currentUser();
         String userId = userVo.getId();

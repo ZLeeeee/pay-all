@@ -12,5 +12,6 @@
     <result column="accessToken" jdbcType="VARCHAR" property="accesstoken" />
     <result column="extar" jdbcType="VARCHAR" property="extar" />
     <result column="mark" jdbcType="VARCHAR" property="mark" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
   </resultMap>
 </mapper>

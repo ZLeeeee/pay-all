@@ -3,6 +3,7 @@ package com.chaotu.pay.controller;
 import com.alibaba.fastjson.JSON;
 import com.chaotu.pay.common.utils.ResponseUtil;
 import com.chaotu.pay.po.TPddOrder;
+import com.chaotu.pay.qo.PddOrderQo;
 import com.chaotu.pay.service.PddOrderService;
 import com.chaotu.pay.vo.Message;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +22,9 @@ public class PddOrderController {
 
 
     @PostMapping("/pay")
-    public Map<String,Object> all(@RequestBody TPddOrder order){
+    public Map<String,Object> all(@RequestBody PddOrderQo order){
         try{
+
             order.setCreateTime(new Date());
             Map<String,Object> resultMap = service.pay(order);
             return resultMap;

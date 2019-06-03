@@ -5,15 +5,17 @@ import com.alibaba.fastjson.JSONObject;
 import com.chaotu.pay.common.choser.Choser;
 import com.chaotu.pay.common.sender.PddSender;
 import com.chaotu.pay.common.sender.Sender;
+import com.chaotu.pay.common.utils.DigestUtil;
 import com.chaotu.pay.common.utils.IDGeneratorUtils;
+import com.chaotu.pay.common.utils.MyBeanUtils;
 import com.chaotu.pay.dao.TPddOrderMapper;
 import com.chaotu.pay.po.*;
+import com.chaotu.pay.qo.PddOrderQo;
 import com.chaotu.pay.service.*;
-import com.chaotu.pay.vo.PddGoodsVo;
-import com.chaotu.pay.vo.PddOrderVo;
-import com.chaotu.pay.vo.PddPreOrderVo;
-import com.chaotu.pay.vo.UserVo;
+import com.chaotu.pay.vo.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -92,7 +94,7 @@ public class PddOrderServiceImpl implements PddOrderService {
     @Override
     public List<TPddOrder> getAllSentOrders() {
         Map<String,Object> map = new HashMap<>();
-        map.put("endTime",new Date(System.currentTimeMillis()-1000*3600*3));
+        map.put("endTime",new Date(System.currentTimeMillis()-1000*30*60));
         map.put("status",3);
         map.put("sendTimes",11);
         return mapper.getByTimeAndStatus(map);
@@ -110,8 +112,10 @@ public class PddOrderServiceImpl implements PddOrderService {
 
 
     @Override
-    public Map<String,Object> pay(TPddOrder order) {
+    public Map<String,Object> pay(PddOrderQo orderQo) {
 
+        TPddOrder order = new TPddOrder();
+        BeanUtils.copyProperties(orderQo,order);
         log.info("开始创建订单，订单信息["+ JSON.toJSON(order)+"]");
         TPddAccount account = null;
         if(pddAccountChoser.size()>0)
@@ -127,6 +131,19 @@ public class PddOrderServiceImpl implements PddOrderService {
                 account = pddAccountChoser.chose();
             else
                 throw new IllegalArgumentException("无可用收款账号");
+        }
+        UserVo user = userService.getUserById(orderQo.getUserId());
+        String key = user.getSignKey();
+        SortedMap<Object,Object> sortedMap= new TreeMap<>();
+        sortedMap.put("userId",order.getUserId());
+        sortedMap.put("amount",order.getAmount());
+        sortedMap.put("userOrderSn",order.getUserOrderSn());
+        sortedMap.put("userOrderSn",order.getNotifyUrl());
+        String sign = DigestUtil.createSign(sortedMap, key);
+        String qoSign = orderQo.getSign();
+        if(!StringUtils.equals(sign,qoSign)) {
+            log.info("签名验证失败:["+JSON.toJSONString(orderQo)+"]");
+            throw new IllegalArgumentException("签名验证失败");
         }
 
         TPddGoods g = new TPddGoods();
@@ -174,7 +191,7 @@ public class PddOrderServiceImpl implements PddOrderService {
         order.setPddAccountId(account.getId());
         order.setIsHistory(0);
         mapper.insert(order);
-        UserVo user = userService.getUserById(order.getUserId());
+
         TOrder o = new TOrder();
         o.setCreateTime(new Date());
         o.setUserId(order.getUserId());
@@ -265,6 +282,10 @@ public class PddOrderServiceImpl implements PddOrderService {
             TWallet wallet = new TWallet();
             wallet.setUserId(order.getUserId());
             wallet.setType("2");
+            OrderVo vo = new OrderVo();
+            vo.setUnderorderno(order.getUserOrderSn());
+            OrderVo orderVo = tOrderService.selectOneOrderDeails(vo);
+            tOrderService.updateStatus(orderVo);
             UserVo userVo = userService.getUserById(order.getUserId());
             BigDecimal sysAmount = order.getAmount().multiply(userVo.getRate());
             BigDecimal userAmount = order.getAmount().subtract(sysAmount);

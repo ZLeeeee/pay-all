@@ -117,6 +117,16 @@ public class TUser {
      */
     @Column(name = "parent_id")
     private String parentId;
+    @Column(name = "sign_key")
+    private String signKey;
+
+    public String getSignKey() {
+        return signKey;
+    }
+
+    public void setSignKey(String signKey) {
+        this.signKey = signKey;
+    }
 
     /**
      * @return id

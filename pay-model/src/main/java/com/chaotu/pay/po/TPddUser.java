@@ -40,6 +40,16 @@ public class TPddUser {
      */
     private String mark;
 
+    private String phone;
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     /**
      * @return id
      */

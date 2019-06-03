@@ -1,6 +1,8 @@
 package com.chaotu.pay.service;
 
 import com.chaotu.pay.po.TPddOrder;
+import com.chaotu.pay.qo.OrderQo;
+import com.chaotu.pay.qo.PddOrderQo;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +18,7 @@ public interface PddOrderService {
      * 创建订单
      * @param order
      */
-    Map<String,Object> pay(TPddOrder order);
+    Map<String,Object> pay(PddOrderQo order);
 
     /***
      * 修改

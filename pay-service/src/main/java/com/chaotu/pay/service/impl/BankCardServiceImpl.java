@@ -64,6 +64,7 @@ public class BankCardServiceImpl implements BankCradService {
         bankCards.setBranchname(bankCardVo.getBranchName());
         bankCards.setBankId(bankCardVo.getBankId());
         bankCards.setUserId(userService.currentUser().getId());
+        bankCards.setAccountname(bankCardVo.getAccountName());
         Example example = new Example(TBankCards.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("bankcardno",bankCardVo.getBankCardNo());

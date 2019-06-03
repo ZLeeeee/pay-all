@@ -109,7 +109,7 @@ public class WithdrawsServiceImpl implements WithdrawsService {
         withdraws.setCreateBy(userId);
         withdraws.setCreateTime(new Date());
         withdraws.setUserId(userId);
-        withdraws.setAccountname(userVo.getUsername());
+        withdraws.setAccountname(vo.getAccountname());
         walletService.editAmount(wallet,withdraws.getWithdrawamount().add( new BigDecimal(5)).toString(),"1");
         tWithdrawsMapper.insert(withdraws);
     }

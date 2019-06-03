@@ -1,7 +1,13 @@
 package com.chaotu.pay.common.utils;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
 
 /**
  * @Description: 加密工具类
@@ -55,4 +61,33 @@ public class DigestUtil {
         }
         return "";
     }
+    /**
+     * 微信支付签名算法sign
+     *
+     * @param
+     * @param parameters
+     * @return
+     */
+    public static String createSign(SortedMap<Object, Object> parameters, String key) {
+
+        StringBuffer sb = new StringBuffer();
+        Set es = parameters.entrySet();// 所有参与传参的参数按照accsii排序（升序）
+        Iterator it = es.iterator();
+        while (it.hasNext()) {
+            @SuppressWarnings("rawtypes")
+            Map.Entry entry = (Map.Entry) it.next();
+            String k = (String) entry.getKey();
+            Object v = entry.getValue();
+            if (null != v && !"".equals(v) && !"sign".equals(k)
+                    && !"key".equals(k)) {
+                sb.append(k + "=" + v + "&");
+            }
+        }
+        sb.append("key=" + key); //KEY是商户秘钥
+        String sign = DigestUtils.md5Hex(sb.toString())
+                .toUpperCase();
+        return sign; // D3A5D13E7838E1D453F4F2EA526C4766
+        // D3A5D13E7838E1D453F4F2EA526C4766
+    }
+
 }
