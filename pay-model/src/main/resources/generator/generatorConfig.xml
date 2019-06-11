@@ -33,7 +33,19 @@
         <!--<table schema="pay" tableName="t_pdd_user">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>-->
-        <table schema="pay" tableName="t_pdd_account">
+        <!--<table schema="pay" tableName="t_pdd_account">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>-->
+        <table schema="pay" tableName="t_yz_account">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="t_yz_user">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="t_yz_order">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="t_yz_user_address">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
         <!--<table schema="pay" tableName="t_user_role">
