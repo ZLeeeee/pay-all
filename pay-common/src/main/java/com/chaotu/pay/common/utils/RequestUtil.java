@@ -2,6 +2,9 @@ package com.chaotu.pay.common.utils;
 
 import com.google.gson.Gson;
 
+import java.net.URLEncoder;
+import java.util.Map;
+
 public class RequestUtil {
     //private static Logger log = Logger.getLogger(RequestUtil.class);
     private static RequestUtil instance;
@@ -40,6 +43,19 @@ public class RequestUtil {
             return (T) obj;
         }
         return null;
+    }
+
+    public static String createPostParamStr(Map<String, Object> payParam) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            for (Map.Entry entry : payParam.entrySet()) {
+                sb.append(URLEncoder.encode(entry.getKey().toString(), "UTF-8")).append("=").append(URLEncoder.encode(entry.getValue().toString(), "UTF-8")).append("&");
+            }
+            sb.deleteCharAt(sb.length() - 1);
+        }catch (Exception e){
+
+        }
+        return sb.toString();
     }
 
     /**

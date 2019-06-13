@@ -38,8 +38,8 @@ public class TYzUserAddress {
     /**
      * 国家类型
      */
-    @Column(name = "countryType")
-    private Integer countrytype;
+    @Column(name = "country_type")
+    private Integer countryType;
 
     /**
      * 区
@@ -102,6 +102,11 @@ public class TYzUserAddress {
      */
     @Column(name = "address_id")
     private Integer addressId;
+
+    /**
+     * ip
+     */
+    private String ip;
 
     /**
      * @return id
@@ -210,19 +215,19 @@ public class TYzUserAddress {
     /**
      * 获取国家类型
      *
-     * @return countryType - 国家类型
+     * @return country_type - 国家类型
      */
-    public Integer getCountrytype() {
-        return countrytype;
+    public Integer getCountryType() {
+        return countryType;
     }
 
     /**
      * 设置国家类型
      *
-     * @param countrytype 国家类型
+     * @param countryType 国家类型
      */
-    public void setCountrytype(Integer countrytype) {
-        this.countrytype = countrytype;
+    public void setCountryType(Integer countryType) {
+        this.countryType = countryType;
     }
 
     /**
@@ -435,5 +440,23 @@ public class TYzUserAddress {
      */
     public void setAddressId(Integer addressId) {
         this.addressId = addressId;
+    }
+
+    /**
+     * 获取ip
+     *
+     * @return ip - ip
+     */
+    public String getIp() {
+        return ip;
+    }
+
+    /**
+     * 设置ip
+     *
+     * @param ip ip
+     */
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 }

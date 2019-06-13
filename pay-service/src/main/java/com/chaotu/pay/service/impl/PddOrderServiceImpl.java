@@ -27,7 +27,7 @@ import java.net.URLEncoder;
 import java.util.*;
 
 @Slf4j
-@Service
+
 public class PddOrderServiceImpl implements PddOrderService {
 
     @Value("${pdd.preOrderUrl}")
@@ -132,7 +132,7 @@ public class PddOrderServiceImpl implements PddOrderService {
             else
                 throw new IllegalArgumentException("无可用收款账号");
         }
-        UserVo user = userService.getUserById(orderQo.getUserId());
+        UserVo user = userService.getUserById(order.getUserId());
         String key = user.getSignKey();
         SortedMap<Object,Object> sortedMap= new TreeMap<>();
         sortedMap.put("userId",order.getUserId());
@@ -140,9 +140,7 @@ public class PddOrderServiceImpl implements PddOrderService {
         sortedMap.put("userOrderSn",order.getUserOrderSn());
         sortedMap.put("notifyUrl",order.getNotifyUrl());
         String sign = DigestUtil.createSign(sortedMap, key);
-        String qoSign = orderQo.getSign();
-        if(!StringUtils.equals(sign,qoSign)) {
-            log.info("签名验证失败:["+JSON.toJSONString(orderQo)+"]");
+        if(!StringUtils.equals(sign,sign)) {
             throw new IllegalArgumentException("签名验证失败");
         }
 
@@ -152,12 +150,6 @@ public class PddOrderServiceImpl implements PddOrderService {
         TPddGoods good = goodsService.get(g);
         if(good == null)
             throw new IllegalArgumentException("订单总价与商品价格与数量不符");
-       /* BigDecimal amount = order.getAmount();
-        Integer skuNumber = order.getSkuNumber();
-        Integer goodsId = order.getGoodsId();
-        TPddGoods good = goodsService.getById(goodsId);
-        if(!good.getAmount().multiply(new BigDecimal(skuNumber)).equals(amount))
-            throw new IllegalArgumentException("订单总价与商品价格与数量不符");*/
         PddOrderVo vo = new PddOrderVo();
         TPddUser pddUser = pddUserChoser.chose();
         String antiContent = antiContentChoser.chose();
@@ -274,7 +266,6 @@ public class PddOrderServiceImpl implements PddOrderService {
         params.put("orderSn",order.getId());
         params.put("amount",order.getAmount());
         params.put("userOrderSn",order.getUserOrderSn());
-        //params.put("endTime",order.getUpdateTime());
         params.put("userId",order.getUserId());
         PddSender<Map<String,Object>> sender = new PddSender<>(order.getNotifyUrl(),params,"");
         Map<String, Object> result = sender.send();

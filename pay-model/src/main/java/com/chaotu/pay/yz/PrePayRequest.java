@@ -9,26 +9,28 @@ import java.util.List;
 @Data
 public class PrePayRequest {
 
-    private PrePayConfig config;
+    private PrePaySource source;
 
-    private TYzUserAddress delivery;
+    private Object usePayAsset;
+
+    private PrePayConfig config;
 
     private List<PrePayItems> items;
 
     private PrePaySeller seller;
 
-    private PrePayUmp ump;
+    private PrePayDelivery delivery;
 
-    private PrePaySource source;
+    private PrePayUmp ump;
 
     private String[] unavailableItems;
 
-    private Object usePayAsset;
 
-    public PrePayRequest(TYzUserAddress delivery, String kdtSessionId, String clientIp, int goodsId, int skuId, int kdtId, int price){
+    public PrePayRequest(TYzUserAddress address, String kdtSessionId, String clientIp, int goodsId, int skuId, int kdtId, int price){
 
         this.config = new PrePayConfig();
-        this.delivery = delivery;
+        this.delivery = new PrePayDelivery();
+        this.delivery.setAddress(address);
         this.items = new ArrayList<>(1);
         PrePayItems prePayItems = new PrePayItems();
         prePayItems.setPrice(price);

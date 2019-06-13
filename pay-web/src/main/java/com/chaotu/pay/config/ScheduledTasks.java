@@ -1,35 +1,33 @@
 package com.chaotu.pay.config;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.chaotu.pay.common.sender.GetSender;
 import com.chaotu.pay.common.sender.PddMerchantSender;
 import com.chaotu.pay.common.sender.PddSender;
 import com.chaotu.pay.common.sender.Sender;
 import com.chaotu.pay.common.utils.JsonUtils;
+import com.chaotu.pay.common.utils.RequestUtil;
 import com.chaotu.pay.mq.MsgProducer;
 import com.chaotu.pay.po.TOrder;
-import com.chaotu.pay.po.TPddAccount;
-import com.chaotu.pay.po.TPddOrder;
-import com.chaotu.pay.po.TPddUser;
-import com.chaotu.pay.service.OrderService;
-import com.chaotu.pay.service.PddAccountService;
-import com.chaotu.pay.service.PddOrderService;
-import com.chaotu.pay.service.PddUserService;
+import com.chaotu.pay.po.TYzAccount;
+import com.chaotu.pay.po.TYzOrder;
+import com.chaotu.pay.po.TYzUser;
+import com.chaotu.pay.service.*;
 import com.chaotu.pay.vo.PddMerchantParamsVo;
 import com.chaotu.pay.vo.PddOrderResponse;
+import com.google.gson.JsonArray;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
-@Component
+/*@Component
 @Configurable
-@EnableScheduling
+@EnableScheduling*/
 public class ScheduledTasks {
     /*  public ScheduledTasks (MsgProducer producer, PopClient client, PopAccessTokenClient accessTokenClient,@Value("${pdd.accessToken}") String accessToken){
           this.producer = producer;
@@ -53,18 +51,16 @@ public class ScheduledTasks {
             log.error("获取AccessToken失败",e.getMessage());
         }
     }*/
-    @Value("${pdd.confirmUrl}")
+    @Value("${yz.confirmUrl}")
     private String confirmUrl;
-    @Value("${pdd.cookie}")
-    private String cookie;
-    @Value("${pdd.sentUrl}")
+    @Value("${yz.sentUrl}")
     private String sentUrl;
-    @Value("${pdd.accessToken}")
-    private String accessToken;
-    @Value("${pdd.orderListUrl}")
+    @Value("${yz.sentUrl}")
+    private String getItemIdUrl;
+    @Value("${yz.getItemIdUrl}")
     private String orderListUrl;
     @Autowired
-    PddAccountService accountService;
+    YzAccountService accountService;
     @Autowired
     MsgProducer producer;
     /*    @Autowired
@@ -73,10 +69,10 @@ public class ScheduledTasks {
     /*@Autowired
     private PopClient client;*/
     @Autowired
-    private PddOrderService service;
+    private YzOrderService service;
 
     @Autowired
-    private PddUserService userService;
+    private YzUserService userService;
 
     @Autowired
     private OrderService orderService;
@@ -84,7 +80,7 @@ public class ScheduledTasks {
     //发货
     @Scheduled(cron = "0/30 * * * * ? ")
     public void reportCurrentByCron() {
-        List<TPddOrder> orders = service.getAllPaiedOrders();
+        List<TYzOrder> orders = service.getAllPaiedOrders();
 
         if (orders != null && !orders.isEmpty()) {
             orders.stream().parallel().forEach((o) -> send(o));
@@ -95,43 +91,42 @@ public class ScheduledTasks {
     //收货
     @Scheduled(cron = "0/30 * * * * ? ")
     public void confirmSend() {
-        List<TPddOrder> orders = service.getAllSentOrders();
+        List<TYzOrder> orders = service.getAllSentOrders();
 
         if (orders != null && !orders.isEmpty()) {
             orders.stream().parallel().forEach((o) -> {
-                log.info("收货开始,订单号: " + o.getOrderSn());
-                TPddOrder order1 = new TPddOrder();
+                log.info("收货开始,订单号: " + o.getOrderNo());
+                TYzOrder order1 = new TYzOrder();
                 order1.setId(o.getId());
                 try {
-                    TPddUser u = new TPddUser();
-                    u.setId(o.getPddUserId());
-                    TPddUser pddUser = userService.selectOne(u);
+                    TYzUser u = new TYzUser();
+                    u.setId(o.getYzUserId());
+                    TYzUser pddUser = userService.selectOne(u);
                     Map<String, String> params = new HashMap<>();
-                    Sender<Map<String, Object>> sender = new PddSender<>(confirmUrl + o.getOrderSn() + "/received?pdduid=" + pddUser.getPdduid(), params, pddUser.getAccesstoken());
+                    Sender<Map<String, Object>> sender = new PddSender<>(confirmUrl + o.getOrderNo() + "/received?pdduid=" + "", params, "");
                     Map<String, Object> result = sender.send();
                     if (result != null) {
                         order1.setStatus((byte) 4);
-                        service.edit(order1);
+                        service.update(order1);
                         log.info("收货成功");
                     } else if (o.getSendTimes() < 10) {
-                        log.error("收货失败,订单号:" + o.getOrderSn());
+                        log.error("收货失败,订单号:" + o.getOrderNo());
                         order1.setStatus((byte) 3);
                         order1.setSendTimes(o.getSendTimes() + 1);
-                        service.edit(order1);
-                        order1.setPddAccountId(o.getPddAccountId());
-                        order1.setOrderSn(o.getOrderSn());
+                        service.update(order1);
+                        order1.setYzAccountId(o.getYzAccountId());
+                        order1.setOrderNo(o.getOrderNo());
                         order1.setId(o.getId());
                         send(o);
                     }
                 } catch (Exception e) {
-                    log.error("收货失败,订单号:" + o.getOrderSn(), e.getMessage());
+                    log.error("收货失败,订单号:" + o.getOrderNo(), e.getMessage());
                     order1.setStatus((byte) 2);
                     order1.setSendTimes(o.getSendTimes() + 1);
-                    service.edit(order1);
-                    order1.setPddAccountId(o.getPddAccountId());
-                    order1.setOrderSn(o.getOrderSn());
+                    service.update(order1);
+                    order1.setYzAccountId(o.getYzAccountId());
+                    order1.setOrderNo(o.getOrderNo());
                     order1.setId(o.getId());
-                    //send(o);
                 }
                 //
             });
@@ -139,116 +134,40 @@ public class ScheduledTasks {
 
     }
 
-    /* @Scheduled(cron = "0/5 * * * * ? ")
-     public void getPaiedOrder(){
-         try {
-             PddOrderNumberListGetRequest request = new PddOrderNumberListGetRequest();
-             request.setOrderStatus(1);
-             PddOrderNumberListGetResponse response = client.syncInvoke(request, accessToken);
-             if(response.getOrderSnListGetResponse()==null)
-                 return;
-             List<PddOrderNumberListGetResponse.OrderSnListGetResponseOrderSnListItem> orderSnList = response.getOrderSnListGetResponse().getOrderSnList();
-             if (orderSnList != null) {
-                 orderSnList.stream().parallel().forEach((o)->{
-                     TPddOrder order = service.getByOrderSn(o.getOrderSn());
-                     TPddOrder order1 = new TPddOrder();
-                     order1.setId(order.getId());
-                     if(order.getStatus()==1&&order.getSendTimes()==0) {
-                         order1.setSendTimes(1);
-                         service.edit(order1);
-                         producer.sendAll(JsonUtils.getJsonStrFromObj(order));
-                     }else if (order.getCreateTime().before(new Date(System.currentTimeMillis()-1000*60*10))&&order.getSendTimes()<10) {
-                         send(order);
-                         order1.setSendTimes(order.getSendTimes()+1);
-                         service.edit(order1);
-                     }
-                        *//* order.setStatus(new Byte("2"));
-                        service.updateByOrderSn(order);*//*
-
-                });
-            }
-        }catch (Exception e){
-
-        }
-    }*/
     //获取已支付订单
     @Scheduled(cron = "0/5 * * * * ? ")
     public void getPaiedOrder2() {
-        List<TPddAccount> accounts = accountService.findAllByStatus();
+        List<TYzAccount> accounts = accountService.findAllByStatus();
         accounts.parallelStream().forEach((a) -> getSentOrder(a));
 
     }
-
-    //获取已支付订单
-   /* @Scheduled(cron = "0/5 * * * * ? ")
-    public void notifyUser(){
-        List<TPddOrder> list = service.getAllByNotifyTimesAndStatus();
-        list.parallelStream().forEach((a)->sendNotify(a));
-
-    }*/
-    private void sendNotify(TPddOrder order) {
-        if (order == null)
-            return;
-        log.info("订单: " + order.getOrderSn() + "回调开始");
-        TPddOrder order1 = new TPddOrder();
-        order1.setId(order.getId());
+    private void getSentOrder(TYzAccount account) {
         try {
-            Map<String, Object> params = new HashMap<>();
-            params.put("success", "1");
-            params.put("orderSn", order.getId());
-            params.put("amount", order.getAmount());
-            params.put("userOrderSn", order.getUserOrderSn());
-            params.put("userId", order.getUserId());
-            Sender<Map<String, Object>> sender = new PddSender<>(order.getNotifyUrl(), params, null);
-            Map<String, Object> result = sender.send();
-            if (result != null) {
-                order1.setNotifyTimes(6);
-                service.edit(order1);
-            }
-        } catch (Exception e) {
-            order1.setNotifyTimes(1 + order.getNotifyTimes());
-            service.edit(order1);
-            log.info("订单: " + order.getOrderSn() + "回调异常");
-        }
-        log.info("订单: " + order.getOrderSn() + "回调结束");
-    }
-
-    private void getSentOrder(TPddAccount account) {
-        try {
-            long now = System.currentTimeMillis() / 1000;
-            Map<String, Object> params = new HashMap<>();
-            params.put("isLucky", -1);
-            params.put("orderType", "1");
-            params.put("afterSaleType", "1");
-            params.put("pageNumber", 1);
-            params.put("remarkStatus", -1);
-            params.put("pageSize", 30);
-            params.put("source", "MMS");
-            params.put("groupStartTime", now - 3600 * 24 * 30);
-            params.put("groupEndTime", now);
-            PddMerchantSender<PddOrderResponse> sender = new PddMerchantSender<>(orderListUrl, params, account.getCookie());
-            PddOrderResponse response = sender.send(PddOrderResponse.class);
-            if (response.getErrorCode() != 1000000){
+            GetSender<Map<String,Object>> sender = new GetSender<>(orderListUrl, account.getCookie());
+            Map<String,Object> response = sender.send();
+            if (response.get("code")!=null&&(int)response.get("code")!=0){
                 account.setStatus(false);
-                account.setMark(response.getErrorMsg());
+                account.setMark((String) response.get("msg"));
                 accountService.update(account);
                 return;
             }
-            List<Map<String, Object>> orderSnList = response.getResult().getPageItems();
-            if (orderSnList != null) {
-                orderSnList.parallelStream().forEach((o) -> {
-                    TPddOrder order = service.getByOrderSn(o.get("order_sn").toString());
+            JSONObject data = (JSONObject)response.get("data");
+            JSONArray array = data.getJSONArray("list");
+            if (array != null) {
+                array.parallelStream().forEach((o) -> {
+                    JSONObject object = (JSONObject)o;
+                    TYzOrder order = service.getByOrderNo(object.get("orderNo").toString());
                     if (order != null) {
-                        TPddOrder order1 = new TPddOrder();
+                        TYzOrder order1 = new TYzOrder();
                         order1.setId(order.getId());
                         if (order.getStatus() == 1 && order.getSendTimes() == 0) {
                             order1.setSendTimes(1);
-                            service.edit(order1);
+                            service.update(order1);
                             producer.sendAll(JsonUtils.getJsonStrFromObj(order));
                         } else if (order.getCreateTime().before(new Date(System.currentTimeMillis() - 1000 * 60 * 10)) && order.getSendTimes() < 10) {
                             send(order);
                             order1.setSendTimes(order.getSendTimes() + 1);
-                            service.edit(order1);
+                            service.update(order1);
                         }
                     }
                        /* order.setStatus(new Byte("2"));
@@ -261,40 +180,46 @@ public class ScheduledTasks {
         }
     }
 
-    private void send(TPddOrder o) {
+    private void send(TYzOrder o) {
         try {
-            TPddAccount account = accountService.findByid(o.getPddAccountId());
-            PddMerchantParamsVo vo = new PddMerchantParamsVo();
-            List<Map<String, Object>> list = new ArrayList<>();
-            Map<String, Object> params = new HashMap<>();
-            params.put("orderSn", o.getOrderSn());
-            params.put("shippingId", 85);
-            params.put("shippingName", "圆通快递");
-            params.put("trackingNumber", String.valueOf(TRACKINGNUMBER.getAndIncrement()));
-            params.put("deliveryType", 0);
-            params.put("returnAddressId", account.getReturnAddressId());
-            params.put("importTime", 0);
-            list.add(params);
-            vo.setFunctionType(3);
-            vo.setIsSingleShipment(1);
-            vo.setOverWrite(1);
-            vo.setVirtualGoods(false);
-            vo.setOperateFrom("MMS");
-            vo.setOrderShipRequestList(list);
-
-            Sender<Map<String, Object>> sender = new PddMerchantSender<>(sentUrl, vo, account.getCookie());
-            Map<String, Object> result = sender.send();
-            if (result != null) {
-                if (Boolean.valueOf(result.get("success").toString())) {
-                    o.setStatus((byte) 3);
-                    service.edit(o);
-                }
+            TYzAccount account = accountService.findByid(o.getYzAccountId());
+            Map<String,Object> map = new HashMap<>();
+            map.put("orderNo",o.getOrderNo());
+            map.put("callSource","1");
+            String postParamStr1 = RequestUtil.createPostParamStr(map);
+            PddMerchantSender<Map<String,Object>> itemIdSender = new PddMerchantSender<>(getItemIdUrl,postParamStr1,account.getCookie());
+            Map<String, Object> send = itemIdSender.send();
+            JSONObject data = (JSONObject)send.get("data");
+            JSONArray itemDetailInfoList = data.getJSONArray("item_detail_info_list");
+            JSONObject itemDetailInfo = (JSONObject)itemDetailInfoList.get(0);
+            String itemId = itemDetailInfo.get("item_id").toString();
+            Map<String, Object> sendMap = createSendMap(o);
+            sendMap.put("deliveryItems[0][itemId]",itemId);
+            String postParamStr = RequestUtil.createPostParamStr(sendMap);
+            PddMerchantSender<Map<String,Object>> sender = new PddMerchantSender<>(sentUrl,postParamStr,account.getCookie());
+            Map<String, Object> send1 = sender.send();
+            if (send1 != null &&(int)send1.get("code")==0) {
+                o.setStatus((byte) 3);
+                service.update(o);
             }
         } catch (Exception e) {
             o.setStatus((byte) 3);
-            service.edit(o);
-            log.error("发货失败,订单号:" + o.getOrderSn(), e.getMessage());
+            service.update(o);
+            log.error("发货失败,订单号:" + o.getOrderNo(), e.getMessage());
         }
+    }
+
+    private static Map<String,Object> createSendMap(TYzOrder order){
+        Map<String,Object> map = new HashMap<>();
+        map.put("orderNo",order.getOrderNo());
+        map.put("deliveryItems[0][itemId]",System.currentTimeMillis()*19787);
+        map.put("deliveryItems[0][num]","1");
+        map.put("deliveryInfo[deliveryType]","12");
+        map.put("deliveryInfo[express][expressId]","2");
+        map.put("deliveryInfo[express][expressNo]",String.valueOf(TRACKINGNUMBER.getAndIncrement()));
+        map.put("wholeOrderDeliverTag","false");
+        map.put("callSource","1");
+        return  map;
     }
 
     //发货

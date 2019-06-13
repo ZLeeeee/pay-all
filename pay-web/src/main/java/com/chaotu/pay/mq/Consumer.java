@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @Slf4j
-@Component
+/*@Component*/
 public class Consumer {
     @Autowired
     PddGoodsService goodsService;

@@ -2,12 +2,11 @@ package com.chaotu.pay.common.choser;
 
 
 
-import com.chaotu.pay.dao.PddConfigMapper;
-import com.chaotu.pay.dao.TAccountUppersMapper;
-import com.chaotu.pay.dao.TPddAccountMapper;
-import com.chaotu.pay.dao.TPddUserMapper;
+import com.chaotu.pay.dao.*;
 import com.chaotu.pay.po.TPddAccount;
 import com.chaotu.pay.po.TPddUser;
+import com.chaotu.pay.po.TYzAccount;
+import com.chaotu.pay.po.TYzUser;
 import com.chaotu.pay.vo.AccountUppersVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,49 +21,28 @@ import java.util.concurrent.ConcurrentHashMap;
 @Configuration
 public class ChoserFactory {
     @Autowired
-    public ChoserFactory(TAccountUppersMapper uppersMapper, PddConfigMapper configMapper, TPddUserMapper mapper, TPddAccountMapper accountMapper){
+    public ChoserFactory(TYzAccountMapper accountMapper,TYzUserMapper userMapper){
         this.map = new ConcurrentHashMap<>();
-        List<AccountUppersVo> vos = uppersMapper.findAll();
-        Example example = new Example(TPddUser.class);
-        example.createCriteria().andEqualTo("status",true);
-        List<TPddUser> users = mapper.selectByExample(example);
-        List<String> antiContents = configMapper.getAllAntiContent();
-        List<String> createOrderTokens = configMapper.getAllCreateOrderToken();
-        TPddAccount account = new TPddAccount();
-        account.setStatus(true);
-        List<TPddAccount> accounts = accountMapper.select(account);
-        Choser upperChoser = new RoundChoser(vos);
-        Choser antiContentChoser = new RoundChoser(antiContents);
-        Choser createOrderTokenChoser = new RoundChoser(createOrderTokens);
-        Choser pddUserChoser = new RoundChoser(users);
-        Choser pddAccountChoser = new RoundChoser(accounts);
-        map.put("pddAccountChoser",pddAccountChoser);
-        map.put("pddUserChoser",pddUserChoser);
-        map.put("accountUpperChroser",upperChoser);
-        map.put("createOrderTokenChoser",createOrderTokenChoser);
-        map.put("antiContentChoser",antiContentChoser);
-
+        Example example = new Example(TYzAccount.class);
+        example.createCriteria().andEqualTo("status",1);
+        List<TYzAccount> tYzAccounts = accountMapper.selectByExample(example);
+        Example userEx = new Example(TYzUser.class);
+        example.createCriteria().andEqualTo("status",1);
+        List<TYzUser> tYzUsers = userMapper.selectByExample(userEx);
+        Choser<TYzAccount> yzAccountChoser = new RoundChoser<>(tYzAccounts);
+        Choser<TYzUser> yzUserChoser = new RoundChoser<>(tYzUsers);
+        map.put("yzAccountChoser",yzAccountChoser);
+        map.put("yzUserChoser",yzUserChoser);
     }
     private static Map<String,Choser> map;
-    @Bean("accountUpperChroser")
-    public Choser accountUpperChroser(){
-        return map.get("accountUpperChroser");
+    @Bean("yzAccountChoser")
+    public Choser yzAccountChoser(){
+        return map.get("yzAccountChoser");
     }
-    @Bean("pddUserChoser")
-    public Choser pddUserChoser(){
-        return map.get("pddUserChoser");
+    @Bean("yzUserChoser")
+    public Choser yzUserChoser(){
+        return map.get("yzUserChoser");
     }
-    @Bean("antiContentChoser")
-    public Choser antiContentChroser(){
-        return map.get("antiContentChoser");
-    }
-    @Bean("createOrderTokenChoser")
-    public Choser createOrderTokenChoser(){
-        return map.get("createOrderTokenChoser");
-    }
-    @Bean("pddAccountChoser")
-    public Choser pddAccountChoser(){
-        return map.get("pddAccountChoser");
-    }
+
 
 }

@@ -36,7 +36,10 @@
         <!--<table schema="pay" tableName="t_pdd_account">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>-->
-        <table schema="pay" tableName="t_yz_account">
+     <table schema="pay" tableName="t_config_param">
+         <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+     </table>
+        <!--<table schema="pay" tableName="t_yz_account">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
         <table schema="pay" tableName="t_yz_user">
@@ -47,7 +50,10 @@
         </table>
         <table schema="pay" tableName="t_yz_user_address">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
-        </table>
+        </table>-->
+       <!-- <table schema="pay" tableName="t_yz_user_address">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>-->
         <!--<table schema="pay" tableName="t_user_role">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>

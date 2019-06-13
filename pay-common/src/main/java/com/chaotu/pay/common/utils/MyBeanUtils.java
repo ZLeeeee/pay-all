@@ -4,6 +4,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @Description: 实体操作对象
@@ -11,7 +12,7 @@ import java.util.List;
  * @Author: yaochenglong
  */
 public class MyBeanUtils{
-
+    public static final ConcurrentHashMap<String,String> CONFIG_PARAM_MAP = new ConcurrentHashMap<>();
     /**
      * @Description: 将poList拷贝到List<T>中
      * @param poList 需要拷贝的对象列表

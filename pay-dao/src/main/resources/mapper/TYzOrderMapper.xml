@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chaotu.pay.dao.TYzOrderMapper">
+  <resultMap id="BaseResultMap" type="com.chaotu.pay.po.TYzOrder">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="sku_number" jdbcType="INTEGER" property="skuNumber" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="yz_user_id" jdbcType="INTEGER" property="yzUserId" />
+    <result column="extension" jdbcType="VARCHAR" property="extension" />
+    <result column="access_token" jdbcType="VARCHAR" property="accessToken" />
+    <result column="notify_url" jdbcType="VARCHAR" property="notifyUrl" />
+    <result column="notify_times" jdbcType="INTEGER" property="notifyTimes" />
+    <result column="user_order_no" jdbcType="VARCHAR" property="userOrderNo" />
+    <result column="send_times" jdbcType="INTEGER" property="sendTimes" />
+    <result column="yz_account_id" jdbcType="INTEGER" property="yzAccountId" />
+    <result column="is_history" jdbcType="INTEGER" property="isHistory" />
+  </resultMap>
+  <select id="getByTimeAndStatus" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select * from t_yz_order where create_time &lt;#{endTime} and status = #{status}
+    <if test="sendTimes!=null and sendTimes!=''">
+      and send_times &lt; #{sendTimes}
+    </if>
+  </select>
+
+  <select id="getByOrderNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+   select * from t_yz_order where order_no = #{orderSn}
+
+  </select>
+
+  <update id="updateByOrderNo" parameterType="com.chaotu.pay.po.TYzOrder">
+   update t_yz_order set status = #{status} where order_no = #{orderSn}
+
+  </update>
+
+  <select id="getAllByNotifyTimesAndStatus"  resultMap="BaseResultMap">
+   select * from t_yz_order where status > 1 and notify_times &lt; 6
+
+  </select>
+</mapper>

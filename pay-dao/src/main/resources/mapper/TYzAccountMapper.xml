@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chaotu.pay.dao.TYzAccountMapper">
+  <resultMap id="BaseResultMap" type="com.chaotu.pay.po.TYzAccount">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="kdt_session_id" jdbcType="VARCHAR" property="kdtSessionId" />
+    <result column="kdt_id" jdbcType="INTEGER" property="kdtId" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="limit_amount" jdbcType="DECIMAL" property="limitAmount" />
+    <result column="cookie" jdbcType="VARCHAR" property="cookie" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="extent" jdbcType="VARCHAR" property="extent" />
+    <result column="mark" jdbcType="VARCHAR" property="mark" />
+    <result column="today_amount" jdbcType="DECIMAL" property="todayAmount" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
+  </resultMap>
+</mapper>

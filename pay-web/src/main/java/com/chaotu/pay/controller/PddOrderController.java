@@ -25,7 +25,7 @@ public class PddOrderController {
     public Map<Object,Object> all(@RequestBody PddOrderQo order){
         try{
 
-            order.setCreateTime(new Date());
+
             Map<Object,Object> resultMap = service.pay(order);
             return resultMap;
         }catch (Exception e){

@@ -10,6 +10,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -18,38 +19,27 @@ import org.apache.http.util.EntityUtils;
 import java.nio.charset.Charset;
 
 @Slf4j
-public class PddMerchantSender<T> implements Sender<T> {
+public class GetSender<T> implements Sender<T> {
 
-    public PddMerchantSender(String url, Object param, String cookie){
+    public GetSender(String url, String cookie){
         HttpClient client = new DefaultHttpClient();
-        HttpPost post = new HttpPost(url);
-
-        post.setHeader("Cookie", cookie);
-        post.setHeader("User-Agent", "Mozilla/5.0 (Linux; Android 7.0; SM-G892A Build/NRD90M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/67.0.3396.87 Mobile Safari/537.36");
-        String str = null;
-        if(param instanceof String){
-            post.setHeader("Content-type", "application/x-www-form-urlencoded");
-            str = param.toString();
-        }else{
-            post.setHeader("Content-type", "application/json");
-            str = JSON.toJSONString(param);
-        }
-        StringEntity entity = new StringEntity( str, Charset.forName("UTF-8"));
+        HttpGet get = new HttpGet(url);
+        get.setHeader("Cookie", cookie);
+        get.setHeader("User-Agent", "Mozilla/5.0 (Linux; Android 7.0; SM-G892A Build/NRD90M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/67.0.3396.87 Mobile Safari/537.36");
         // 发送Json格式的数据请求
-        post.setEntity(entity);
         RequestConfig requestConfig = RequestConfig.custom()
                 .setConnectTimeout(5000).setConnectionRequestTimeout(2000)
                 .setSocketTimeout(5000).build();
-        post.setConfig(requestConfig);
-        this.post = post;
+        get.setConfig(requestConfig);
+        this.get = get;
         this.client = client;
     }
-    private HttpPost post;
+    private HttpGet get;
     private HttpClient client;
     @Override
     public T send() {
         try{
-            HttpResponse response = client.execute(post);
+            HttpResponse response = client.execute(get);
             int statusCode = response.getStatusLine().getStatusCode();
             if(statusCode != HttpStatus.SC_OK){
                 log.info("请求出错: "+statusCode);
@@ -68,7 +58,7 @@ public class PddMerchantSender<T> implements Sender<T> {
     @Override
     public T send(Class<T> clzz) {
         try{
-            HttpResponse response = client.execute(post);
+            HttpResponse response = client.execute(get);
             int statusCode = response.getStatusLine().getStatusCode();
             if(statusCode != HttpStatus.SC_OK){
                 log.info("请求出错: "+statusCode);
