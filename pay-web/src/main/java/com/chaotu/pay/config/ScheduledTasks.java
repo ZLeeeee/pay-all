@@ -61,7 +61,7 @@ public class ScheduledTasks {
     private OrderService orderService;
 
     //发货
-    @Scheduled(cron = "0/30 * * * * ? ")
+    //@Scheduled(cron = "0/30 * * * * ? ")
     public void reportCurrentByCron() {
         List<TYzOrder> orders = service.getAllPaiedOrders();
 
@@ -150,9 +150,9 @@ public class ScheduledTasks {
                             service.update(order1);
                             producer.sendAll(JsonUtils.getJsonStrFromObj(order));
                         } else if (order.getCreateTime().before(new Date(System.currentTimeMillis() - 1000 * 60 * 10)) && order.getSendTimes() < 10) {
-                            send(order);
-                            order1.setSendTimes(order.getSendTimes() + 1);
-                            service.update(order1);
+                            //send(order);
+                            //order1.setSendTimes(order.getSendTimes() + 1);
+                            //service.update(order1);
                         }
                     }
                 });

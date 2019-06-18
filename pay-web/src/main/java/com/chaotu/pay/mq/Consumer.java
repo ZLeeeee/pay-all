@@ -49,7 +49,7 @@ public class Consumer {
             /* order.setStatus((byte)2);*/
             TYzOrder order1 = new TYzOrder();
             order1.setId(order.getId());
-            order1.setStatus((byte) 2);
+            order1.setStatus((byte) 3);
             TWallet wallet = new TWallet();
             wallet.setUserId(order.getUserId());
             wallet.setType("2");
@@ -91,7 +91,6 @@ public class Consumer {
             params.put("orderNo",order.getId());
             params.put("amount",order.getAmount());
             params.put("userOrderNo",order.getUserOrderNo());
-            //params.put("endTime",order.getUpdateTime());
             params.put("userId",order.getUserId());
             UserVo user = userService.getUserById(order.getUserId());
             String key = user.getSignKey();
