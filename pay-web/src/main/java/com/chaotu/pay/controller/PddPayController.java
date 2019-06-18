@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@RestController
-@RequestMapping("/pddPay")
+/*@RestController
+@RequestMapping("/pddPay")*/
 public class PddPayController {
     @Value("${pdd.preOrderUrl}")
     private String preOrderUrl;

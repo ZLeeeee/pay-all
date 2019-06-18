@@ -5,7 +5,7 @@
     <!--
       WARNING - @mbg.generated
     -->
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="address_detail" jdbcType="VARCHAR" property="addressDetail" />
     <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
     <result column="city" jdbcType="VARCHAR" property="city" />
@@ -20,10 +20,10 @@
     <result column="province" jdbcType="VARCHAR" property="province" />
     <result column="source" jdbcType="INTEGER" property="source" />
     <result column="tel" jdbcType="VARCHAR" property="tel" />
-    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="user_name" jdbcType="VARCHAR" property="userName" />
     <result column="recipients" jdbcType="VARCHAR" property="recipients" />
-    <result column="address_id" jdbcType="INTEGER" property="addressId" />
+    <result column="address_id" jdbcType="BIGINT" property="addressId" />
     <result column="ip" jdbcType="VARCHAR" property="ip" />
   </resultMap>
 </mapper>

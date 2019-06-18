@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface YzUserService extends CRUDService<TYzUser> {
     List<TYzUser> findByStatus();
+    String login(TYzUser user);
 }

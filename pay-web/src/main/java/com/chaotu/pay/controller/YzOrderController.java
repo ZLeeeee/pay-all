@@ -2,30 +2,30 @@ package com.chaotu.pay.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.chaotu.pay.common.utils.ResponseUtil;
-import com.chaotu.pay.po.TPddOrder;
+import com.chaotu.pay.po.TYzOrder;
 import com.chaotu.pay.qo.PddOrderQo;
 import com.chaotu.pay.service.PddOrderService;
+import com.chaotu.pay.service.YzOrderService;
 import com.chaotu.pay.vo.Message;
+import com.chaotu.pay.vo.YzOrderVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 @Slf4j
-/*@RestController
-@RequestMapping("/pddOrder")*/
-public class PddOrderController {
+@RestController
+@RequestMapping("/yz/order")
+public class YzOrderController {
     @Autowired
-    PddOrderService service;
+    YzOrderService service;
 
 
     @PostMapping("/pay")
-    public Map<Object,Object> all(@RequestBody PddOrderQo order){
+    public Map<Object,Object> all(@RequestBody YzOrderVo order){
         try{
-
-
             Map<Object,Object> resultMap = service.pay(order);
             return resultMap;
         }catch (Exception e){
@@ -38,8 +38,8 @@ public class PddOrderController {
 
     }
     @PostMapping("/get")
-    public Message get(@RequestBody TPddOrder order){
-        return ResponseUtil.responseBody(service.get(order));
+    public Message get(@RequestBody TYzOrder order){
+        return ResponseUtil.responseBody(service.selectOne(order));
     }
 
     @PostMapping("/notify")
@@ -50,12 +50,12 @@ public class PddOrderController {
 
     @GetMapping("/get/{userOrderSn}")
     public Map<String, Object> getByUserOrderSn(@PathVariable String userOrderSn){
-        TPddOrder order = new TPddOrder();
-        order.setUserOrderSn(userOrderSn);
-        TPddOrder order1 = service.get(order);
+        TYzOrder order = new TYzOrder();
+        order.setUserOrderNo(userOrderSn);
+        TYzOrder order1 = service.selectOne(order);
         Map<String,Object> result = new HashMap<>();
         Map<String,Object> map = new HashMap<>();
-        map.put("orderSn",order1.getId());
+        map.put("orderNo",order1.getId());
         map.put("amount",order1.getAmount());
         map.put("success",(order1.getStatus()>1&&order1.getStatus()<5)?"1":"0");
         map.put("userOrderSn",userOrderSn);

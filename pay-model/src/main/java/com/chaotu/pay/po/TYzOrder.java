@@ -60,15 +60,13 @@ public class TYzOrder {
      * 拼多多用户id
      */
     @Column(name = "yz_user_id")
-    private Integer yzUserId;
+    private Long yzUserId;
 
     /**
      * 用户自定义Json
      */
     private String extension;
 
-    @Column(name = "access_token")
-    private String accessToken;
 
     /**
      * 回调地址
@@ -269,7 +267,7 @@ public class TYzOrder {
      *
      * @return yz_user_id - 拼多多用户id
      */
-    public Integer getYzUserId() {
+    public Long getYzUserId() {
         return yzUserId;
     }
 
@@ -278,7 +276,7 @@ public class TYzOrder {
      *
      * @param yzUserId 拼多多用户id
      */
-    public void setYzUserId(Integer yzUserId) {
+    public void setYzUserId(Long yzUserId) {
         this.yzUserId = yzUserId;
     }
 
@@ -300,19 +298,6 @@ public class TYzOrder {
         this.extension = extension;
     }
 
-    /**
-     * @return access_token
-     */
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    /**
-     * @param accessToken
-     */
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
 
     /**
      * 获取回调地址

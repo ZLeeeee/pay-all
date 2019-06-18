@@ -1,8 +1,9 @@
 package com.chaotu.pay.controller;
 
 import com.chaotu.pay.common.utils.ResponseUtil;
-import com.chaotu.pay.po.TPddGoods;
+import com.chaotu.pay.po.TYzGoods;
 import com.chaotu.pay.service.PddGoodsService;
+import com.chaotu.pay.service.YzGoodsService;
 import com.chaotu.pay.vo.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,14 +16,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*@RestController
-@RequestMapping("/goods")*/
-public class PddGoodsController {
+@RestController
+@RequestMapping("/yz/goods")
+public class YzGoodsController {
     @Autowired
-    PddGoodsService service;
+    YzGoodsService service;
     @PostMapping("/all")
     public Message all(){
-        List<TPddGoods> allGoods = service.getAllGoods();
+        List<TYzGoods> allGoods = service.findAll();
         List<Map<String,Object>> result = new ArrayList<>();
         allGoods.forEach((g)->{
             Map<String,Object> map = new HashMap<>();
@@ -34,18 +35,18 @@ public class PddGoodsController {
         return ResponseUtil.responseBody(result);
     }
     @PostMapping("/add")
-    public Message all(@RequestBody TPddGoods goods){
-        service.add(goods);
+    public Message all(@RequestBody TYzGoods goods){
+        service.insert(goods);
         return ResponseUtil.responseBody("添加成功");
     }
 
-    @PostMapping("/edit")
-    public Message edit(@RequestBody TPddGoods goods){
-        service.edit(goods);
+    @PostMapping("/update")
+    public Message edit(@RequestBody TYzGoods goods){
+        service.update(goods);
         return ResponseUtil.responseBody("修改成功");
     }
     @PostMapping("/get")
-    public Message get(@RequestBody TPddGoods goods){
+    public Message get(@RequestBody TYzGoods goods){
         return ResponseUtil.responseBody(service.findByCondition(goods));
     }
 }

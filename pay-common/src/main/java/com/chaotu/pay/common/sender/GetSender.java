@@ -1,7 +1,6 @@
 package com.chaotu.pay.common.sender;
 
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.parser.Feature;
@@ -11,12 +10,8 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-
-import java.nio.charset.Charset;
 
 @Slf4j
 public class GetSender<T> implements Sender<T> {
@@ -45,7 +40,6 @@ public class GetSender<T> implements Sender<T> {
                 log.info("请求出错: "+statusCode);
             }else{
                 String result = EntityUtils.toString(response.getEntity(),"UTF-8");
-
                 return JSONObject.parseObject(result,new TypeReference<T>(){},Feature.IgnoreNotMatch );
             }
         } catch (Exception e) {
@@ -56,7 +50,7 @@ public class GetSender<T> implements Sender<T> {
     }
 
     @Override
-    public T send(Class<T> clzz) {
+    public Object send(Class<T> clzz) {
         try{
             HttpResponse response = client.execute(get);
             int statusCode = response.getStatusLine().getStatusCode();
@@ -64,6 +58,8 @@ public class GetSender<T> implements Sender<T> {
                 log.info("请求出错: "+statusCode);
             }else{
                 String result = EntityUtils.toString(response.getEntity(),"UTF-8");
+                if(String.class.equals(clzz))
+                    return result;
                 return JSONObject.parseObject(result,clzz);
             }
         } catch (Exception e) {

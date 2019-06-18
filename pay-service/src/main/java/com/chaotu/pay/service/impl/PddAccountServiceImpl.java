@@ -17,7 +17,7 @@ import tk.mybatis.mapper.entity.Example;
 import java.math.BigDecimal;
 import java.util.List;
 @Slf4j
-@Service
+//@Service
 public class PddAccountServiceImpl implements PddAccountService {
     @Autowired
     TPddAccountMapper mapper;

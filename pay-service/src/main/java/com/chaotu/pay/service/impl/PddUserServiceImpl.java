@@ -12,7 +12,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
 @Slf4j
-@Service
+//@Service
 public class PddUserServiceImpl implements PddUserService {
     @Autowired
     @Qualifier("pddUserChoser")

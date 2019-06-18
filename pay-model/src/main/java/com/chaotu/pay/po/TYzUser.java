@@ -6,10 +6,10 @@ import javax.persistence.*;
 public class TYzUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     /**
-     * 拼多多用户id
+     * 有赞用户sessionid
      */
     @Column(name = "kdt_sessionId")
     private String kdtSessionid;
@@ -42,30 +42,30 @@ public class TYzUser {
     /**
      * @return id
      */
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
     /**
      * @param id
      */
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
     /**
-     * 获取拼多多用户id
+     * 获取有赞用户sessionid
      *
-     * @return kdt_sessionId - 拼多多用户id
+     * @return kdt_sessionId - 有赞用户sessionid
      */
     public String getKdtSessionid() {
         return kdtSessionid;
     }
 
     /**
-     * 设置拼多多用户id
+     * 设置有赞用户sessionid
      *
-     * @param kdtSessionid 拼多多用户id
+     * @param kdtSessionid 有赞用户sessionid
      */
     public void setKdtSessionid(String kdtSessionid) {
         this.kdtSessionid = kdtSessionid;

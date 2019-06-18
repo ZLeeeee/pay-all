@@ -66,7 +66,7 @@ public class PddMerchantSender<T> implements Sender<T> {
     }
 
     @Override
-    public T send(Class<T> clzz) {
+    public Object send(Class<T> clzz) {
         try{
             HttpResponse response = client.execute(post);
             int statusCode = response.getStatusLine().getStatusCode();

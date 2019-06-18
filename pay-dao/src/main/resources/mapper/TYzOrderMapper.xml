@@ -16,7 +16,6 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="yz_user_id" jdbcType="INTEGER" property="yzUserId" />
     <result column="extension" jdbcType="VARCHAR" property="extension" />
-    <result column="access_token" jdbcType="VARCHAR" property="accessToken" />
     <result column="notify_url" jdbcType="VARCHAR" property="notifyUrl" />
     <result column="notify_times" jdbcType="INTEGER" property="notifyTimes" />
     <result column="user_order_no" jdbcType="VARCHAR" property="userOrderNo" />

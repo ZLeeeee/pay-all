@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.chaotu.pay.common.sender.GetSender;
 import com.chaotu.pay.common.sender.PddMerchantSender;
-import com.chaotu.pay.common.sender.PddSender;
 import com.chaotu.pay.common.sender.Sender;
 import com.chaotu.pay.common.utils.JsonUtils;
 import com.chaotu.pay.common.utils.RequestUtil;
@@ -13,61 +12,45 @@ import com.chaotu.pay.po.TOrder;
 import com.chaotu.pay.po.TYzAccount;
 import com.chaotu.pay.po.TYzOrder;
 import com.chaotu.pay.po.TYzUser;
-import com.chaotu.pay.service.*;
-import com.chaotu.pay.vo.PddMerchantParamsVo;
-import com.chaotu.pay.vo.PddOrderResponse;
-import com.google.gson.JsonArray;
+import com.chaotu.pay.service.OrderService;
+import com.chaotu.pay.service.YzAccountService;
+import com.chaotu.pay.service.YzOrderService;
+import com.chaotu.pay.service.YzUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import java.util.*;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
-/*@Component
+@Component
 @Configurable
-@EnableScheduling*/
+@EnableScheduling
 public class ScheduledTasks {
-    /*  public ScheduledTasks (MsgProducer producer, PopClient client, PopAccessTokenClient accessTokenClient,@Value("${pdd.accessToken}") String accessToken){
-          this.producer = producer;
-          this.client = client;
-          try{
 
-              this.accessToken = accessToken;
-             *//* PddLogisticsCompaniesGetRequest request = new PddLogisticsCompaniesGetRequest();
-            PddLogisticsCompaniesGetResponse response = client.syncInvoke(request);
-            log.info("订单公司: "+JsonUtils.getJosnFromObject(response));
-
-            PddRefundAddressListGetRequest getRequest = new PddRefundAddressListGetRequest();
-            PddRefundAddressListGetResponse getResponse = client.syncInvoke(getRequest, accessToken);
-            log.info("退货地址: "+JsonUtils.getJosnFromObject(getResponse));
-            PddPmcUserPermitRequest permitRequest = new PddPmcUserPermitRequest();
-            permitRequest.setTopics("pdd_trade_TradeConfirmed");
-            PddPmcUserPermitResponse permitResponse = client.syncInvoke(permitRequest, accessToken);
-            System.out.println("订阅消息: "+JsonUtils.getJosnFromObject(permitResponse));*//*
-
-        }catch (Exception e){
-            log.error("获取AccessToken失败",e.getMessage());
-        }
-    }*/
     @Value("${yz.confirmUrl}")
     private String confirmUrl;
     @Value("${yz.sentUrl}")
     private String sentUrl;
-    @Value("${yz.sentUrl}")
-    private String getItemIdUrl;
     @Value("${yz.getItemIdUrl}")
+    private String getItemIdUrl;
+    @Value("${yz.orderListUrl}")
     private String orderListUrl;
     @Autowired
     YzAccountService accountService;
     @Autowired
     MsgProducer producer;
-    /*    @Autowired
-        private MsgProducer producer;*/
+
     private static final AtomicLong TRACKINGNUMBER = new AtomicLong(821267789900L);
-    /*@Autowired
-    private PopClient client;*/
+
     @Autowired
     private YzOrderService service;
 
@@ -101,11 +84,11 @@ public class ScheduledTasks {
                 try {
                     TYzUser u = new TYzUser();
                     u.setId(o.getYzUserId());
-                    TYzUser pddUser = userService.selectOne(u);
-                    Map<String, String> params = new HashMap<>();
-                    Sender<Map<String, Object>> sender = new PddSender<>(confirmUrl + o.getOrderNo() + "/received?pdduid=" + "", params, "");
+                    TYzUser yzUser = userService.selectOne(u);
+                    TYzAccount account = accountService.findByid(o.getYzAccountId());
+                    Sender<Map<String, Object>> sender = new GetSender<>(confirmUrl + "?order_no=" + o.getOrderNo() + "&kdt_id=" + account.getKdtId(), yzUser.getCookie());
                     Map<String, Object> result = sender.send();
-                    if (result != null) {
+                    if (result != null && result.get("code").equals(0)) {
                         order1.setStatus((byte) 4);
                         service.update(order1);
                         log.info("收货成功");
@@ -141,21 +124,23 @@ public class ScheduledTasks {
         accounts.parallelStream().forEach((a) -> getSentOrder(a));
 
     }
+
     private void getSentOrder(TYzAccount account) {
         try {
-            GetSender<Map<String,Object>> sender = new GetSender<>(orderListUrl, account.getCookie());
-            Map<String,Object> response = sender.send();
-            if (response.get("code")!=null&&(int)response.get("code")!=0){
-                account.setStatus(false);
-                account.setMark((String) response.get("msg"));
+            GetSender<Map<String, Object>> sender = new GetSender<>(orderListUrl, account.getCookie());
+            Map<String, Object> response = sender.send();
+            if (response.get("code") != null && (int) response.get("code") != 0) {
+                if(!"ES查询服务化请求异常".equals(response.get("msg")))
+                    account.setStatus(false);
+                account.setMark(response.get("code")+(String) response.get("msg"));
                 accountService.update(account);
                 return;
             }
-            JSONObject data = (JSONObject)response.get("data");
+            JSONObject data = (JSONObject) response.get("data");
             JSONArray array = data.getJSONArray("list");
             if (array != null) {
                 array.parallelStream().forEach((o) -> {
-                    JSONObject object = (JSONObject)o;
+                    JSONObject object = (JSONObject) o;
                     TYzOrder order = service.getByOrderNo(object.get("orderNo").toString());
                     if (order != null) {
                         TYzOrder order1 = new TYzOrder();
@@ -170,9 +155,6 @@ public class ScheduledTasks {
                             service.update(order1);
                         }
                     }
-                       /* order.setStatus(new Byte("2"));
-                        service.updateByOrderSn(order);*/
-
                 });
             }
         } catch (Exception e) {
@@ -183,22 +165,22 @@ public class ScheduledTasks {
     private void send(TYzOrder o) {
         try {
             TYzAccount account = accountService.findByid(o.getYzAccountId());
-            Map<String,Object> map = new HashMap<>();
-            map.put("orderNo",o.getOrderNo());
-            map.put("callSource","1");
+            Map<String, Object> map = new HashMap<>();
+            map.put("orderNo", o.getOrderNo());
+            map.put("callSource", "1");
             String postParamStr1 = RequestUtil.createPostParamStr(map);
-            PddMerchantSender<Map<String,Object>> itemIdSender = new PddMerchantSender<>(getItemIdUrl,postParamStr1,account.getCookie());
+            PddMerchantSender<Map<String, Object>> itemIdSender = new PddMerchantSender<>(getItemIdUrl, postParamStr1, account.getCookie());
             Map<String, Object> send = itemIdSender.send();
-            JSONObject data = (JSONObject)send.get("data");
+            JSONObject data = (JSONObject) send.get("data");
             JSONArray itemDetailInfoList = data.getJSONArray("item_detail_info_list");
-            JSONObject itemDetailInfo = (JSONObject)itemDetailInfoList.get(0);
+            JSONObject itemDetailInfo = (JSONObject) itemDetailInfoList.get(0);
             String itemId = itemDetailInfo.get("item_id").toString();
             Map<String, Object> sendMap = createSendMap(o);
-            sendMap.put("deliveryItems[0][itemId]",itemId);
+            sendMap.put("deliveryItems[0][itemId]", itemId);
             String postParamStr = RequestUtil.createPostParamStr(sendMap);
-            PddMerchantSender<Map<String,Object>> sender = new PddMerchantSender<>(sentUrl,postParamStr,account.getCookie());
+            PddMerchantSender<Map<String, Object>> sender = new PddMerchantSender<>(sentUrl, postParamStr, account.getCookie());
             Map<String, Object> send1 = sender.send();
-            if (send1 != null &&(int)send1.get("code")==0) {
+            if (send1 != null && (int) send1.get("code") == 0) {
                 o.setStatus((byte) 3);
                 service.update(o);
             }
@@ -209,17 +191,17 @@ public class ScheduledTasks {
         }
     }
 
-    private static Map<String,Object> createSendMap(TYzOrder order){
-        Map<String,Object> map = new HashMap<>();
-        map.put("orderNo",order.getOrderNo());
-        map.put("deliveryItems[0][itemId]",System.currentTimeMillis()*19787);
-        map.put("deliveryItems[0][num]","1");
-        map.put("deliveryInfo[deliveryType]","12");
-        map.put("deliveryInfo[express][expressId]","2");
-        map.put("deliveryInfo[express][expressNo]",String.valueOf(TRACKINGNUMBER.getAndIncrement()));
-        map.put("wholeOrderDeliverTag","false");
-        map.put("callSource","1");
-        return  map;
+    private static Map<String, Object> createSendMap(TYzOrder order) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("orderNo", order.getOrderNo());
+        map.put("deliveryItems[0][itemId]", System.currentTimeMillis() * 19787);
+        map.put("deliveryItems[0][num]", "1");
+        map.put("deliveryInfo[deliveryType]", "12");
+        map.put("deliveryInfo[express][expressId]", "2");
+        map.put("deliveryInfo[express][expressNo]", String.valueOf(TRACKINGNUMBER.getAndIncrement()));
+        map.put("wholeOrderDeliverTag", "false");
+        map.put("callSource", "1");
+        return map;
     }
 
     //发货

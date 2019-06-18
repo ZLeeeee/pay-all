@@ -56,7 +56,7 @@ public class PddSender<T> implements Sender<T> {
         return null;
     }
     @Override
-    public T send(Class<T> clzz) {
+    public Object send(Class<T> clzz) {
         try{
             HttpResponse response = client.execute(post);
             int statusCode = response.getStatusLine().getStatusCode();

@@ -23,7 +23,12 @@
         <sqlMapGenerator targetPackage="mapper" targetProject="../pay-dao/src/main/resources"/>
 
         <javaClientGenerator targetPackage="com.chaotu.pay.dao" targetProject="../pay-dao/src/main/java" type="XMLMAPPER"/>
-
+        <table schema="pay" tableName="t_yz_user_address">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table schema="pay" tableName="t_yz_user">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
      <!--   <table schema="pay" tableName="t_pdd_goods">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
@@ -36,12 +41,10 @@
         <!--<table schema="pay" tableName="t_pdd_account">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>-->
-     <table schema="pay" tableName="t_config_param">
+     <!--<table schema="pay" tableName="t_config_param">
          <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
-     </table>
-        <!--<table schema="pay" tableName="t_yz_account">
-            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
-        </table>
+     </table>-->
+        <!--
         <table schema="pay" tableName="t_yz_user">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>

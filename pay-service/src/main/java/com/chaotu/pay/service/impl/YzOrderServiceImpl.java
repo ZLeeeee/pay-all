@@ -100,7 +100,7 @@ public class YzOrderServiceImpl implements YzOrderService {
         TYzUserAddress ua = new TYzUserAddress();
         ua.setUserId(yzUser.getId());
         TYzUserAddress userAddress = userAddressService.selectOne(ua);
-        PrePayRequest request = new PrePayRequest(userAddress,account.getKdtSessionId(),userAddress.getIp(),goods.getId(),goods.getSkuId(),account.getKdtId(),order.getAmount().multiply(new BigDecimal(100)).intValue());
+        PrePayRequest request = new PrePayRequest(userAddress,account.getKdtSessionId(),userAddress.getIp(),goods.getGoodsId(),goods.getSkuId(),account.getKdtId(),order.getAmount().multiply(new BigDecimal(100)).intValue());
         PddMerchantSender<Map<String,Object>> sender = new PddMerchantSender<>(preOrderUrl,request,yzUser.getCookie());
         Map<String,Object> map = sender.send();
         JSONObject jsonObject = (JSONObject)map.get("data");
@@ -111,14 +111,18 @@ public class YzOrderServiceImpl implements YzOrderService {
         order.setId(id);
         order.setGoodsId(goods.getId());
         order.setYzAccountId(account.getId());
+        order.setYzUserId(yzUser.getId());
         order.setStatus(new Byte("0"));
         order.setSkuNumber(1);
         order.setNotifyTimes(0);
         order.setIsHistory(0);
         order.setOrderNo(orderNo);
+        order.setSendTimes(0);
+        Date now = new Date();
+        order.setCreateTime(now);
         insert(order);
         TOrder o = new TOrder();
-        o.setCreateTime(new Date());
+        o.setCreateTime(now);
         o.setUserId(order.getUserId());
         o.setAmount(order.getAmount());
         o.setUnderorderno(order.getUserOrderNo());

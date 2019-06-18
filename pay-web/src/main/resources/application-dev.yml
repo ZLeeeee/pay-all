@@ -21,9 +21,10 @@ yz:
   confirmUrl: https://h5.youzan.com/wsctrade/order/confirmReceive.json
   sentUrl: https://www.youzan.com/v2/trade/newOrderDelivery/delivery.json
   orderListUrl: https://www.youzan.com/v4/trade/order/getList.json?buy_way=all&express_type=all&feedback=all&is_star=all&order_label=order_no&order_source=all&p=1&state=tosend&type=all
-  goodsListUrl: https://www.youzan.com/v4/goods/goods/list.json
+  goodsListUrl: https://www.youzan.com/v4/goods/goods/list.json?p=1&pageSize=20&keyword=&disPlayOnEndTime=1557504000000&orderby=created_time&order=desc
   goodsDetailUrl: https://www.youzan.com/v2/showcase/goods/mallItem.json
   getItemIdUrl: https://www.youzan.com/v2/trade/newOrderDelivery/deliveryWindow.json
+  userAddressUrl: https://h5.youzan.com/wsctrade/order/address/list?switchable=false
 server:
   port: 8080
   servlet:

@@ -2,6 +2,10 @@ package com.chaotu.pay.constant;
 
 public interface CommonConstant {
 
+    String KDTSESSIONID = "KDTSESSIONID";
+    String ADDRESS_LIST = "addressList";
+    String KDT_ID = "_kdt_id_";
+
     /**
      * 用户默认头像
      */

@@ -37,4 +37,9 @@ public class YzGoodsServiceImpl implements YzGoodsService {
     public void update(TYzGoods tYzGoods) {
         goodsMapper.updateByPrimaryKeySelective(tYzGoods);
     }
+
+    @Override
+    public List<TYzGoods> findByCondition(TYzGoods goods) {
+        return goodsMapper.select(goods);
+    }
 }

@@ -6,7 +6,7 @@ import javax.persistence.*;
 public class TYzUserAddress {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     /**
      * 住址详情
@@ -84,7 +84,7 @@ public class TYzUserAddress {
      * 有赞用户id
      */
     @Column(name = "user_id")
-    private Integer userId;
+    private Long userId;
 
     /**
      * 有赞用户名
@@ -101,7 +101,7 @@ public class TYzUserAddress {
      * 地址id
      */
     @Column(name = "address_id")
-    private Integer addressId;
+    private Long addressId;
 
     /**
      * ip
@@ -111,14 +111,14 @@ public class TYzUserAddress {
     /**
      * @return id
      */
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
     /**
      * @param id
      */
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -375,7 +375,7 @@ public class TYzUserAddress {
      *
      * @return user_id - 有赞用户id
      */
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
@@ -384,7 +384,7 @@ public class TYzUserAddress {
      *
      * @param userId 有赞用户id
      */
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -429,7 +429,7 @@ public class TYzUserAddress {
      *
      * @return address_id - 地址id
      */
-    public Integer getAddressId() {
+    public Long getAddressId() {
         return addressId;
     }
 
@@ -438,7 +438,7 @@ public class TYzUserAddress {
      *
      * @param addressId 地址id
      */
-    public void setAddressId(Integer addressId) {
+    public void setAddressId(Long addressId) {
         this.addressId = addressId;
     }
 

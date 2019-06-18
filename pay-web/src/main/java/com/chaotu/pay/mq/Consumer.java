@@ -21,12 +21,12 @@ import java.util.*;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @Slf4j
-/*@Component*/
+@Component
 public class Consumer {
     @Autowired
-    PddGoodsService goodsService;
+    YzGoodsService goodsService;
     @Autowired
-    PddOrderService orderService;
+    YzOrderService orderService;
     @Autowired
     UserService userService;
     @Autowired
@@ -34,7 +34,7 @@ public class Consumer {
     @Autowired
     OrderService tOrderService;
     @Autowired
-    PddAccountService accountService;
+    YzAccountService accountService;
 
     @RabbitListener(id = "a",queues = RabbitMQConfig.QUEUE_A)
     public void processMessage(String content) {
@@ -42,12 +42,12 @@ public class Consumer {
             log.info("订单: " + content + "已支付");
        /* Map<String,Object> map = JsonUtils.parseJSON2Map(content);
         String tid = (String) JsonUtils.parseJSON2Map((String) map.get("content")).get("tid");*/
-            // TPddOrder order = orderService.getByOrderSn(content);
+            // TYzOrder order = orderService.getByOrderSn(content);
 
-            //TPddOrder order1 = JsonUtils.getObjectFromJson(content,TPddOrder.class);
-            TPddOrder order = JSONObject.parseObject(content, TPddOrder.class);
+            //TYzOrder order1 = JsonUtils.getObjectFromJson(content,TYzOrder.class);
+            TYzOrder order = JSONObject.parseObject(content, TYzOrder.class);
             /* order.setStatus((byte)2);*/
-            TPddOrder order1 = new TPddOrder();
+            TYzOrder order1 = new TYzOrder();
             order1.setId(order.getId());
             order1.setStatus((byte) 2);
             TWallet wallet = new TWallet();
@@ -63,11 +63,11 @@ public class Consumer {
             o.setUseramount(userAmount);
             o.setStatus((byte) 1);
 
-            accountService.updateAmount(order.getAmount(), order.getPddAccountId());
+            accountService.updateAmount(order.getAmount(), order.getYzAccountId());
 
             tOrderService.updateaByOrderNo(o);
             walletService.editAmount(wallet, userAmount.toString(), "0");
-            orderService.edit(order1);
+            orderService.update(order1);
         }catch (Exception e){
             log.error("订单:"+content+"接收异常");
         }
@@ -79,18 +79,18 @@ public class Consumer {
        /* Map<String,Object> map = JsonUtils.parseJSON2Map(content);
         String tid = (String) JsonUtils.parseJSON2Map((String) map.get("content")).get("tid");*/
 
-        TPddOrder order =JSONObject.parseObject(content,TPddOrder.class);
+        TYzOrder order =JSONObject.parseObject(content,TYzOrder.class);
 
         if (order == null)
             return;
-        TPddOrder order1 = new TPddOrder();
+        TYzOrder order1 = new TYzOrder();
         order1.setId(order.getId());
         try {
             SortedMap<Object,Object> params = new TreeMap<>();
             params.put("success","1");
-            params.put("orderSn",order.getId());
+            params.put("orderNo",order.getId());
             params.put("amount",order.getAmount());
-            params.put("userOrderSn",order.getUserOrderSn());
+            params.put("userOrderNo",order.getUserOrderNo());
             //params.put("endTime",order.getUpdateTime());
             params.put("userId",order.getUserId());
             UserVo user = userService.getUserById(order.getUserId());
@@ -101,11 +101,11 @@ public class Consumer {
             Map<String, Object> result = sender.send();
             if (result != null) {
                 order1.setNotifyTimes(6);
-                orderService.edit(order1);
+                orderService.update(order1);
             }
         }catch (Exception e){
             order1.setNotifyTimes(1);
-            orderService.edit(order1);
+            orderService.update(order1);
             log.info("订单: "+content+"回调异常");
         }
         log.info("订单: "+content+"回调结束");
