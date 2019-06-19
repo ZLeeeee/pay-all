@@ -40,6 +40,7 @@ public class MyExceptionHandler {
         if(ex instanceof  BizException){
             bizException = (BizException)ex;
         }else{
+            log.error(ex.getMessage(),ex.getCause());
             bizException = new BizException(ExceptionCode.UNKNOWN_ERROR.getCode(),builder.toString());
         }
         log.info("异常处理类中：返回的加密前的字符：[错误码"+bizException.getErrCode()+";错误信息"+bizException.getErrMsg()+";"+bizException.getData()+"]");

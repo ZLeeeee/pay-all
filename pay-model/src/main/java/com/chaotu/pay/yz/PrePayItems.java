@@ -16,4 +16,5 @@ public class PrePayItems {
     private int skuId;
     private int storeId;
     private int umpSkuId;
+    //private String itemMessage;
 }

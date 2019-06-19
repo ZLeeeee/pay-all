@@ -89,7 +89,7 @@ public class Consumer {
             SortedMap<Object,Object> params = new TreeMap<>();
             params.put("success","1");
             params.put("orderNo",order.getId());
-            params.put("amount",order.getAmount());
+            params.put("amount",order.getAmount().toString());
             params.put("userOrderNo",order.getUserOrderNo());
             params.put("userId",order.getUserId());
             UserVo user = userService.getUserById(order.getUserId());

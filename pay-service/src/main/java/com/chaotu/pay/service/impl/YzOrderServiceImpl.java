@@ -53,6 +53,8 @@ public class YzOrderServiceImpl implements YzOrderService {
     YzUserAddressService userAddressService;
     @Autowired
     WalletService walletService;
+    @Autowired
+    YzUserService yzUserService;
     @Value("${yz.preOrderUrl}")
     private String preOrderUrl;
     @Value("${yz.payUrl}")
@@ -103,6 +105,15 @@ public class YzOrderServiceImpl implements YzOrderService {
         PrePayRequest request = new PrePayRequest(userAddress,account.getKdtSessionId(),userAddress.getIp(),goods.getGoodsId(),goods.getSkuId(),account.getKdtId(),order.getAmount().multiply(new BigDecimal(100)).intValue());
         PddMerchantSender<Map<String,Object>> sender = new PddMerchantSender<>(preOrderUrl,request,yzUser.getCookie());
         Map<String,Object> map = sender.send();
+        String code = map.get("code").toString();
+        if(StringUtils.equals("101356002",code)){
+            log.error("买家已过期:"+JSONObject.toJSONString(yzUser));
+            yzUser.setMark(code+":"+map.get("msg"));
+            yzUser.setStatus(false);
+            yzUserService.update(yzUser);
+            throw new IllegalArgumentException("买家已过期");
+        }
+
         JSONObject jsonObject = (JSONObject)map.get("data");
         PrePayData prePayData = jsonObject.toJavaObject(PrePayData.class);
         String orderNo = prePayData.getOrderNo();
@@ -234,24 +245,26 @@ public class YzOrderServiceImpl implements YzOrderService {
     @Override
     public void sendNotify(String id) {
         TYzOrder order = getById(id);
-        Map<String,Object> params = new HashMap<>();
+        SortedMap<Object,Object> params = new TreeMap<>();
         params.put("success","1");
-        params.put("orderSn",order.getId());
-        params.put("amount",order.getAmount());
+        params.put("orderNo",order.getId());
+        params.put("amount",order.getAmount().toString());
         params.put("userOrderNo",order.getUserOrderNo());
         //params.put("endTime",order.getUpdateTime());
         params.put("userId",order.getUserId());
+        UserVo userVo = userService.getUserById(order.getUserId());
+        String sign = DigestUtil.createSign(params,userVo.getSignKey());
+        params.put("sign",sign);
         PddSender<Map<String,Object>> sender = new PddSender<>(order.getNotifyUrl(),params,"");
         Map<String, Object> result = sender.send();
         if(result != null){
-            if(order.getStatus().equals(new Byte("2"))){
+            if(order.getStatus() > 1){
 
             }else {
-                order.setStatus(new Byte("2"));
+                order.setStatus(new Byte("3"));
                 TWallet wallet = new TWallet();
                 wallet.setUserId(order.getUserId());
-                wallet.setType("2");
-                UserVo userVo = userService.getUserById(order.getUserId());
+                wallet.setType("3");
                 BigDecimal sysAmount = order.getAmount().multiply(userVo.getRate());
                 BigDecimal userAmount = order.getAmount().subtract(sysAmount);
                 walletService.editAmount(wallet, userAmount.toString(), "0");
