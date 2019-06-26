@@ -78,6 +78,44 @@
     </if>
     order by create_time desc
   </select>
+  <select id="countByCondition" parameterType="com.chaotu.pay.vo.OrderVo" resultType="java.lang.Integer" >
+    SELECT count(1) FROM `t_order` o where 1=1
+    <if test="startTime != null and startTime != ''">
+      and o.create_time &gt;= #{startTime}
+    </if>
+    <if test="endTime != null and endTime!=''">
+      and o.create_time &lt;= #{endTime}
+    </if>
+    <if test="orderno != null and orderno != ''">
+      and o.orderNo = #{orderno}
+    </if>
+    <if test="underorderno != null and underorderno != ''">
+      and o.underOrderNo like CONCAT('%',#{underorderno},'%')
+    </if>
+    <if test="merchant != null and merchant != ''">
+      and o.merchant like CONCAT('%',#{merchant},'%')
+    </if>
+    <if test="account != null and account != ''">
+      and o.account like CONCAT('%',#{account},'%')
+    </if>
+    <if test="amount != null and amount != ''">
+      and o.amount like CONCAT('%',#{amount},'%')
+    </if>
+    <if test="channelId != null and channelId != ''">
+      and o.channel_id = #{channelId}
+    </if>
+    <if test="channelPaymentId != null and channelPaymentId != ''">
+      and o.channel_payment_id = #{channelPaymentId}
+    </if>
+    <if test="isHistory !=-1">
+      and o.is_history = #{isHistory}
+    </if>
+
+    <if test="userId != null and userId != ''">
+      and o.user_id = #{userId}
+    </if>
+    order by create_time desc
+  </select>
 
   <select id="getGeneralAccount" parameterType="com.chaotu.pay.vo.OrderVo" resultType="java.util.Map">
     SELECT SUM(amount) AS allAmount, SUM(orderRate) AS allOrderRate, SUM(sysAmount) AS sysAmount,SUM(agentAmount) AS allAgentAmount, SUM(userAmount) allUserMount FROM `t_order` o WHERE 1 = 1

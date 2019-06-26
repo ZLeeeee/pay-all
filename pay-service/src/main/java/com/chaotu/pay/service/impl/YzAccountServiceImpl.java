@@ -57,7 +57,7 @@ public class YzAccountServiceImpl implements YzAccountService {
         tYzAccount.setKdtSessionId(kdtSessionId);
         accountMapper.insertSelective(tYzAccount);
         Integer accountId = tYzAccount.getId();
-        Sender<Map<String, Object>> sender = new GetSender<>(goodsListUrl, cookie);
+        Sender<Map<String, Object>> sender = new GetSender<>(goodsListUrl+"&disPlayOnEndTime="+System.currentTimeMillis(), cookie);
         Map<String, Object> result = sender.send();
         JSONObject data = (JSONObject) result.get("data");
         JSONArray item = data.getJSONArray("items");

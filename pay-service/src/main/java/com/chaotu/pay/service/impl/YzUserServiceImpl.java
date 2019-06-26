@@ -87,6 +87,11 @@ public class YzUserServiceImpl implements YzUserService {
 
     @Override
     public void update(TYzUser tYzUser) {
+        String cookie = tYzUser.getCookie();
+        int begin = cookie.indexOf(CommonConstant.KDTSESSIONID)+CommonConstant.KDTSESSIONID.length()+1;
+        int end = cookie.indexOf(";", begin);
+        String kdtSessionId = cookie.substring(begin,end);
+        tYzUser.setKdtSessionid(kdtSessionId);
         userMapper.updateByPrimaryKeySelective(tYzUser);
         yzUserChoser.update(findByStatus());
     }

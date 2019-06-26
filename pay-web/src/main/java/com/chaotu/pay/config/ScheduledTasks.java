@@ -94,7 +94,7 @@ public class ScheduledTasks {
                         log.info("收货成功");
                     } else if (o.getSendTimes() < 10) {
                         log.error("收货失败,订单号:" + o.getOrderNo());
-                        order1.setStatus((byte) 3);
+                        order1.setStatus((byte) 5);
                         order1.setSendTimes(o.getSendTimes() + 1);
                         service.update(order1);
                         order1.setYzAccountId(o.getYzAccountId());

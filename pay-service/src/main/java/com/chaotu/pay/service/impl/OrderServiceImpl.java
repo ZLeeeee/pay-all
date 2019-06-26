@@ -20,6 +20,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
@@ -77,8 +78,9 @@ public class OrderServiceImpl implements OrderService {
             Map<String,Object> generalAccount = tOrderMapper.getGeneralAccount(orderVo);
             Map<String, Object> map = new HashMap<>();
 
-
-            MyPageInfo info = new MyPageInfo(orderList);
+        int totalCount = tOrderMapper.countByCondition(orderVo);
+        generalAccount.put("successRatio",totalCount == 0?0:new BigDecimal(p.getTotal()*100).divide(new BigDecimal(totalCount),2,BigDecimal.ROUND_HALF_UP)+"%");
+        MyPageInfo info = new MyPageInfo(orderList);
             if(!CollectionUtils.isEmpty(orderList)){
                 info.setTotal(p.getTotal());
                 info.setPageNum(pageVo.getPageNumber());

@@ -27,4 +27,6 @@ public interface TOrderMapper extends MyMapper<TOrder> {
      * @return
      */
     int updateStatus(OrderVo orderVo);
+
+    int countByCondition(OrderVo orderVo);
 }
