@@ -72,7 +72,7 @@ public class ScheduledTasks {
     }
 
     //收货
-    @Scheduled(cron = "0/30 * * * * ? ")
+    @Scheduled(cron = "0/5 * * * * ? ")
     public void confirmSend() {
         List<TYzOrder> orders = service.getAllSentOrders();
 

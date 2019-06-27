@@ -79,7 +79,17 @@ public class OrderServiceImpl implements OrderService {
             Map<String, Object> map = new HashMap<>();
 
         int totalCount = tOrderMapper.countByCondition(orderVo);
-        generalAccount.put("successRatio",totalCount == 0?0:new BigDecimal(p.getTotal()*100).divide(new BigDecimal(totalCount),2,BigDecimal.ROUND_HALF_UP)+"%");
+        if(generalAccount == null) {
+            generalAccount = new HashMap<>();
+            generalAccount.put("allAmount",0);
+            generalAccount.put("allOrderRate",0);
+            generalAccount.put("sysAmount",0);
+            generalAccount.put("sysAmount",0);
+            generalAccount.put("allAgentAmount",0);
+            generalAccount.put("allUserMount",0);
+        }
+
+        generalAccount.put("successRatio",totalCount == 0?"0%":new BigDecimal(p.getTotal()*100).divide(new BigDecimal(totalCount),2,BigDecimal.ROUND_HALF_UP)+"%");
         MyPageInfo info = new MyPageInfo(orderList);
             if(!CollectionUtils.isEmpty(orderList)){
                 info.setTotal(p.getTotal());
@@ -133,5 +143,10 @@ public class OrderServiceImpl implements OrderService {
         Example example = new Example(TOrder.class);
         example.createCriteria().andEqualTo("isHistory",0);
         tOrderMapper.updateByExampleSelective(order,example);
+    }
+
+    @Override
+    public TOrder selectOne(TOrder order) {
+        return tOrderMapper.selectOne(order);
     }
 }

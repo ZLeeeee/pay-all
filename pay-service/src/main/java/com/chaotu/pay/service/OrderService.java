@@ -34,4 +34,5 @@ public interface OrderService {
     void add(TOrder order);
     void updateaByOrderNo(TOrder order);
     void updateByIsHistory(TOrder order);
+    TOrder selectOne(TOrder order);
 }

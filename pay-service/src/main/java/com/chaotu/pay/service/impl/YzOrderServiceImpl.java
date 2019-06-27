@@ -270,9 +270,11 @@ public class YzOrderServiceImpl implements YzOrderService {
                 walletService.editAmount(wallet, userAmount.toString(), "0");
                 accountService.updateAmount(userAmount,order.getYzAccountId());
             }
-            OrderVo vo = new OrderVo();
-            vo.setUnderorderno(order.getUserOrderNo());
-            OrderVo orderVo = tOrderService.selectOneOrderDeails(vo);
+            TOrder vo = new TOrder();
+            vo.setOrderno(order.getId());
+            TOrder tOrder = tOrderService.selectOne(vo);
+            OrderVo orderVo = new OrderVo();
+            BeanUtils.copyProperties(tOrder,orderVo);
             tOrderService.updateStatus(orderVo);
             order.setNotifyTimes(6);
             update(order);
