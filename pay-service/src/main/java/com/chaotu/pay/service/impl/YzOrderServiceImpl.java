@@ -69,7 +69,8 @@ public class YzOrderServiceImpl implements YzOrderService {
             account = yzAccountChoser.chose();
         else
             throw new IllegalArgumentException("无可用收款账号");
-        if(account.getTodayAmount().compareTo(account.getLimitAmount())>0){
+        TYzAccount yzAccount = accountService.findByid(account.getId());
+        if(yzAccount.getTodayAmount().compareTo(account.getLimitAmount())>0){
             TYzAccount a = new TYzAccount();
             a.setId(account.getId());
             a.setStatus(false);

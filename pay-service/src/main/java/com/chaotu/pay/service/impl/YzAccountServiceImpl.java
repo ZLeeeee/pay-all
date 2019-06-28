@@ -137,7 +137,7 @@ public class YzAccountServiceImpl implements YzAccountService {
         Example example = new Example(TYzAccount.class);
         example.createCriteria().andEqualTo("status", true);
         TYzAccount account = new TYzAccount();
-        account.setTotalAmount(new BigDecimal(0));
+        account.setTodayAmount(new BigDecimal(0));
         accountMapper.updateByExampleSelective(account, example);
     }
 
