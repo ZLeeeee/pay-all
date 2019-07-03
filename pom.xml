@@ -71,14 +71,6 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.49</version>
         </dependency>
-
-
-        <!-- alibaba fastjson-->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.49</version>
-        </dependency>
         <!--********* GSON *************-->
         <dependency>
             <groupId>com.google.code.gson</groupId>
