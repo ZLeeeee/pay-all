@@ -6,35 +6,29 @@
       WARNING - @mbg.generated
     -->
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
-    <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
-    <result column="del_flag" jdbcType="CHAR" property="delFlag" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="user_id" jdbcType="VARCHAR" property="userId" />
     <result column="merchant" jdbcType="VARCHAR" property="merchant" />
-    <result column="agent_id" jdbcType="VARCHAR" property="agentId" />
     <result column="channel_id" jdbcType="BIGINT" property="channelId" />
-    <result column="channel_payment_id" jdbcType="BIGINT" property="channelPaymentId" />
+    <result column="pay_type_id" jdbcType="INTEGER" property="payTypeId" />
     <result column="account" jdbcType="VARCHAR" property="account" />
-    <result column="phone_id" jdbcType="VARCHAR" property="phoneId" />
-    <result column="phone_uid" jdbcType="BIGINT" property="phoneUid" />
-    <result column="orderMk" jdbcType="VARCHAR" property="ordermk" />
-    <result column="orderNo" jdbcType="VARCHAR" property="orderno" />
-    <result column="underOrderNo" jdbcType="VARCHAR" property="underorderno" />
-    <result column="onOrderNo" jdbcType="VARCHAR" property="onorderno" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="under_order_no" jdbcType="VARCHAR" property="underOrderNo" />
+    <result column="upper_order_no" jdbcType="VARCHAR" property="upperOrderNo" />
     <result column="amount" jdbcType="DECIMAL" property="amount" />
-    <result column="orderRate" jdbcType="DECIMAL" property="orderrate" />
-    <result column="sysAmount" jdbcType="DECIMAL" property="sysamount" />
-    <result column="agentAmount" jdbcType="DECIMAL" property="agentamount" />
-    <result column="userAmount" jdbcType="DECIMAL" property="useramount" />
-    <result column="notifyUrl" jdbcType="VARCHAR" property="notifyurl" />
-    <result column="successUrl" jdbcType="VARCHAR" property="successurl" />
-    <result column="channelName" jdbcType="VARCHAR" property="channelname" />
-    <result column="paymentName" jdbcType="VARCHAR" property="paymentname" />
+    <result column="order_rate" jdbcType="DECIMAL" property="orderRate" />
+    <result column="sys_amount" jdbcType="DECIMAL" property="sysAmount" />
+    <result column="user_amount" jdbcType="DECIMAL" property="userAmount" />
+    <result column="notify_url" jdbcType="VARCHAR" property="notifyUrl" />
+    <result column="channel_name" jdbcType="VARCHAR" property="channelName" />
+    <result column="pay_type_name" jdbcType="VARCHAR" property="payTypeName" />
     <result column="extend" jdbcType="VARCHAR" property="extend" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="is_history" jdbcType="INTEGER" property="isHistory" />
+    <result column="is_notify" jdbcType="INTEGER" property="isNotify" />
+    <result column="channel_amount" jdbcType="DECIMAL" property="channelAmount" />
   </resultMap>
   
   <select id="findAll" parameterType="com.chaotu.pay.vo.OrderVo" resultMap="BaseResultMap">
@@ -45,10 +39,10 @@
     <if test="endTime != null and endTime!=''">
       and o.create_time &lt;= #{endTime}
     </if>
-    <if test="orderno != null and orderno != ''">
+    <if test="orderNo != null and orderNo != ''">
       and o.orderNo = #{orderno}
     </if>
-    <if test="underorderno != null and underorderno != ''">
+    <if test="underOrderNo != null and underOrderNo != ''">
       and o.underOrderNo like CONCAT('%',#{underorderno},'%')
     </if>
     <if test="merchant != null and merchant != ''">
@@ -78,7 +72,7 @@
     </if>
     order by create_time desc
   </select>
-  <select id="countByCondition" parameterType="com.chaotu.pay.vo.OrderVo" resultType="java.lang.Integer" >
+  <select id="countByCondition" parameterType="com.chaotu.pay.vo.OrderVo" resultType="java.lang.Integer">
     SELECT count(1) FROM `t_order` o where 1=1
     <if test="startTime != null and startTime != ''">
       and o.create_time &gt;= #{startTime}
@@ -86,10 +80,10 @@
     <if test="endTime != null and endTime!=''">
       and o.create_time &lt;= #{endTime}
     </if>
-    <if test="orderno != null and orderno != ''">
+    <if test="orderNo != null and orderNo != ''">
       and o.orderNo = #{orderno}
     </if>
-    <if test="underorderno != null and underorderno != ''">
+    <if test="underOrderNo != null and underOrderNo != ''">
       and o.underOrderNo like CONCAT('%',#{underorderno},'%')
     </if>
     <if test="merchant != null and merchant != ''">
@@ -125,10 +119,10 @@
     <if test="endTime != null and endTime!=''">
       and o.create_time &lt;= #{endTime}
     </if>
-    <if test="orderno != null and orderno != ''">
+    <if test="orderNo != null and orderNo != ''">
       and o.orderNo = #{orderno}
     </if>
-    <if test="underorderno != null and underorderno != ''">
+    <if test="underOrderNo != null and underOrderNo != ''">
       and o.underOrderNo like CONCAT('%',#{underorderno},'%')
     </if>
     <if test="merchant != null and merchant != ''">
@@ -157,7 +151,7 @@
     </if>
   </select>
 
-  <update id="updateStatus" parameterType="com.chaotu.pay.vo.OrderVo" >
+  <update id="updateStatus" parameterType="com.chaotu.pay.vo.OrderVo">
     UPDATE `t_order` SET status = #{status} WHERE id = #{id}
   </update>
 </mapper>

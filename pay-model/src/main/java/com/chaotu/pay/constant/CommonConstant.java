@@ -1,7 +1,23 @@
 package com.chaotu.pay.constant;
 
 public interface CommonConstant {
-
+    byte ORDER_STATUS_PAIED = 1;
+    byte ORDER_STATUS_NOT_PAIED = 0;
+    int ORDER_STATUS_HAS_NOTIFYED = 1;
+    int ORDER_STATUS_HASNT_NOTIFYED = 0;
+    String PARAM_NAME_OUT_TRADE_NO = "OUT_TRADE_NO";
+    String PARAM_NAME_ORDER_NO = "ORDER_NO";
+    String PARAM_NAME_ACCOUNT_ID = "ACCOUNT_ID";
+    String PARAM_NAME_AMOUNT = "AMOUNT";
+    String PARAM_NAME_NOTIFY_URL = "NOTIFY_URL";
+    String PARAM_NAME_SIGN = "NOTIFY_URL";
+    String PARAM_NAME_QRCODE = "NOTIFY_URL";
+    String PARAM_NAME_SUCCESS_KEY = "SUCCESS_KEY";
+    String PARAM_NAME_SUCCESS_VAL = "SUCCESS_VAL";
+    String CONTENT_TYPE_JSON = "JSON";
+    String CONTENT_TYPE_TEXT = "TEXT";
+    String CHANNEL_STATUS_FALSE = "0";
+    String CHANNEL_STATUS_TRUE = "1";
     String KDTSESSIONID = "KDTSESSIONID";
     String ADDRESS_LIST = "addressList";
     String KDT_ID = "_kdt_id_";

@@ -3,6 +3,7 @@ package com.chaotu.pay.service;
 import com.chaotu.pay.po.TUser;
 import com.chaotu.pay.vo.*;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.List;
 
@@ -116,4 +117,6 @@ public interface UserService {
     UserVo currentUser();
 
     UserVo getUser(UserVo userVo);
+
+    void updateAmount(BigDecimal userAmount, String id);
 }

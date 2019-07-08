@@ -1,13 +1,11 @@
 package com.chaotu.pay.controller;
 
 import com.chaotu.pay.common.utils.ResponseUtil;
-import com.chaotu.pay.po.TPddAccount;
-import com.chaotu.pay.service.PddAccountService;
+import com.chaotu.pay.po.TChannelAccount;
+import com.chaotu.pay.service.ChannelAccountService;
 import com.chaotu.pay.vo.Message;
 import com.chaotu.pay.vo.PageVo;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -16,25 +14,24 @@ import java.util.Date;
 /**
  * 银行卡信息管理
  */
-/*@RestController
-@RequestMapping("/pddAccount")
-@Transactional*/
-public class PddAccountController {
+@RestController
+@RequestMapping("/channel/account")
+public class ChannelAccountController {
 
     @Autowired
-    private PddAccountService accountService;
+    private ChannelAccountService accountService;
 
     /**
-     * 获取所有银行
+     * 获取所有
      * @return
      */
     @GetMapping("/all")
-    public Message getAllBank(){
-        return ResponseUtil.responseBody(accountService.findAllByStatus());
+    public Message getAll(){
+        return ResponseUtil.responseBody(accountService.findAll());
     }
 
     /**
-     * 分页查询银行卡信息
+     * 分页查询
      * @param pageVo
      * @return
      */
@@ -45,12 +42,12 @@ public class PddAccountController {
 
 
     /**
-     * 添加银行卡
+     * 添加
      * @param account
      * @return
      */
     @PostMapping("/add")
-    public Message addBankCard(@RequestBody TPddAccount account){
+    public Message addBankCard(@RequestBody TChannelAccount account){
         account.setTodayAmount(new BigDecimal(0));
         account.setTotalAmount(new BigDecimal(0));
         account.setCreateTime(new Date());
@@ -60,28 +57,23 @@ public class PddAccountController {
     }
 
     /**
-     * 修改银行卡
+     * 修改
      * @param account
      * @return
      */
-    @PostMapping("/edit")
-    public Message editBankCard(@RequestBody TPddAccount account){
-        if("".equals(account.getCookie())) {
-           ResponseUtil.responseBody("1","cookie不可为空");
-        }
-
+    @PostMapping("/update")
+    public Message update(@RequestBody TChannelAccount account){
         accountService.update(account);
         return ResponseUtil.responseBody("更新成功");
     }
 
     /**
-     * 删除银行卡
+     * 删除
      * @param account
      * @return
      */
     @PostMapping("/del")
-    public Message delBankCard(@RequestBody TPddAccount account){
-
+    public Message delete(@RequestBody TChannelAccount account){
         accountService.delete(account);
         return ResponseUtil.responseBody("删除成功");
     }

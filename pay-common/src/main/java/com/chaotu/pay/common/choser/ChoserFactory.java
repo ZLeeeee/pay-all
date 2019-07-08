@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Configuration
+//@Configuration
 public class ChoserFactory {
     @Autowired
     public ChoserFactory(TYzAccountMapper accountMapper,TYzUserMapper userMapper){

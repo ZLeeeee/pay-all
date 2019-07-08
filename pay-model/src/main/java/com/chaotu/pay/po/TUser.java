@@ -28,6 +28,39 @@ public class TUser {
     @Column(name = "rate")
     private BigDecimal rate;
 
+    @Column(name = "total_amount")
+    private BigDecimal totalAmount;
+
+    @Column(name = "today_amount")
+    private BigDecimal todayAmount;
+
+    @Column(name = "limit_amount")
+    private BigDecimal limitAmount;
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public BigDecimal getTodayAmount() {
+        return todayAmount;
+    }
+
+    public void setTodayAmount(BigDecimal todayAmount) {
+        this.todayAmount = todayAmount;
+    }
+
+    public BigDecimal getLimitAmount() {
+        return limitAmount;
+    }
+
+    public void setLimitAmount(BigDecimal limitAmount) {
+        this.limitAmount = limitAmount;
+    }
+
     public BigDecimal getRate() {
         return rate;
     }

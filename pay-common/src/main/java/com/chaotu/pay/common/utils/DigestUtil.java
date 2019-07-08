@@ -1,6 +1,7 @@
 package com.chaotu.pay.common.utils;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -89,5 +90,9 @@ public class DigestUtil {
         return sign; // D3A5D13E7838E1D453F4F2EA526C4766
         // D3A5D13E7838E1D453F4F2EA526C4766
     }
-
+    public static boolean checkSign(SortedMap<Object,Object> param,String key){
+        String sign = param.remove("sign").toString();
+        String sign1 = createSign(param, key);
+        return StringUtils.equals(sign,sign1);
+    }
 }

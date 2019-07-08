@@ -2,6 +2,7 @@ package com.chaotu.pay.controller;
 
 import com.chaotu.pay.common.utils.ResponseUtil;
 import com.chaotu.pay.dao.TChannelMapper;
+import com.chaotu.pay.po.TChannel;
 import com.chaotu.pay.service.ChannelService;
 import com.chaotu.pay.vo.ChannelVo;
 import com.chaotu.pay.vo.Message;
@@ -25,7 +26,7 @@ public class ChannelController {
      */
     @GetMapping("/all")
     public Message getAllChannel(){
-        return ResponseUtil.responseBody(channelService.getAll());
+        return ResponseUtil.responseBody(channelService.findAll());
     }
 
     /**
@@ -36,15 +37,15 @@ public class ChannelController {
      */
     @PostMapping("/all/page")
     public Message findAllByPage(@RequestBody PageVo pageVo){
-        return ResponseUtil.responseBody(channelService.findAllByPage(pageVo,null));
+        return ResponseUtil.responseBody(channelService.findAllByPage(pageVo));
     }
 
     /**
      * 添加通道
      */
     @PostMapping("/add")
-    public Message addChannel(@RequestBody ChannelVo channelVo){
-        channelService.addChannel(channelVo);
+    public Message addChannel(@RequestBody TChannel channelVo){
+        channelService.insert(channelVo);
         return ResponseUtil.responseBody("添加通道成功");
     }
 
@@ -52,9 +53,9 @@ public class ChannelController {
      * 修改通道
      * @return
      */
-    @PostMapping("/edit")
-    public Message editChannel(@RequestBody ChannelVo channelVo){
-        channelService.editChannel(channelVo);
+    @PostMapping("/update")
+    public Message editChannel(@RequestBody TChannel channelVo){
+        channelService.update(channelVo);
         return ResponseUtil.responseBody("修改通道成功");
     }
 
@@ -64,9 +65,9 @@ public class ChannelController {
      * @param id
      * @return
      */
-    @RequestMapping(value = "/del/{id}",method = RequestMethod.DELETE)
-    public Message delChannel(@PathVariable String id){
-        channelService.delChannel(id);
+    @PostMapping(value = "/del")
+    public Message delChannel(@RequestBody TChannel channel){
+        channelService.delete(channel);
         return ResponseUtil.responseBody("删除通道成功");
     }
 

@@ -1,7 +1,5 @@
 package com.chaotu.pay.po;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.*;
@@ -12,21 +10,14 @@ public class TOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "create_by")
-    private String createBy;
-
     @Column(name = "create_time")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     @Column(name = "update_by")
     private String updateBy;
 
     @Column(name = "update_time")
-    private String updateTime;
-
-    @Column(name = "del_flag")
-    private String delFlag;
+    private Date updateTime;
 
     /**
      * 商户id
@@ -40,13 +31,6 @@ public class TOrder {
     private String merchant;
 
     /**
-     * 归属代理id
-     */
-    @Column(name = "agent_id")
-    private String agentId;
-
-
-    /**
      * 通道id
      */
     @Column(name = "channel_id")
@@ -55,8 +39,8 @@ public class TOrder {
     /**
      * 支付方式id
      */
-    @Column(name = "channel_payment_id")
-    private Long channelPaymentId;
+    @Column(name = "pay_type_id")
+    private Integer payTypeId;
 
     /**
      * 账号(提供二维码)
@@ -64,40 +48,22 @@ public class TOrder {
     private String account;
 
     /**
-     * 设备号
-     */
-    @Column(name = "phone_id")
-    private String phoneId;
-
-    /**
-     * 设备归属商户
-     */
-    @Column(name = "phone_uid")
-    private Long phoneUid;
-
-    /**
-     * 固码备注
-     */
-    @Column(name = "orderMk")
-    private String ordermk;
-
-    /**
      * 系统订单号
      */
-    @Column(name = "orderNo")
-    private String orderno;
+    @Column(name = "order_no")
+    private String orderNo;
 
     /**
      * 下游订单号(商户订单号)
      */
-    @Column(name = "underOrderNo")
-    private String underorderno;
+    @Column(name = "under_order_no")
+    private String underOrderNo;
 
     /**
      * 上游订单号
      */
-    @Column(name = "onOrderNo")
-    private String onorderno;
+    @Column(name = "upper_order_no")
+    private String upperOrderNo;
 
     /**
      * 订单金额
@@ -107,66 +73,38 @@ public class TOrder {
     /**
      * 订单手续费
      */
-    @Column(name = "orderRate")
-    private BigDecimal orderrate;
+    @Column(name = "order_rate")
+    private BigDecimal orderRate;
 
     /**
      * 系统收入
      */
-    @Column(name = "sysAmount")
-    private BigDecimal sysamount;
-
-    /**
-     * 代理收入
-     */
-    @Column(name = "agentAmount")
-    private BigDecimal agentamount;
+    @Column(name = "sys_amount")
+    private BigDecimal sysAmount;
 
     /**
      * 用户收入
      */
-    @Column(name = "userAmount")
-    private BigDecimal useramount;
+    @Column(name = "user_amount")
+    private BigDecimal userAmount;
 
     /**
      * 商户异步通知地址
      */
-    @Column(name = "notifyUrl")
-    private String notifyurl;
-
-    /**
-     * 商户同步通知地址
-     */
-    @Column(name = "successUrl")
-    private String successurl;
+    @Column(name = "notify_url")
+    private String notifyUrl;
 
     /**
      * 通道名称
      */
-    @Column(name = "channelName")
-    private String channelname;
+    @Column(name = "channel_name")
+    private String channelName;
 
     /**
      * 支付方式名称
      */
-    @Column(name = "paymentName")
-    private String paymentname;
-
-    public int getIsHistory() {
-        return isHistory;
-    }
-
-    public void setIsHistory(int isHistory) {
-        this.isHistory = isHistory;
-    }
-
-    /**
-     * 是否为历史
-     */
-    @Column(name = "is_history")
-    private int isHistory;
-
-
+    @Column(name = "pay_type_name")
+    private String payTypeName;
 
     /**
      * 扩展字段,存储json
@@ -177,6 +115,29 @@ public class TOrder {
      * 订单状态：0未支付，1支付成功，2支付异常
      */
     private Byte status;
+
+    /**
+     * 是否为历史0否1是
+     */
+    @Column(name = "is_history")
+    private Integer isHistory;
+
+    @Column(name = "is_notify")
+    private Integer isNotify;
+
+    public Integer getIsNotify() {
+        return isNotify;
+    }
+
+    public void setIsNotify(Integer isNotify) {
+        this.isNotify = isNotify;
+    }
+
+    /**
+     * 通道收入
+     */
+    @Column(name = "channel_amount")
+    private BigDecimal channelAmount;
 
     /**
      * @return id
@@ -190,20 +151,6 @@ public class TOrder {
      */
     public void setId(Long id) {
         this.id = id;
-    }
-
-    /**
-     * @return create_by
-     */
-    public String getCreateBy() {
-        return createBy;
-    }
-
-    /**
-     * @param createBy
-     */
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
     }
 
     /**
@@ -237,29 +184,15 @@ public class TOrder {
     /**
      * @return update_time
      */
-    public String getUpdateTime() {
+    public Date getUpdateTime() {
         return updateTime;
     }
 
     /**
      * @param updateTime
      */
-    public void setUpdateTime(String updateTime) {
+    public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
-    }
-
-    /**
-     * @return del_flag
-     */
-    public String getDelFlag() {
-        return delFlag;
-    }
-
-    /**
-     * @param delFlag
-     */
-    public void setDelFlag(String delFlag) {
-        this.delFlag = delFlag;
     }
 
     /**
@@ -299,24 +232,6 @@ public class TOrder {
     }
 
     /**
-     * 获取归属代理id
-     *
-     * @return agent_id - 归属代理id
-     */
-    public String getAgentId() {
-        return agentId;
-    }
-
-    /**
-     * 设置归属代理id
-     *
-     * @param agentId 归属代理id
-     */
-    public void setAgentId(String agentId) {
-        this.agentId = agentId;
-    }
-
-    /**
      * 获取通道id
      *
      * @return channel_id - 通道id
@@ -337,19 +252,19 @@ public class TOrder {
     /**
      * 获取支付方式id
      *
-     * @return channel_payment_id - 支付方式id
+     * @return pay_type_id - 支付方式id
      */
-    public Long getChannelPaymentId() {
-        return channelPaymentId;
+    public Integer getPayTypeId() {
+        return payTypeId;
     }
 
     /**
      * 设置支付方式id
      *
-     * @param channelPaymentId 支付方式id
+     * @param payTypeId 支付方式id
      */
-    public void setChannelPaymentId(Long channelPaymentId) {
-        this.channelPaymentId = channelPaymentId;
+    public void setPayTypeId(Integer payTypeId) {
+        this.payTypeId = payTypeId;
     }
 
     /**
@@ -371,111 +286,57 @@ public class TOrder {
     }
 
     /**
-     * 获取设备号
-     *
-     * @return phone_id - 设备号
-     */
-    public String getPhoneId() {
-        return phoneId;
-    }
-
-    /**
-     * 设置设备号
-     *
-     * @param phoneId 设备号
-     */
-    public void setPhoneId(String phoneId) {
-        this.phoneId = phoneId;
-    }
-
-    /**
-     * 获取设备归属商户
-     *
-     * @return phone_uid - 设备归属商户
-     */
-    public Long getPhoneUid() {
-        return phoneUid;
-    }
-
-    /**
-     * 设置设备归属商户
-     *
-     * @param phoneUid 设备归属商户
-     */
-    public void setPhoneUid(Long phoneUid) {
-        this.phoneUid = phoneUid;
-    }
-
-    /**
-     * 获取固码备注
-     *
-     * @return orderMk - 固码备注
-     */
-    public String getOrdermk() {
-        return ordermk;
-    }
-
-    /**
-     * 设置固码备注
-     *
-     * @param ordermk 固码备注
-     */
-    public void setOrdermk(String ordermk) {
-        this.ordermk = ordermk;
-    }
-
-    /**
      * 获取系统订单号
      *
-     * @return orderNo - 系统订单号
+     * @return order_no - 系统订单号
      */
-    public String getOrderno() {
-        return orderno;
+    public String getOrderNo() {
+        return orderNo;
     }
 
     /**
      * 设置系统订单号
      *
-     * @param orderno 系统订单号
+     * @param orderNo 系统订单号
      */
-    public void setOrderno(String orderno) {
-        this.orderno = orderno;
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
     }
 
     /**
      * 获取下游订单号(商户订单号)
      *
-     * @return underOrderNo - 下游订单号(商户订单号)
+     * @return under_order_no - 下游订单号(商户订单号)
      */
-    public String getUnderorderno() {
-        return underorderno;
+    public String getUnderOrderNo() {
+        return underOrderNo;
     }
 
     /**
      * 设置下游订单号(商户订单号)
      *
-     * @param underorderno 下游订单号(商户订单号)
+     * @param underOrderNo 下游订单号(商户订单号)
      */
-    public void setUnderorderno(String underorderno) {
-        this.underorderno = underorderno;
+    public void setUnderOrderNo(String underOrderNo) {
+        this.underOrderNo = underOrderNo;
     }
 
     /**
      * 获取上游订单号
      *
-     * @return onOrderNo - 上游订单号
+     * @return upper_order_no - 上游订单号
      */
-    public String getOnorderno() {
-        return onorderno;
+    public String getUpperOrderNo() {
+        return upperOrderNo;
     }
 
     /**
      * 设置上游订单号
      *
-     * @param onorderno 上游订单号
+     * @param upperOrderNo 上游订单号
      */
-    public void setOnorderno(String onorderno) {
-        this.onorderno = onorderno;
+    public void setUpperOrderNo(String upperOrderNo) {
+        this.upperOrderNo = upperOrderNo;
     }
 
     /**
@@ -499,145 +360,109 @@ public class TOrder {
     /**
      * 获取订单手续费
      *
-     * @return orderRate - 订单手续费
+     * @return order_rate - 订单手续费
      */
-    public BigDecimal getOrderrate() {
-        return orderrate;
+    public BigDecimal getOrderRate() {
+        return orderRate;
     }
 
     /**
      * 设置订单手续费
      *
-     * @param orderrate 订单手续费
+     * @param orderRate 订单手续费
      */
-    public void setOrderrate(BigDecimal orderrate) {
-        this.orderrate = orderrate;
+    public void setOrderRate(BigDecimal orderRate) {
+        this.orderRate = orderRate;
     }
 
     /**
      * 获取系统收入
      *
-     * @return sysAmount - 系统收入
+     * @return sys_amount - 系统收入
      */
-    public BigDecimal getSysamount() {
-        return sysamount;
+    public BigDecimal getSysAmount() {
+        return sysAmount;
     }
 
     /**
      * 设置系统收入
      *
-     * @param sysamount 系统收入
+     * @param sysAmount 系统收入
      */
-    public void setSysamount(BigDecimal sysamount) {
-        this.sysamount = sysamount;
-    }
-
-    /**
-     * 获取代理收入
-     *
-     * @return agentAmount - 代理收入
-     */
-    public BigDecimal getAgentamount() {
-        return agentamount;
-    }
-
-    /**
-     * 设置代理收入
-     *
-     * @param agentamount 代理收入
-     */
-    public void setAgentamount(BigDecimal agentamount) {
-        this.agentamount = agentamount;
+    public void setSysAmount(BigDecimal sysAmount) {
+        this.sysAmount = sysAmount;
     }
 
     /**
      * 获取用户收入
      *
-     * @return userAmount - 用户收入
+     * @return user_amount - 用户收入
      */
-    public BigDecimal getUseramount() {
-        return useramount;
+    public BigDecimal getUserAmount() {
+        return userAmount;
     }
 
     /**
      * 设置用户收入
      *
-     * @param useramount 用户收入
+     * @param userAmount 用户收入
      */
-    public void setUseramount(BigDecimal useramount) {
-        this.useramount = useramount;
+    public void setUserAmount(BigDecimal userAmount) {
+        this.userAmount = userAmount;
     }
 
     /**
      * 获取商户异步通知地址
      *
-     * @return notifyUrl - 商户异步通知地址
+     * @return notify_url - 商户异步通知地址
      */
-    public String getNotifyurl() {
-        return notifyurl;
+    public String getNotifyUrl() {
+        return notifyUrl;
     }
 
     /**
      * 设置商户异步通知地址
      *
-     * @param notifyurl 商户异步通知地址
+     * @param notifyUrl 商户异步通知地址
      */
-    public void setNotifyurl(String notifyurl) {
-        this.notifyurl = notifyurl;
-    }
-
-    /**
-     * 获取商户同步通知地址
-     *
-     * @return successUrl - 商户同步通知地址
-     */
-    public String getSuccessurl() {
-        return successurl;
-    }
-
-    /**
-     * 设置商户同步通知地址
-     *
-     * @param successurl 商户同步通知地址
-     */
-    public void setSuccessurl(String successurl) {
-        this.successurl = successurl;
+    public void setNotifyUrl(String notifyUrl) {
+        this.notifyUrl = notifyUrl;
     }
 
     /**
      * 获取通道名称
      *
-     * @return channelName - 通道名称
+     * @return channel_name - 通道名称
      */
-    public String getChannelname() {
-        return channelname;
+    public String getChannelName() {
+        return channelName;
     }
 
     /**
      * 设置通道名称
      *
-     * @param channelname 通道名称
+     * @param channelName 通道名称
      */
-    public void setChannelname(String channelname) {
-        this.channelname = channelname;
+    public void setChannelName(String channelName) {
+        this.channelName = channelName;
     }
 
     /**
      * 获取支付方式名称
      *
-     * @return paymentName - 支付方式名称
+     * @return pay_type_name - 支付方式名称
      */
-    public String getPaymentname() {
-        return paymentname;
+    public String getPayTypeName() {
+        return payTypeName;
     }
 
     /**
      * 设置支付方式名称
      *
-     * @param paymentname 支付方式名称
+     * @param payTypeName 支付方式名称
      */
-    public void setPaymentname(String paymentname) {
-        this.paymentname = paymentname;
+    public void setPayTypeName(String payTypeName) {
+        this.payTypeName = payTypeName;
     }
 
     /**
@@ -675,4 +500,42 @@ public class TOrder {
     public void setStatus(Byte status) {
         this.status = status;
     }
+
+    /**
+     * 获取是否为历史0否1是
+     *
+     * @return is_history - 是否为历史0否1是
+     */
+    public Integer getIsHistory() {
+        return isHistory;
+    }
+
+    /**
+     * 设置是否为历史0否1是
+     *
+     * @param isHistory 是否为历史0否1是
+     */
+    public void setIsHistory(Integer isHistory) {
+        this.isHistory = isHistory;
+    }
+
+    /**
+     * 获取通道收入
+     *
+     * @return channel_amount - 通道收入
+     */
+    public BigDecimal getChannelAmount() {
+        return channelAmount;
+    }
+
+    /**
+     * 设置通道收入
+     *
+     * @param channelAmount 通道收入
+     */
+    public void setChannelAmount(BigDecimal channelAmount) {
+        this.channelAmount = channelAmount;
+    }
+
+
 }

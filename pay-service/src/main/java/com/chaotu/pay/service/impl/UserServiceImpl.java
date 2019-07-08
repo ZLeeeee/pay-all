@@ -231,6 +231,8 @@ public class UserServiceImpl implements UserService {
         //这里将密码加密成暗文
         BeanUtils.copyProperties(vo, tuser);
         String uuid32 = IDGeneratorUtils.getUUID32();
+        tuser.setTodayAmount(new BigDecimal(0));
+        tuser.setTotalAmount(new BigDecimal(0));
         tuser.setId(uuid32);
         tuser.setSignKey(IDGeneratorUtils.getUUID32());
         tuser.setMerchant(IDGeneratorUtils.getFlowNum());
@@ -437,5 +439,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserVo getUser(UserVo userVo) {
         return tUserMapper.getUser(userVo);
+    }
+
+    @Override
+    public synchronized void updateAmount(BigDecimal userAmount, String id) {
+        UserVo account = getUserById(id);
+        BigDecimal todayAmount = account.getTodayAmount().add(userAmount);
+        BigDecimal totalAmount = account.getTotalAmount().add(userAmount);
+        account.setTodayAmount(todayAmount);
+        account.setTotalAmount(totalAmount);
+        TUser user = new TUser();
+        BeanUtils.copyProperties(account,user);
+        tUserMapper.updateByPrimaryKeySelective(user);
     }
 }

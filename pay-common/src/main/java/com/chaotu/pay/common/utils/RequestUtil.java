@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 import java.net.URLEncoder;
 import java.util.Map;
+import java.util.SortedMap;
 
 public class RequestUtil {
     //private static Logger log = Logger.getLogger(RequestUtil.class);
@@ -45,7 +46,7 @@ public class RequestUtil {
         return null;
     }
 
-    public static String createPostParamStr(Map<String, Object> payParam) {
+    public static String createPostParamStr(Map<Object, Object> payParam) {
         StringBuilder sb = new StringBuilder();
         try {
             for (Map.Entry entry : payParam.entrySet()) {
@@ -88,4 +89,5 @@ public class RequestUtil {
         //log.debug("接收到的报文转换后的数据**********：" + jsonParams);
         return params;
     }*/
+
 }

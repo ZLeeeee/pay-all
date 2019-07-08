@@ -1,5 +1,6 @@
 package com.chaotu.pay.service;
 
+import com.chaotu.pay.po.TChannel;
 import com.chaotu.pay.vo.ChannelVo;
 import com.chaotu.pay.vo.MyPageInfo;
 import com.chaotu.pay.vo.PageVo;
@@ -9,38 +10,17 @@ import java.util.List;
 /**
  * 通道管理
  */
-public interface ChannelService {
+public interface ChannelService extends CRUDService<TChannel>{
 
-    /**
-     * 查询所有通道
-     * @return
-     */
-    List<ChannelVo> getAll();
+
 
     /**
      * 分页查询
      * @return
      */
-    MyPageInfo<ChannelVo> findAllByPage(PageVo pageVo, ChannelVo vo);
+    MyPageInfo<TChannel> findAllByPage(PageVo pageVo);
 
-    /**
-     * 添加通道
-     * @param channelVo
-     */
-    void addChannel(ChannelVo channelVo);
-
-    /**
-     * 修改通道
-     * @param channelVo
-     */
-    void editChannel(ChannelVo channelVo);
-
-    /**
-     * 删除通道
-     * @param id
-     */
-    void delChannel(String id);
-
+    TChannel findById(Long id);
 
 
 }

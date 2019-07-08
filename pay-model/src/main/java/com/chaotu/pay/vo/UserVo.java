@@ -66,4 +66,10 @@ public class UserVo {
     private Double payAmount;
     private BigDecimal rate;
     private String signKey;
+
+    private BigDecimal totalAmount;
+
+    private BigDecimal todayAmount;
+
+    private BigDecimal limitAmount;
 }

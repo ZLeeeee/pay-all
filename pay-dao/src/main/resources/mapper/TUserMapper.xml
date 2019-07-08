@@ -26,6 +26,9 @@
     <result column="parent_name" jdbcType="VARCHAR" property="parentName" />
     <!--<result column="payPassword" jdbcType="VARCHAR" property="payPassword" />-->
     <result column="rate" jdbcType="DECIMAL" property="rate" />
+    <result column="today_amount" jdbcType="DECIMAL" property="todayAmount" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
+    <result column="limit_amount" jdbcType="DECIMAL" property="limitAmount" />
     <result column="signKey" jdbcType="VARCHAR" property="sign_key" />
   </resultMap>
 
@@ -57,6 +60,9 @@
     <result column="payAmount" jdbcType="VARCHAR" property="payAmount" />
     <result column="rate" jdbcType="DECIMAL" property="rate" />
     <result column="signKey" jdbcType="VARCHAR" property="sign_key" />
+    <result column="today_amount" jdbcType="DECIMAL" property="todayAmount" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
+    <result column="limit_amount" jdbcType="DECIMAL" property="limitAmount" />
   </resultMap>
 
   <select id="findAll" parameterType="com.chaotu.pay.vo.UserVo" resultMap="BaseResultMap">

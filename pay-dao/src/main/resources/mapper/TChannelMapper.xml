@@ -11,14 +11,20 @@
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="merchant" jdbcType="VARCHAR" property="merchant" />
-    <result column="signkey" jdbcType="VARCHAR" property="signkey" />
-    <result column="channelName" jdbcType="VARCHAR" property="channelName" />
-    <result column="channelCode" jdbcType="VARCHAR" property="channelCode" />
-    <result column="refererDomain" jdbcType="VARCHAR" property="refererdomain" />
+    <result column="channel_name" jdbcType="VARCHAR" property="channelName" />
+    <result column="channel_code" jdbcType="VARCHAR" property="channelCode" />
+    <result column="pay_type_id" jdbcType="INTEGER" property="payTypeId" />
     <result column="status" jdbcType="CHAR" property="status" />
-    <result column="channelQuota" jdbcType="INTEGER" property="channelquota" />
-    <result column="tradeAmount" jdbcType="DECIMAL" property="tradeamount" />
+    <result column="channel_quota" jdbcType="VARCHAR" property="channelQuota" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
     <result column="extend" jdbcType="VARCHAR" property="extend" />
+    <result column="today_amount" jdbcType="DECIMAL" property="todayAmount" />
+    <result column="limit_amount" jdbcType="DECIMAL" property="limitAmount" />
+    <result column="rate" jdbcType="DECIMAL" property="rate" />
+    <result column="content_type" jdbcType="VARCHAR" property="contentType" />
+    <result column="request_type" jdbcType="VARCHAR" property="requestType" />
+    <result column="request_url" jdbcType="VARCHAR" property="requestUrl" />
+    <result column="notify_url" jdbcType="VARCHAR" property="notifyUrl" />
   </resultMap>
 
   <!--修改通道-->

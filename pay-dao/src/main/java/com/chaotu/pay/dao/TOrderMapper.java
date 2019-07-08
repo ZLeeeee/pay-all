@@ -8,25 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 public interface TOrderMapper extends MyMapper<TOrder> {
-    /**
-     * 查询所有订单
-     * @return
-     */
-    List<TOrder> findAll(OrderVo orderVo);
-
-    /**
-     * 获取总账
-     * @param orderVo
-     * @return
-     */
     Map<String, Object> getGeneralAccount(OrderVo orderVo);
 
-    /**
-     * 修改订单状态
-     * @param orderVo
-     * @return
-     */
+    int countByCondition(OrderVo orderVo);
+
+    List<TOrder> findAll(OrderVo orderVo);
+
     int updateStatus(OrderVo orderVo);
 
-    int countByCondition(OrderVo orderVo);
 }

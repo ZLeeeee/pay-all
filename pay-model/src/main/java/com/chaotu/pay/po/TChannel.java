@@ -28,27 +28,22 @@ public class TChannel {
     private String merchant;
 
     /**
-     * 上游密钥
-     */
-    private String signkey;
-
-    /**
      * 通道名称
      */
-    @Column(name = "channelName")
-    private String channelname;
+    @Column(name = "channel_name")
+    private String channelName;
 
     /**
      * 通道编码
      */
-    @Column(name = "channelCode")
-    private String channelcode;
+    @Column(name = "channel_code")
+    private String channelCode;
 
     /**
-     * 防封域名
+     * 支付方式
      */
-    @Column(name = "refererDomain")
-    private String refererdomain;
+    @Column(name = "pay_type_id")
+    private Integer payTypeId;
 
     /**
      * 状态:0禁用，1启用，2删除
@@ -58,19 +53,67 @@ public class TChannel {
     /**
      * 通道限额：0不限额
      */
-    @Column(name = "channelQuota")
-    private Integer channelquota;
+    @Column(name = "channel_quota")
+    private String channelQuota;
 
     /**
      * 交易成功金额
      */
-    @Column(name = "tradeAmount")
-    private BigDecimal tradeamount;
+    @Column(name = "total_amount")
+    private BigDecimal totalAmount;
 
     /**
      * 扩展字段,存放json
      */
     private String extend;
+
+    /**
+     * 今日金额
+     */
+    @Column(name = "today_amount")
+    private BigDecimal todayAmount;
+
+    /**
+     * 费率
+     */
+    private BigDecimal rate;
+
+    /**
+     * 数据格式/json/text
+     */
+    @Column(name = "content_type")
+    private String contentType;
+
+    /**
+     * 请求方式/get/post
+     */
+    @Column(name = "request_type")
+    private String requestType;
+
+    /**
+     * 请求地址
+     */
+    @Column(name = "request_url")
+    private String requestUrl;
+
+    /**
+     * 回调地址
+     */
+    @Column(name = "notify_url")
+    private String notifyUrl;
+    /**
+     * 限额
+     */
+    @Column(name = "limit_amount")
+    private BigDecimal limitAmount;
+
+    public BigDecimal getLimitAmount() {
+        return limitAmount;
+    }
+
+    public void setLimitAmount(BigDecimal limitAmount) {
+        this.limitAmount = limitAmount;
+    }
 
     /**
      * @return id
@@ -161,75 +204,57 @@ public class TChannel {
     }
 
     /**
-     * 获取上游密钥
-     *
-     * @return signkey - 上游密钥
-     */
-    public String getSignkey() {
-        return signkey;
-    }
-
-    /**
-     * 设置上游密钥
-     *
-     * @param signkey 上游密钥
-     */
-    public void setSignkey(String signkey) {
-        this.signkey = signkey;
-    }
-
-    /**
      * 获取通道名称
      *
-     * @return channelName - 通道名称
+     * @return channel_name - 通道名称
      */
-    public String getChannelname() {
-        return channelname;
+    public String getChannelName() {
+        return channelName;
     }
 
     /**
      * 设置通道名称
      *
-     * @param channelname 通道名称
+     * @param channelName 通道名称
      */
-    public void setChannelname(String channelname) {
-        this.channelname = channelname;
+    public void setChannelName(String channelName) {
+        this.channelName = channelName;
     }
 
     /**
      * 获取通道编码
      *
-     * @return channelCode - 通道编码
+     * @return channel_code - 通道编码
      */
-    public String getChannelcode() {
-        return channelcode;
+    public String getChannelCode() {
+        return channelCode;
     }
 
     /**
      * 设置通道编码
      *
-     * @param channelcode 通道编码
+     * @param channelCode 通道编码
      */
-    public void setChannelcode(String channelcode) {
-        this.channelcode = channelcode;
+    public void setChannelCode(String channelCode) {
+        this.channelCode = channelCode;
     }
 
     /**
-     * 获取防封域名
+     * 获取支付方式
      *
-     * @return refererDomain - 防封域名
+     * @return pay_type_id - 支付方式
      */
-    public String getRefererdomain() {
-        return refererdomain;
+    public Integer getPayTypeId() {
+        return payTypeId;
     }
 
     /**
-     * 设置防封域名
+     * 设置支付方式
      *
-     * @param refererdomain 防封域名
+     * @param payTypeId 支付方式
      */
-    public void setRefererdomain(String refererdomain) {
-        this.refererdomain = refererdomain;
+    public void setPayTypeId(Integer payTypeId) {
+        this.payTypeId = payTypeId;
     }
 
     /**
@@ -253,37 +278,37 @@ public class TChannel {
     /**
      * 获取通道限额：0不限额
      *
-     * @return channelQuota - 通道限额：0不限额
+     * @return channel_quota - 通道限额：0不限额
      */
-    public Integer getChannelquota() {
-        return channelquota;
+    public String getChannelQuota() {
+        return channelQuota;
     }
 
     /**
      * 设置通道限额：0不限额
      *
-     * @param channelquota 通道限额：0不限额
+     * @param channelQuota 通道限额：0不限额
      */
-    public void setChannelquota(Integer channelquota) {
-        this.channelquota = channelquota;
+    public void setChannelQuota(String channelQuota) {
+        this.channelQuota = channelQuota;
     }
 
     /**
      * 获取交易成功金额
      *
-     * @return tradeAmount - 交易成功金额
+     * @return total_amount - 交易成功金额
      */
-    public BigDecimal getTradeamount() {
-        return tradeamount;
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
     }
 
     /**
      * 设置交易成功金额
      *
-     * @param tradeamount 交易成功金额
+     * @param totalAmount 交易成功金额
      */
-    public void setTradeamount(BigDecimal tradeamount) {
-        this.tradeamount = tradeamount;
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
     /**
@@ -302,5 +327,113 @@ public class TChannel {
      */
     public void setExtend(String extend) {
         this.extend = extend;
+    }
+
+    /**
+     * 获取今日金额
+     *
+     * @return today_amount - 今日金额
+     */
+    public BigDecimal getTodayAmount() {
+        return todayAmount;
+    }
+
+    /**
+     * 设置今日金额
+     *
+     * @param todayAmount 今日金额
+     */
+    public void setTodayAmount(BigDecimal todayAmount) {
+        this.todayAmount = todayAmount;
+    }
+
+    /**
+     * 获取费率
+     *
+     * @return rate - 费率
+     */
+    public BigDecimal getRate() {
+        return rate;
+    }
+
+    /**
+     * 设置费率
+     *
+     * @param rate 费率
+     */
+    public void setRate(BigDecimal rate) {
+        this.rate = rate;
+    }
+
+    /**
+     * 获取数据格式/json/text
+     *
+     * @return content_type - 数据格式/json/text
+     */
+    public String getContentType() {
+        return contentType;
+    }
+
+    /**
+     * 设置数据格式/json/text
+     *
+     * @param contentType 数据格式/json/text
+     */
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    /**
+     * 获取请求方式/get/post
+     *
+     * @return request_type - 请求方式/get/post
+     */
+    public String getRequestType() {
+        return requestType;
+    }
+
+    /**
+     * 设置请求方式/get/post
+     *
+     * @param requestType 请求方式/get/post
+     */
+    public void setRequestType(String requestType) {
+        this.requestType = requestType;
+    }
+
+    /**
+     * 获取请求地址
+     *
+     * @return request_url - 请求地址
+     */
+    public String getRequestUrl() {
+        return requestUrl;
+    }
+
+    /**
+     * 设置请求地址
+     *
+     * @param requestUrl 请求地址
+     */
+    public void setRequestUrl(String requestUrl) {
+        this.requestUrl = requestUrl;
+    }
+
+    /**
+     * 获取回调地址
+     *
+     * @return notify_url - 回调地址
+     */
+    public String getNotifyUrl() {
+        return notifyUrl;
+    }
+
+    /**
+     * 设置回调地址
+     *
+     * @param notifyUrl 回调地址
+     */
+    public void setNotifyUrl(String notifyUrl) {
+        this.notifyUrl = notifyUrl;
     }
 }
