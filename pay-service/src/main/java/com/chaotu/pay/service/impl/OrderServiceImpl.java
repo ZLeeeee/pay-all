@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 import java.math.BigDecimal;
@@ -133,13 +134,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Map<Object, Object> pay(OrderVo vo) {
         TOrder order = new TOrder();
         BeanUtils.copyProperties(vo,order);
         log.info("开始创建订单:["+ JSONObject.toJSONString(order) +"]");
         SortedMap<Object,Object> sortedMap = new TreeMap<>();
         TChannel channel = channelService.findById(order.getChannelId());
-        if(channel.getTodayAmount().compareTo(channel.getLimitAmount())<=0){
+        if(channel.getTodayAmount().compareTo(channel.getLimitAmount())>=0){
             sortedMap.put("success","0");
             sortedMap.put("msg","通道超限额");
             log.info("创建订单失败:["+ JSONObject.toJSONString(order) +"],通道:"+channel.getChannelName()+"超限额");
@@ -179,14 +181,14 @@ public class OrderServiceImpl implements OrderService {
             log.info("创建订单失败:["+ JSONObject.toJSONString(order) +"],通道账号:"+account.getAccount()+"已关闭");
             return sortedMap;
         }
-        if(account.getTodayAmount().compareTo(account.getLimitAmount())<=0){
+        if(account.getTodayAmount().compareTo(account.getLimitAmount())>=0){
             sortedMap.put("success","0");
             sortedMap.put("msg","通道账号超限额");
             log.info("创建订单失败:["+ JSONObject.toJSONString(order) +"],通道账号:"+channel.getChannelName()+"超限额");
             return sortedMap;
         }
         UserVo userVo = userService.getUserById(order.getUserId());
-        if(userVo.getTodayAmount().compareTo(userVo.getLimitAmount())<=0){
+        if(userVo.getTodayAmount().compareTo(userVo.getLimitAmount())>=0){
             sortedMap.put("success","0");
             sortedMap.put("msg","已超限额");
             log.info("创建订单失败:["+ JSONObject.toJSONString(order) +"],用户:"+userVo.getUsername()+"超限额");
@@ -216,19 +218,21 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderRate(userVo.getRate());
         JSONObject jso = JSONObject.parseObject(channel.getExtend());
 
-        sortedMap.put(jso.get(CommonConstant.PARAM_NAME_ACCOUNT_ID),account.getId());
+        sortedMap.put(jso.get(CommonConstant.PARAM_NAME_ACCOUNT_ID),account.getAccount());
         sortedMap.put(jso.get(CommonConstant.PARAM_NAME_OUT_TRADE_NO),orderNo);
-        sortedMap.put(jso.get(CommonConstant.PARAM_NAME_AMOUNT),order.getAmount().intValue());
+        sortedMap.put(jso.get(CommonConstant.PARAM_NAME_AMOUNT),order.getAmount());
         sortedMap.put(jso.get(CommonConstant.PARAM_NAME_NOTIFY_URL),channel.getNotifyUrl());
         String sign = DigestUtil.createSign(sortedMap, account.getSignKey());
         sortedMap.put(jso.get(CommonConstant.PARAM_NAME_SIGN),sign);
-        Sender<TreeMap<Object, Object>> sender = null;
+        Sender<Map<Object, Object>> sender = null;
         if(StringUtils.equals(channel.getContentType(), CommonConstant.CONTENT_TYPE_JSON)){
             sender =  new PayRequestSender<>(channel.getRequestUrl(),sortedMap);
         }else{
             sender = new PayRequestSender<>(channel.getRequestUrl(), RequestUtil.createPostParamStr(sortedMap));
         }
-        TreeMap<Object, Object> resultMap = sender.send();
+        Map<Object, Object> resultT = sender.send();
+        TreeMap<Object,Object> resultMap = new TreeMap<>();
+        resultMap.putAll(resultT);
         if(DigestUtil.checkSign(resultMap,account.getSignKey())){
             sortedMap.put("success","0");
             sortedMap.put("msg","通道验签失败");

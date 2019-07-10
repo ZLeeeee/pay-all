@@ -10,8 +10,8 @@ public interface CommonConstant {
     String PARAM_NAME_ACCOUNT_ID = "ACCOUNT_ID";
     String PARAM_NAME_AMOUNT = "AMOUNT";
     String PARAM_NAME_NOTIFY_URL = "NOTIFY_URL";
-    String PARAM_NAME_SIGN = "NOTIFY_URL";
-    String PARAM_NAME_QRCODE = "NOTIFY_URL";
+    String PARAM_NAME_SIGN = "SIGN";
+    String PARAM_NAME_QRCODE = "QRCODE";
     String PARAM_NAME_SUCCESS_KEY = "SUCCESS_KEY";
     String PARAM_NAME_SUCCESS_VAL = "SUCCESS_VAL";
     String CONTENT_TYPE_JSON = "JSON";

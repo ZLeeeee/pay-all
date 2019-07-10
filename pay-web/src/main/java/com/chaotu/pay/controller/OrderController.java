@@ -73,6 +73,7 @@ public class OrderController {
         try {
             return orderService.pay(orderVo);
         }catch (Exception e){
+            e.printStackTrace();
             Map<Object,Object > resultMap = new HashMap<>();
             resultMap.put("success","0");
             resultMap.put("msg","系统异常");
@@ -96,5 +97,25 @@ public class OrderController {
         resultMap.put("success","0");
         resultMap.put("msg","系统异常");
         return resultMap;
+    }
+
+    @PostMapping("/test")
+    public Map<String,String> test(@RequestBody OrderVo orderVo){
+        try {
+            Map<String,String> map = new HashMap<String , String>();
+            map.put("OUT_TRADE_NO","OUT_TRADE_NO");
+            map.put("ORDER_NO","ORDER_NO");
+            map.put("SUCCESS","1");
+            map.put("SIGN","SIGN");
+            map.put("NOTIFY_URL","NOTIFY_URL");
+            map.put("AMOUNT","10");
+            return map;
+        }catch (Exception e){
+            Map<String,String > resultMap = new HashMap<>();
+            resultMap.put("success","0");
+            resultMap.put("msg","系统异常");
+            return resultMap;
+        }
+
     }
 }

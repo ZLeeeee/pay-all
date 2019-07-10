@@ -57,9 +57,6 @@
     <if test="channelId != null and channelId != ''">
       and o.channel_id = #{channelId}
     </if>
-    <if test="channelPaymentId != null and channelPaymentId != ''">
-      and o.channel_payment_id = #{channelPaymentId}
-    </if>
     <if test="status !=-1">
       and o.status = #{status}
     </if>
@@ -98,9 +95,6 @@
     <if test="channelId != null and channelId != ''">
       and o.channel_id = #{channelId}
     </if>
-    <if test="channelPaymentId != null and channelPaymentId != ''">
-      and o.channel_payment_id = #{channelPaymentId}
-    </if>
     <if test="isHistory !=-1">
       and o.is_history = #{isHistory}
     </if>
@@ -112,7 +106,7 @@
   </select>
 
   <select id="getGeneralAccount" parameterType="com.chaotu.pay.vo.OrderVo" resultType="java.util.Map">
-    SELECT SUM(amount) AS allAmount, SUM(orderRate) AS allOrderRate, SUM(sysAmount) AS sysAmount,SUM(agentAmount) AS allAgentAmount, SUM(userAmount) allUserMount FROM `t_order` o WHERE 1 = 1
+    SELECT SUM(amount) AS allAmount, SUM(order_rate) AS allOrderRate, SUM(sys_amount) AS sysAmount,SUM(channel_amount) AS allAgentAmount, SUM(user_amount) allUserMount FROM `t_order` o WHERE 1 = 1
     <if test="startTime != null and startTime != ''">
       and o.create_time &gt;= #{startTime}
     </if>
@@ -136,9 +130,6 @@
     </if>
     <if test="channelId != null and channelId != ''">
       and o.channel_id = #{channelId}
-    </if>
-    <if test="channelPaymentId != null and channelPaymentId != ''">
-      and o.channel_payment_id = #{channelPaymentId}
     </if>
     <if test=" status !=-1">
       and o.status = #{status}
