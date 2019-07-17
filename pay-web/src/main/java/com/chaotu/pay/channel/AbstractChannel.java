@@ -1,0 +1,39 @@
+package com.chaotu.pay.channel;
+
+import com.chaotu.pay.po.TChannel;
+import com.chaotu.pay.po.TChannelAccount;
+import com.chaotu.pay.vo.OrderVo;
+
+import java.util.Map;
+
+public abstract class AbstractChannel implements Channel {
+    public AbstractChannel(TChannel channel,TChannelAccount account){
+        this.channel = channel;
+        this.account = account;
+    }
+    private TChannel channel;
+    private TChannelAccount account;
+    @Override
+    public Map<String, Object> pay(OrderVo orderVo) {
+        return requestUpper(orderVo,createSign(createSignMap(orderVo)));
+    }
+    abstract String createSign(Map<String, Object> signParam);
+    abstract Map<String,Object> createSignMap(OrderVo orderVo);
+    public abstract Map<String,Object> requestUpper(OrderVo orderVo,String sign);
+
+    public TChannel getChannel() {
+        return channel;
+    }
+
+    public void setChannel(TChannel channel) {
+        this.channel = channel;
+    }
+
+    public TChannelAccount getAccount() {
+        return account;
+    }
+
+    public void setAccount(TChannelAccount account) {
+        this.account = account;
+    }
+}
