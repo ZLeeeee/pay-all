@@ -306,9 +306,9 @@ public class UserServiceImpl implements UserService {
         String roleIds = vo.getRoleIds();
         Example userRoleExample = new Example(TUserRole.class);
         userRoleExample.createCriteria().andEqualTo("userId", vo.getId());
-        tUserRoleMapper.deleteByExample(userRoleExample);
         if (!StringUtils.isEmpty(roleIds)) {
             //清除用户先前的角色，重新添加角色
+            tUserRoleMapper.deleteByExample(userRoleExample);
             log.debug("修改用户中，清除用户原有的角色成功");
             String[] split = roleIds.split(",");
             for (String s : split) {
