@@ -317,9 +317,9 @@ public class OrderServiceImpl implements OrderService {
     private boolean checkRequestTimes(TChannel channel ){
         long currentTimeMillis = System.currentTimeMillis();
         Date endTime = new Date(currentTimeMillis);
-        Date startTime = new Date(currentTimeMillis-60*1000);
+        Date startTime = new Date(currentTimeMillis-10*1000);
         Example example = new Example(TOrder.class);
         example.createCriteria().andBetween("createTime",startTime,endTime);
-        return channel.getLimitTimes() < tOrderMapper.selectCountByExample(example);
+        return channel.getLimitTimes() <= tOrderMapper.selectCountByExample(example);
     }
 }
