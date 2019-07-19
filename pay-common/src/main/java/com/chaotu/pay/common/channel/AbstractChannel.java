@@ -1,4 +1,4 @@
-package com.chaotu.pay.channel;
+package com.chaotu.pay.common.channel;
 
 import com.chaotu.pay.po.TChannel;
 import com.chaotu.pay.po.TChannelAccount;
@@ -17,7 +17,7 @@ public abstract class AbstractChannel implements Channel {
     public Map<String, Object> pay(OrderVo orderVo) {
         return requestUpper(orderVo,createSign(createSignMap(orderVo)));
     }
-    abstract String createSign(Map<String, Object> signParam);
+    public abstract String createSign(Map<String, Object> signParam);
     abstract Map<String,Object> createSignMap(OrderVo orderVo);
     public abstract Map<String,Object> requestUpper(OrderVo orderVo,String sign);
 

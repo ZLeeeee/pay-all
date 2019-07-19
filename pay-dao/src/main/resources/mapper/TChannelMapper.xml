@@ -25,6 +25,7 @@
     <result column="request_type" jdbcType="VARCHAR" property="requestType" />
     <result column="request_url" jdbcType="VARCHAR" property="requestUrl" />
     <result column="notify_url" jdbcType="VARCHAR" property="notifyUrl" />
+    <result column="limit_times" jdbcType="INTEGER" property="limitTimes" />
   </resultMap>
 
   <!--修改通道-->

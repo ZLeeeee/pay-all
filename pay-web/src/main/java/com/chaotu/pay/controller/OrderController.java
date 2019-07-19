@@ -1,6 +1,7 @@
 package com.chaotu.pay.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.chaotu.pay.common.utils.DateUtil;
 import com.chaotu.pay.common.utils.ResponseUtil;
 import com.chaotu.pay.mq.MsgProducer;
 import com.chaotu.pay.po.TOrder;
@@ -13,6 +14,7 @@ import com.chaotu.pay.vo.SearchVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import redis.clients.jedis.Jedis;
 
 import java.text.ParseException;
 import java.util.HashMap;
@@ -33,6 +35,8 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+
 
 
     /**
@@ -71,6 +75,12 @@ public class OrderController {
     @PostMapping("/pay")
     public Map<Object,Object> pay(@RequestBody OrderVo orderVo){
         try {
+            /*String key = "channel:"+orderVo.getChannelId()+":"+ DateUtil.getMinute();
+            Long times = jedis.incr(key);
+            Long ttl = jedis.ttl(key);
+            if(-1 == ttl){
+                jedis.expire(key,60);
+            }*/
             return orderService.pay(orderVo);
         }catch (Exception e){
             e.printStackTrace();
@@ -83,6 +93,7 @@ public class OrderController {
     }
     @PostMapping("/notify/{channelId}")
     public Map<String,Object> notify(@RequestBody Map<String,Object> params, @PathVariable Long channelId){
+
         try {
             Map<String, Object> map = orderService.notify(params, channelId);
             if(map!=null){
@@ -106,8 +117,9 @@ public class OrderController {
             map.put("OUT_TRADE_NO","OUT_TRADE_NO");
             map.put("ORDER_NO","ORDER_NO");
             map.put("SUCCESS","1");
-            map.put("SIGN","SIGN");
+            map.put("sign","SIGN");
             map.put("NOTIFY_URL","NOTIFY_URL");
+            map.put("QRCODE","QRCODE");
             map.put("AMOUNT","10");
             return map;
         }catch (Exception e){

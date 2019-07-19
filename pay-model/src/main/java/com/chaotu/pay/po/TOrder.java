@@ -1,5 +1,7 @@
 package com.chaotu.pay.po;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.*;
@@ -11,6 +13,7 @@ public class TOrder {
     private Long id;
 
     @Column(name = "create_time")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date createTime;
 
     @Column(name = "update_by")

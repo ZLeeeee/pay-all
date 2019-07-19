@@ -23,6 +23,8 @@ public class DateUtil
      * 时间格式
      */
     private final static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
+
+    private final static SimpleDateFormat MINUTE_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm");
     /**
      * 日期时间格式
      */
@@ -71,6 +73,10 @@ public class DateUtil
             0x0ada0 };
 
     private DateUtil(){}
+
+    public static String getMinute(){
+        return MINUTE_FORMAT.format(new Date());
+    }
 
     /**
      * 获取当前日期

@@ -1,10 +1,8 @@
 package com.chaotu.pay.controller;
 
 import com.chaotu.pay.common.utils.ResponseUtil;
-import com.chaotu.pay.dao.TChannelMapper;
 import com.chaotu.pay.po.TChannel;
 import com.chaotu.pay.service.ChannelService;
-import com.chaotu.pay.vo.ChannelVo;
 import com.chaotu.pay.vo.Message;
 import com.chaotu.pay.vo.PageVo;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,5 +1,6 @@
 package com.chaotu.pay.service.impl;
 
+import com.chaotu.pay.common.channel.ChannelFactory;
 import com.chaotu.pay.dao.TChannelAccountMapper;
 import com.chaotu.pay.po.TChannel;
 import com.chaotu.pay.po.TChannelAccount;
@@ -17,6 +18,8 @@ import java.util.List;
 public class ChannelAccountServiceImpl implements ChannelAccountService {
     @Autowired
     TChannelAccountMapper accountMapper;
+    @Autowired
+    private ChannelFactory factory;
     @Override
     public TChannelAccount findById(Long id) {
         TChannelAccount channel = new TChannelAccount();
@@ -50,6 +53,7 @@ public class ChannelAccountServiceImpl implements ChannelAccountService {
 
     @Override
     public TChannelAccount selectOne(TChannelAccount tChannelAccount) {
+
         return accountMapper.selectOne(tChannelAccount);
     }
 
@@ -65,6 +69,7 @@ public class ChannelAccountServiceImpl implements ChannelAccountService {
 
     @Override
     public void update(TChannelAccount tChannelAccount) {
+        factory.getChannel(tChannelAccount.getChannelId()).setAccount(tChannelAccount);
         accountMapper.updateByPrimaryKeySelective(tChannelAccount);
     }
 }

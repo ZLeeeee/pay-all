@@ -5,6 +5,7 @@ import com.chaotu.pay.vo.ChannelVo;
 import com.chaotu.pay.vo.MyPageInfo;
 import com.chaotu.pay.vo.PageVo;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -21,6 +22,7 @@ public interface ChannelService extends CRUDService<TChannel>{
     MyPageInfo<TChannel> findAllByPage(PageVo pageVo);
 
     TChannel findById(Long id);
+    void updateAmount(BigDecimal amount, Long channelId);
 
 
 }

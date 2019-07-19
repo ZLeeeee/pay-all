@@ -1,10 +1,13 @@
 package com.chaotu.pay.service.impl;
 
+import com.chaotu.pay.common.channel.Channel;
+import com.chaotu.pay.common.channel.ChannelFactory;
 import com.chaotu.pay.common.utils.IDGeneratorUtils;
 import com.chaotu.pay.common.utils.MyBeanUtils;
 import com.chaotu.pay.dao.TChannelMapper;
 import com.chaotu.pay.enums.ExceptionCode;
 import com.chaotu.pay.po.TChannel;
+import com.chaotu.pay.po.TChannelAccount;
 import com.chaotu.pay.service.ChannelService;
 import com.chaotu.pay.vo.BizException;
 import com.chaotu.pay.vo.ChannelVo;
@@ -33,6 +36,8 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Autowired
     private TChannelMapper channelMapper;
+    @Autowired
+    private ChannelFactory factory;
 
 
     @Override
@@ -63,7 +68,7 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Override
     public void update(TChannel channelVo) {
-
+        factory.getChannel(channelVo.getId()).setChannel(channelVo);
         channelMapper.updateByPrimaryKeySelective(channelVo);
 
     }
@@ -83,5 +88,21 @@ public class ChannelServiceImpl implements ChannelService {
         TChannel channel = new TChannel();
         channel.setId(id);
         return selectOne(channel);
+    }
+    @Override
+    public synchronized void updateAmount(BigDecimal amount, Long channelId) {
+        TChannel account = findById(channelId);
+        BigDecimal todayAmount = account.getTodayAmount().add(amount);
+        BigDecimal totalAmount = account.getTotalAmount().add(amount);
+        account.setTodayAmount(todayAmount);
+        account.setTotalAmount(totalAmount);
+        Channel channel = factory.getChannel(channelId);
+        TChannelAccount account1 = channel.getAccount();
+        TChannel tChannel = channel.getChannel();
+        tChannel.setTodayAmount(todayAmount);
+        tChannel.setTotalAmount(totalAmount);
+        account1.setTodayAmount(todayAmount);
+        account1.setTotalAmount(totalAmount);
+        channelMapper.updateByPrimaryKeySelective(account);
     }
 }

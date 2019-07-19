@@ -1,4 +1,4 @@
-package com.chaotu.pay.channel;
+package com.chaotu.pay.common.channel;
 
 import com.chaotu.pay.common.sender.PddMerchantSender;
 import com.chaotu.pay.common.utils.DigestUtil;
@@ -39,7 +39,7 @@ public class PddChannel extends AbstractChannel {
         Map<Object,Object> sortedMap = new HashMap<>();
         sortedMap.put("userId",order.getUserId());
         sortedMap.put("amount",order.getAmount());
-        sortedMap.put("userOrderNo",order.getUnderOrderNo());
+        sortedMap.put("userOrderNo",order.getOrderNo());
         sortedMap.put("notifyUrl",order.getNotifyUrl());
         sortedMap.put("sign",sign);
         PddMerchantSender<Map<String,Object>> paySender = new PddMerchantSender<>(getChannel().getRequestUrl(),sortedMap,null);

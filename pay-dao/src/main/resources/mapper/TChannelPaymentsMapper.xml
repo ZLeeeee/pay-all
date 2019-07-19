@@ -39,12 +39,12 @@
     <result column="minAmount" jdbcType="INTEGER" property="minamount" />
     <result column="maxAmount" jdbcType="INTEGER" property="maxamount" />
     <result column="status" jdbcType="CHAR" property="status" />
-    <result column="channelName" jdbcType="VARCHAR" property="channelname" />
+    <result column="channel_name" jdbcType="VARCHAR" property="channelname" />
   </resultMap>
 
   <select id="findAll" resultMap="VoResultMap">
         SELECT
-            tc.channelName,
+            tc.channel_name,
             tcp.*
         FROM
             t_channel_payments tcp

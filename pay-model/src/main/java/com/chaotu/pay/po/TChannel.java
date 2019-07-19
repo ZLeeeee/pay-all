@@ -21,6 +21,8 @@ public class TChannel {
 
     @Column(name = "update_time")
     private Date updateTime;
+    @Column(name = "limit_times")
+    private Integer limitTimes;
 
     /**
      * 上游商户号
@@ -113,6 +115,14 @@ public class TChannel {
 
     public void setLimitAmount(BigDecimal limitAmount) {
         this.limitAmount = limitAmount;
+    }
+
+    public Integer getLimitTimes() {
+        return limitTimes;
+    }
+
+    public void setLimitTimes(Integer limitTimes) {
+        this.limitTimes = limitTimes;
     }
 
     /**

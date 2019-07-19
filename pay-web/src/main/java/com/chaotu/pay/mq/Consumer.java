@@ -1,6 +1,7 @@
 package com.chaotu.pay.mq;
 
 import com.alibaba.fastjson.JSONObject;
+import com.chaotu.pay.common.channel.ChannelFactory;
 import com.chaotu.pay.common.sender.PddSender;
 import com.chaotu.pay.common.sender.Sender;
 import com.chaotu.pay.common.utils.DigestUtil;
@@ -40,9 +41,10 @@ public class Consumer {
         try {
             log.info("订单: " + content + "已支付");
             TOrder order = JSONObject.parseObject(content, TOrder.class);
-            TChannel channel = channelService.findById(order.getId());
+            TChannel channel = channelService.findById(order.getChannelId());
             UserVo user = userService.getUserById(order.getUserId());
             TOrder o = new TOrder();
+            o.setId(order.getId());
             BigDecimal channelAmount = order.getAmount().multiply(channel.getRate());
             o.setChannelAmount(channelAmount);
             BigDecimal sysAmount = order.getAmount().multiply(user.getRate());

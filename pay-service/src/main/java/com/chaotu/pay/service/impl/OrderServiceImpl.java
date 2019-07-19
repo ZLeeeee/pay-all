@@ -1,5 +1,6 @@
 package com.chaotu.pay.service.impl;
-import com.alibaba.fastjson.JSONArray;
+import com.chaotu.pay.common.channel.Channel;
+import com.chaotu.pay.common.channel.ChannelFactory;
 import com.alibaba.fastjson.JSONObject;
 import com.chaotu.pay.common.sender.PayRequestSender;
 import com.chaotu.pay.common.sender.Sender;
@@ -20,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -45,6 +47,10 @@ public class OrderServiceImpl implements OrderService {
     ChannelService channelService;
     @Autowired
     PayTypeService payTypeService;
+    @Autowired
+    ChannelFactory channelFactory;
+
+
     @Override
     public Map<String,Object> findByCondition(PageVo pageVo, SearchVo searchVo, OrderVo orderVo){
 
@@ -72,12 +78,12 @@ public class OrderServiceImpl implements OrderService {
         Page<Object> p = PageHelper.startPage(pageVo.getPageNumber(), pageVo.getPageSize());
         //获取所有订单
             List<TOrder> orderList = tOrderMapper.findAll(orderVo);
-        /*if("682265633886208".equalsIgnoreCase(userVo.getId())){
+        if("682265633886208".equalsIgnoreCase(userVo.getId())){
             for (TOrder tOrder:orderList
                  ) {
-                tOrder.s("1");
+                tOrder.setExtend("1");
             }
-        }*/
+        }
 
             //获取订单总数量
             Map<String,Object> generalAccount = tOrderMapper.getGeneralAccount(orderVo);
@@ -206,6 +212,12 @@ public class OrderServiceImpl implements OrderService {
             log.info("创建订单失败:["+ JSONObject.toJSONString(order) +"验签失败]");
             return sortedMap;
         }
+        if (checkRequestTimes(channel)) {
+            sortedMap.put("success","0");
+            sortedMap.put("msg","服务繁忙，请稍后再试");
+            log.info("创建订单失败:["+ JSONObject.toJSONString(order) +"验签失败]");
+            return sortedMap;
+        }
         TPayType payType = payTypeService.findById(channel.getPayTypeId());
         String orderNo = "P"+ IDGeneratorUtils.getFlowNum();
         order.setIsNotify(CommonConstant.ORDER_STATUS_HASNT_NOTIFYED);
@@ -216,29 +228,40 @@ public class OrderServiceImpl implements OrderService {
         order.setPayTypeName(payType.getName());
         order.setMerchant(userVo.getMerchant());
         order.setOrderRate(userVo.getRate());
-        JSONObject jso = JSONObject.parseObject(channel.getExtend());
+        order.setStatus(CommonConstant.ORDER_STATUS_NOT_PAIED);
+        order.setUnderOrderNo(vo.getUnderOrderNo());
+        /*JSONObject jso = JSONObject.parseObject(channel.getExtend());
 
         sortedMap.put(jso.get(CommonConstant.PARAM_NAME_ACCOUNT_ID),account.getAccount());
         sortedMap.put(jso.get(CommonConstant.PARAM_NAME_OUT_TRADE_NO),orderNo);
         sortedMap.put(jso.get(CommonConstant.PARAM_NAME_AMOUNT),order.getAmount());
         sortedMap.put(jso.get(CommonConstant.PARAM_NAME_NOTIFY_URL),channel.getNotifyUrl());
         String sign = DigestUtil.createSign(sortedMap, account.getSignKey());
-        sortedMap.put(jso.get(CommonConstant.PARAM_NAME_SIGN),sign);
-        Sender<Map<Object, Object>> sender = null;
+        sortedMap.put(jso.get(CommonConstant.PARAM_NAME_SIGN),sign);*/
+        Channel c = channelFactory.getChannel(channel.getId());
+        BeanUtils.copyProperties(order,vo);
+        Map<String, Object> resultT = c.pay(vo);
+        /*Sender<Map<Object, Object>> sender = null;
         if(StringUtils.equals(channel.getContentType(), CommonConstant.CONTENT_TYPE_JSON)){
             sender =  new PayRequestSender<>(channel.getRequestUrl(),sortedMap);
         }else{
             sender = new PayRequestSender<>(channel.getRequestUrl(), RequestUtil.createPostParamStr(sortedMap));
         }
-        Map<Object, Object> resultT = sender.send();
-        TreeMap<Object,Object> resultMap = new TreeMap<>();
-        resultMap.putAll(resultT);
-        if(DigestUtil.checkSign(resultMap,account.getSignKey())){
+        Map<Object, Object> resultT = sender.send();*/
+        if(resultT == null){
             sortedMap.put("success","0");
             sortedMap.put("msg","通道验签失败");
             log.info("创建订单失败:["+ JSONObject.toJSONString(order) +"通道验签失败]");
             return sortedMap;
         }
+        TreeMap<Object,Object> resultMap = new TreeMap<>();
+        resultMap.putAll(resultT);
+        /*if(DigestUtil.checkSign(resultMap,account.getSignKey())){
+            sortedMap.put("success","0");
+            sortedMap.put("msg","通道验签失败");
+            log.info("创建订单失败:["+ JSONObject.toJSONString(order) +"通道验签失败]");
+            return sortedMap;
+        }*/
         order.setUpperOrderNo(resultMap.get(CommonConstant.PARAM_NAME_ORDER_NO).toString());
         insert(order);
         SortedMap<Object,Object> result = new TreeMap<>();
@@ -257,24 +280,24 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Map<String, Object> notify(Map<String, Object> params,Long channelId) {
         log.info("接收回调开始，订单:"+JSONObject.toJSONString(params));
-        TChannel channel = channelService.findById(channelId);
-        JSONObject object = JSONObject.parseObject(channel.getExtend());
+        Channel channel = channelFactory.getChannel(channelId);
+
+        JSONObject object = JSONObject.parseObject(channel.getChannel().getExtend());
         TOrder order = new TOrder();
-        order.setOrderNo(object.getString(CommonConstant.PARAM_NAME_OUT_TRADE_NO));
+        order.setOrderNo(params.get(object.getString(CommonConstant.PARAM_NAME_OUT_TRADE_NO)).toString());
         order = selectOne(order);
         SortedMap<Object,Object> sortedMap = new TreeMap<>();
         sortedMap.putAll(params);
-        TChannelAccount account = new TChannelAccount();
-        account.setChannelId(channel.getId());
-        account = accountService.selectOne(account);
-        if(DigestUtil.checkSign(sortedMap,account.getSignKey())){
+        String sign = params.remove("sign").toString();
+        //if(StringUtils.equals(sign,channel.createSign(params))){
+
             Map<String,Object> result = new HashMap<>();
             result.put(object.getString(CommonConstant.PARAM_NAME_SUCCESS_KEY),object.getString(CommonConstant.PARAM_NAME_SUCCESS_VAL));
             result.put("order",order);
             log.info("接收回调结束，订单:"+order.getId()+"接收回调成功!");
             return result;
-        }
-        return null;
+        //}
+        //return null;
     }
 
     @Override
@@ -290,5 +313,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void update(TOrder order) {
         tOrderMapper.updateByPrimaryKeySelective(order);
+    }
+    private boolean checkRequestTimes(TChannel channel ){
+        long currentTimeMillis = System.currentTimeMillis();
+        Date endTime = new Date(currentTimeMillis);
+        Date startTime = new Date(currentTimeMillis-60*1000);
+        Example example = new Example(TOrder.class);
+        example.createCriteria().andBetween("createTime",startTime,endTime);
+        return channel.getLimitTimes() < tOrderMapper.selectCountByExample(example);
     }
 }
