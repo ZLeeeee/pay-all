@@ -5,6 +5,7 @@ public interface CommonConstant {
     byte ORDER_STATUS_NOT_PAIED = 0;
     int ORDER_STATUS_HAS_NOTIFYED = 1;
     int ORDER_STATUS_HASNT_NOTIFYED = 0;
+    String NOTIFY_URL = "http://47.75.146.15:8080/order/notify/";
     String PARAM_NAME_OUT_TRADE_NO = "OUT_TRADE_NO";
     String PARAM_NAME_ORDER_NO = "ORDER_NO";
     String PARAM_NAME_ACCOUNT_ID = "ACCOUNT_ID";

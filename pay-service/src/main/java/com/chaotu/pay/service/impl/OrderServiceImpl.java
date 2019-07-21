@@ -26,6 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
+
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -223,6 +225,7 @@ public class OrderServiceImpl implements OrderService {
         order.setIsNotify(CommonConstant.ORDER_STATUS_HASNT_NOTIFYED);
         order.setPayTypeId(channel.getPayTypeId());
         order.setChannelName(channel.getChannelName());
+        order.setChannelId(channel.getId());
         order.setCreateTime(new Date());
         order.setOrderNo(orderNo);
         order.setPayTypeName(payType.getName());
@@ -278,26 +281,22 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Map<String, Object> notify(Map<String, Object> params,Long channelId) {
-        log.info("接收回调开始，订单:"+JSONObject.toJSONString(params));
+    public Map<String, Object> notify(Map<String,Object> map,String orderNo, Long channelId, HttpServletRequest request) {
+        log.info("接收回调开始，订单:"+orderNo);
         Channel channel = channelFactory.getChannel(channelId);
-
-        JSONObject object = JSONObject.parseObject(channel.getChannel().getExtend());
-        TOrder order = new TOrder();
-        order.setOrderNo(params.get(object.getString(CommonConstant.PARAM_NAME_OUT_TRADE_NO)).toString());
-        order = selectOne(order);
-        SortedMap<Object,Object> sortedMap = new TreeMap<>();
-        sortedMap.putAll(params);
-        String sign = params.remove("sign").toString();
-        //if(StringUtils.equals(sign,channel.createSign(params))){
-
+        if (channel.checkNotify(map,request)) {
+            JSONObject object = JSONObject.parseObject(channel.getChannel().getExtend());
+            TOrder order = new TOrder();
+            order.setOrderNo(orderNo);
+            order = selectOne(order);
             Map<String,Object> result = new HashMap<>();
             result.put(object.getString(CommonConstant.PARAM_NAME_SUCCESS_KEY),object.getString(CommonConstant.PARAM_NAME_SUCCESS_VAL));
             result.put("order",order);
             log.info("接收回调结束，订单:"+order.getId()+"接收回调成功!");
             return result;
-        //}
-        //return null;
+        }
+        log.info("接收回调失败，订单:"+orderNo+"验签失败!");
+       return null;
     }
 
     @Override

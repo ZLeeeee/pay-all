@@ -3,6 +3,7 @@ package com.chaotu.pay.service;
 import com.chaotu.pay.po.TOrder;
 import com.chaotu.pay.vo.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.Map;
 
@@ -28,5 +29,5 @@ public interface OrderService extends CRUDService<TOrder>{
     void updateByIsHistory(TOrder order);
     TOrder selectOne(TOrder order);
     Map<Object,Object> pay(OrderVo order);
-    Map<String,Object> notify(Map<String,Object> params,Long channelId);
+    Map<String,Object> notify(Map<String, Object> params, String OrderNo, Long channelId, HttpServletRequest request);
 }

@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import redis.clients.jedis.Jedis;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -91,23 +92,23 @@ public class OrderController {
         }
 
     }
-    @PostMapping("/notify/{channelId}")
-    public Map<String,Object> notify(@RequestBody Map<String,Object> params, @PathVariable Long channelId){
+    @PostMapping("/notify/{channelId}/{orderNo}")
+    public String notify(/*@RequestBody Map<String,Object> params,*/ @PathVariable Long channelId,@PathVariable String orderNo, HttpServletRequest request){
 
         try {
-            Map<String, Object> map = orderService.notify(params, channelId);
+            Map<String, Object> map = orderService.notify(null,orderNo, channelId,request);
             if(map!=null){
                 TOrder order = (TOrder) map.remove("order");
                 producer.sendAll(JSONObject.toJSONString(order));
-                return map;
+                return "success";
             }
         }catch (Exception e){
-           log.info("接收回调异常,订单:"+JSONObject.toJSONString(params)+"\n+通道id:"+channelId);
+           log.info("接收回调异常,订单:"+orderNo+"\n+通道id:"+channelId);
         }
         Map<String,Object > resultMap = new HashMap<>();
         resultMap.put("success","0");
         resultMap.put("msg","系统异常");
-        return resultMap;
+        return "false";
     }
 
     @PostMapping("/test")

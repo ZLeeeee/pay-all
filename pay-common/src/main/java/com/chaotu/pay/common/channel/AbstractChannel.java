@@ -1,9 +1,12 @@
 package com.chaotu.pay.common.channel;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.chaotu.pay.po.TChannel;
 import com.chaotu.pay.po.TChannelAccount;
 import com.chaotu.pay.vo.OrderVo;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public abstract class AbstractChannel implements Channel {
@@ -15,9 +18,14 @@ public abstract class AbstractChannel implements Channel {
     private TChannelAccount account;
     @Override
     public Map<String, Object> pay(OrderVo orderVo) {
-        return requestUpper(orderVo,createSign(createSignMap(orderVo)));
+        return requestUpper(orderVo, createSign(createSignMap(orderVo)));
     }
     public abstract String createSign(Map<String, Object> signParam);
+
+    public abstract String createNotifySign(Map<String, Object> signParam, HttpServletRequest request);
+
+    public abstract boolean checkNotify(Map<String, Object> signParam, HttpServletRequest request);
+
     abstract Map<String,Object> createSignMap(OrderVo orderVo);
     public abstract Map<String,Object> requestUpper(OrderVo orderVo,String sign);
 
