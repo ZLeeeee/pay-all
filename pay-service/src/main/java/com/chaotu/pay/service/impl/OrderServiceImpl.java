@@ -222,6 +222,7 @@ public class OrderServiceImpl implements OrderService {
         checkSignMap.put("amount",order.getAmount());
         checkSignMap.put("notifyUrl",order.getNotifyUrl());
         checkSignMap.put("userId",order.getUserId());
+        checkSignMap.put("payTypeId",order.getPayTypeId());
         if(!DigestUtil.checkSign(checkSignMap,userVo.getSignKey())){
             sortedMap.put("success","0");
             sortedMap.put("msg","验签失败");

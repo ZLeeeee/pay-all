@@ -63,9 +63,6 @@ public class Consumer {
     public void processMessage2(String content) {
 
         log.info("订单: "+content+"回调开始");
-       /* Map<String,Object> map = JsonUtils.parseJSON2Map(content);
-        String tid = (String) JsonUtils.parseJSON2Map((String) map.get("content")).get("tid");*/
-
         TOrder order =JSONObject.parseObject(content,TOrder.class);
 
         if (order == null)
