@@ -52,7 +52,8 @@ public class Consumer {
             BigDecimal userAmount = order.getAmount().subtract(sysAmount);
             o.setUserAmount(userAmount);
             o.setStatus(CommonConstant.ORDER_STATUS_PAIED);
-            accountService.updateAmount(order.getAmount(), o.getChannelId());
+            channelService.updateAmount(order.getAmount(),channel.getId());
+            //accountService.updateAmount(order.getAmount(), o.getChannelId());
             tOrderService.update(o);
             userService.updateAmount(userAmount,user.getId());
         }catch (Exception e){

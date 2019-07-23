@@ -96,7 +96,7 @@ public class ChannelServiceImpl implements ChannelService {
     }
     @Override
     public synchronized void updateAmount(BigDecimal amount, Long channelId) {
-        TChannel account = findById(channelId);
+        TChannel account = new TChannel();
         BigDecimal todayAmount = account.getTodayAmount().add(amount);
         BigDecimal totalAmount = account.getTotalAmount().add(amount);
         account.setTodayAmount(todayAmount);
