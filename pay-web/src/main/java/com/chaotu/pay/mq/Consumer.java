@@ -75,7 +75,7 @@ public class Consumer {
         try {
             SortedMap<Object,Object> params = new TreeMap<>();
             params.put("success","1");
-            params.put("orderNo",order.getId());
+            params.put("orderNo",order.getOrderNo());
             params.put("amount",order.getAmount().toString());
             params.put("underOrderNo",order.getUnderOrderNo());
             params.put("userId",order.getUserId());

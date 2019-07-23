@@ -2,6 +2,8 @@ package com.chaotu.pay.service.impl;
 
 import com.chaotu.pay.common.channel.Channel;
 import com.chaotu.pay.common.channel.ChannelFactory;
+import com.chaotu.pay.common.choser.Choser;
+import com.chaotu.pay.common.choser.ChoserFactory;
 import com.chaotu.pay.common.utils.IDGeneratorUtils;
 import com.chaotu.pay.common.utils.MyBeanUtils;
 import com.chaotu.pay.dao.TChannelMapper;
@@ -38,6 +40,8 @@ public class ChannelServiceImpl implements ChannelService {
     private TChannelMapper channelMapper;
     @Autowired
     private ChannelFactory factory;
+    @Autowired
+    private ChoserFactory choserFactory;
 
 
     @Override
@@ -70,6 +74,7 @@ public class ChannelServiceImpl implements ChannelService {
     public void update(TChannel channelVo) {
         factory.getChannel(channelVo.getId()).setChannel(channelVo);
         channelMapper.updateByPrimaryKeySelective(channelVo);
+        choserFactory.update();
 
     }
 

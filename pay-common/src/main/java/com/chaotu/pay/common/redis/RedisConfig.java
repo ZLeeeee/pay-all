@@ -1,4 +1,4 @@
-package com.chaotu.pay.config.redis;
+package com.chaotu.pay.common.redis;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

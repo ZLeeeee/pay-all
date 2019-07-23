@@ -1,7 +1,9 @@
 package com.chaotu.pay.service.impl;
 import com.chaotu.pay.common.channel.Channel;
+import com.chaotu.pay.common.channel.ChannelChooser;
 import com.chaotu.pay.common.channel.ChannelFactory;
 import com.alibaba.fastjson.JSONObject;
+import com.chaotu.pay.common.redis.RedisUtils;
 import com.chaotu.pay.common.sender.PayRequestSender;
 import com.chaotu.pay.common.sender.Sender;
 import com.chaotu.pay.common.utils.DigestUtil;
@@ -51,6 +53,10 @@ public class OrderServiceImpl implements OrderService {
     PayTypeService payTypeService;
     @Autowired
     ChannelFactory channelFactory;
+    @Autowired
+    ChannelChooser channelChooser;
+    @Autowired
+    RedisUtils redisUtils;
 
 
     @Override
@@ -144,10 +150,18 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Map<Object, Object> pay(OrderVo vo) {
+        log.info("开始创建订单:["+ JSONObject.toJSONString(vo) +"]");
+        TChannel channel1 = channelChooser.getChannel(vo.getPayTypeId());
+        SortedMap<Object,Object> sortedMap = new TreeMap<>();
+        if(channel1 == null){
+            sortedMap.put("success","0");
+            sortedMap.put("msg","通道繁忙或无可用通道");
+            log.info("创建订单失败:["+ JSONObject.toJSONString(vo) +"]");
+            return sortedMap;
+        }
+        vo.setChannelId(channel1.getId());
         TOrder order = new TOrder();
         BeanUtils.copyProperties(vo,order);
-        log.info("开始创建订单:["+ JSONObject.toJSONString(order) +"]");
-        SortedMap<Object,Object> sortedMap = new TreeMap<>();
         TChannel channel = channelService.findById(order.getChannelId());
         if(channel.getTodayAmount().compareTo(channel.getLimitAmount())>=0){
             sortedMap.put("success","0");
@@ -208,18 +222,18 @@ public class OrderServiceImpl implements OrderService {
         checkSignMap.put("amount",order.getAmount());
         checkSignMap.put("notifyUrl",order.getNotifyUrl());
         checkSignMap.put("userId",order.getUserId());
-        if(DigestUtil.checkSign(checkSignMap,userVo.getSignKey())){
+        if(!DigestUtil.checkSign(checkSignMap,userVo.getSignKey())){
             sortedMap.put("success","0");
             sortedMap.put("msg","验签失败");
             log.info("创建订单失败:["+ JSONObject.toJSONString(order) +"验签失败]");
             return sortedMap;
         }
-        if (checkRequestTimes(channel)) {
+        /*if (checkRequestTimes(channel)) {
             sortedMap.put("success","0");
             sortedMap.put("msg","服务繁忙，请稍后再试");
             log.info("创建订单失败:["+ JSONObject.toJSONString(order) +"验签失败]");
             return sortedMap;
-        }
+        }*/
         TPayType payType = payTypeService.findById(channel.getPayTypeId());
         String orderNo = "P"+ IDGeneratorUtils.getFlowNum();
         order.setIsNotify(CommonConstant.ORDER_STATUS_HASNT_NOTIFYED);
@@ -233,6 +247,7 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderRate(userVo.getRate());
         order.setStatus(CommonConstant.ORDER_STATUS_NOT_PAIED);
         order.setUnderOrderNo(vo.getUnderOrderNo());
+        order.setAccount(account.getAccount());
         /*JSONObject jso = JSONObject.parseObject(channel.getExtend());
 
         sortedMap.put(jso.get(CommonConstant.PARAM_NAME_ACCOUNT_ID),account.getAccount());
@@ -267,6 +282,7 @@ public class OrderServiceImpl implements OrderService {
         }*/
         order.setUpperOrderNo(resultMap.get(CommonConstant.PARAM_NAME_ORDER_NO).toString());
         insert(order);
+        redisUtils.zadd(CommonConstant.CHANNEL_ZSET_KEY+channel1.getId(),new Double(System.currentTimeMillis()),order.getOrderNo());
         SortedMap<Object,Object> result = new TreeMap<>();
 
         result.put("userId",userVo.getId());

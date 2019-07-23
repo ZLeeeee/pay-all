@@ -31,8 +31,17 @@ public class ChannelFactory {
         account.setChannelId(channel.getId());
         account = channelAccountMapper.selectOne(account);
         Channel pddChannel = new PddChannel(channel,account);
+        TChannel channel2 = new TChannel();
+        channel2.setId(3L);
+        channel2 = channelMapper.selectOne(channel2);
+        TChannelAccount account2 = new TChannelAccount();
+        account2.setChannelId(channel2.getId());
+        account2 = channelAccountMapper.selectOne(account2);
+        Channel pddChannel2 = new PddChannel(channel2,account2);
         channelMap.put(channel.getId(),pddChannel);
         channelAccountMap.put(channel.getId(),account);
+        channelMap.put(channel2.getId(),pddChannel2);
+        channelAccountMap.put(channel2.getId(),account2);
     }
 
     public Channel getChannel(Long id){

@@ -1,7 +1,6 @@
 package com.chaotu.pay.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.chaotu.pay.common.utils.DateUtil;
 import com.chaotu.pay.common.utils.ResponseUtil;
 import com.chaotu.pay.mq.MsgProducer;
 import com.chaotu.pay.po.TOrder;
@@ -14,7 +13,6 @@ import com.chaotu.pay.vo.SearchVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import redis.clients.jedis.Jedis;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
@@ -32,10 +30,12 @@ import java.util.Map;
 @RestController
 public class OrderController {
     @Autowired
-    MsgProducer producer;
+    private MsgProducer producer;
 
     @Autowired
     private OrderService orderService;
+
+
 
 
 
