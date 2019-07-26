@@ -28,6 +28,6 @@ public interface OrderService extends CRUDService<TOrder>{
 
     void updateByIsHistory(TOrder order);
     TOrder selectOne(TOrder order);
-    Map<Object,Object> pay(OrderVo order);
+    Object pay(OrderVo order);
     Map<String,Object> notify(Map<String, Object> params, String OrderNo, Long channelId, HttpServletRequest request);
 }

@@ -90,6 +90,46 @@ public class DigestUtil {
         return sign; // D3A5D13E7838E1D453F4F2EA526C4766
         // D3A5D13E7838E1D453F4F2EA526C4766
     }
+    public static String createSignBySortMap(SortedMap<String, Object> parameters, String key) {
+
+        StringBuffer sb = new StringBuffer();
+        Set es = parameters.entrySet();// 所有参与传参的参数按照accsii排序（升序）
+        Iterator it = es.iterator();
+        while (it.hasNext()) {
+            @SuppressWarnings("rawtypes")
+            Map.Entry entry = (Map.Entry) it.next();
+            String k = (String) entry.getKey();
+            Object v = entry.getValue();
+            if (null != v && !"".equals(v) && !"sign".equals(k)
+                    && !"key".equals(k)) {
+                sb.append(k + "=" + v + "&");
+            }
+        }
+        sb.append("key=" + key); //KEY是商户秘钥
+        String sign = DigestUtils.md5Hex(sb.toString());
+        return sign; // D3A5D13E7838E1D453F4F2EA526C4766
+        // D3A5D13E7838E1D453F4F2EA526C4766
+    }
+    public static String createSignBySortMapForMachi(SortedMap<String, Object> parameters, String key) {
+
+        StringBuffer sb = new StringBuffer();
+        Set es = parameters.entrySet();// 所有参与传参的参数按照accsii排序（升序）
+        Iterator it = es.iterator();
+        while (it.hasNext()) {
+            @SuppressWarnings("rawtypes")
+            Map.Entry entry = (Map.Entry) it.next();
+            String k = (String) entry.getKey();
+            Object v = entry.getValue();
+            if (!"sign".equals(k)
+                    && !"key".equals(k)) {
+                sb.append(k + "=" + v + "&");
+            }
+        }
+        sb.append("k=" + key); //KEY是商户秘钥
+        String sign = DigestUtils.md5Hex(sb.toString());
+        return sign; // D3A5D13E7838E1D453F4F2EA526C4766
+        // D3A5D13E7838E1D453F4F2EA526C4766
+    }
     public static boolean checkSign(SortedMap<Object,Object> param,String key){
         String sign = param.remove("sign").toString();
         String sign1 = createSign(param, key);

@@ -135,4 +135,5 @@ public class OrderVo {
     private String sign;
     private String startTime;
     private String endTime;
+    private String userKey;
 }

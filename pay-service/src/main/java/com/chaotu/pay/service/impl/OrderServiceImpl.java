@@ -31,6 +31,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.rmi.MarshalledObject;
 import java.util.*;
 
 /**
@@ -149,7 +150,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Map<Object, Object> pay(OrderVo vo) {
+    public Object pay(OrderVo vo) {
         log.info("开始创建订单:["+ JSONObject.toJSONString(vo) +"]");
         TChannel channel1 = channelChooser.getChannel(vo.getPayTypeId());
         SortedMap<Object,Object> sortedMap = new TreeMap<>();
@@ -257,9 +258,10 @@ public class OrderServiceImpl implements OrderService {
         sortedMap.put(jso.get(CommonConstant.PARAM_NAME_NOTIFY_URL),channel.getNotifyUrl());
         String sign = DigestUtil.createSign(sortedMap, account.getSignKey());
         sortedMap.put(jso.get(CommonConstant.PARAM_NAME_SIGN),sign);*/
+        vo.setUserKey(userVo.getSignKey());
         Channel c = channelFactory.getChannel(channel.getId());
         BeanUtils.copyProperties(order,vo);
-        Map<String, Object> resultT = c.pay(vo);
+        Object resultT = c.pay(vo);
         /*Sender<Map<Object, Object>> sender = null;
         if(StringUtils.equals(channel.getContentType(), CommonConstant.CONTENT_TYPE_JSON)){
             sender =  new PayRequestSender<>(channel.getRequestUrl(),sortedMap);
@@ -274,27 +276,17 @@ public class OrderServiceImpl implements OrderService {
             return sortedMap;
         }
         TreeMap<Object,Object> resultMap = new TreeMap<>();
-        resultMap.putAll(resultT);
-        /*if(DigestUtil.checkSign(resultMap,account.getSignKey())){
-            sortedMap.put("success","0");
-            sortedMap.put("msg","通道验签失败");
-            log.info("创建订单失败:["+ JSONObject.toJSONString(order) +"通道验签失败]");
-            return sortedMap;
-        }*/
-        order.setUpperOrderNo(resultMap.get(CommonConstant.PARAM_NAME_ORDER_NO).toString());
+        if(resultT instanceof Map){
+            resultMap.putAll((Map<String,Object>)resultT);
+            order.setUpperOrderNo(resultMap.get("upperOrderNo").toString());
+        }else {
+            order.setUpperOrderNo("1");
+        }
+
         insert(order);
         redisUtils.zadd(CommonConstant.CHANNEL_ZSET_KEY+channel1.getId(),new Double(System.currentTimeMillis()),order.getOrderNo());
-        SortedMap<Object,Object> result = new TreeMap<>();
 
-        result.put("userId",userVo.getId());
-        result.put("amount",order.getAmount());
-        result.put("qrCode",resultMap.get(CommonConstant.PARAM_NAME_QRCODE));
-        result.put("success","1");
-        result.put("underOrderNo",order.getUnderOrderNo());
-        result.put("orderNo",orderNo);
-        String resultSign = DigestUtil.createSign(result,userVo.getSignKey());
-        result.put("sign",resultSign);
-        return result;
+        return resultT;
     }
 
     @Override

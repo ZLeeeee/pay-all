@@ -40,10 +40,10 @@
       and o.create_time &lt;= #{endTime}
     </if>
     <if test="orderNo != null and orderNo != ''">
-      and o.orderNo = #{orderno}
+      and o.order_no = #{orderNo}
     </if>
     <if test="underOrderNo != null and underOrderNo != ''">
-      and o.underOrderNo like CONCAT('%',#{underorderno},'%')
+      and o.under_order_no like CONCAT('%',#{underOrderNo},'%')
     </if>
     <if test="merchant != null and merchant != ''">
       and o.merchant like CONCAT('%',#{merchant},'%')
@@ -78,10 +78,10 @@
       and o.create_time &lt;= #{endTime}
     </if>
     <if test="orderNo != null and orderNo != ''">
-      and o.orderNo = #{orderno}
+      and o.order_no = #{orderNo}
     </if>
     <if test="underOrderNo != null and underOrderNo != ''">
-      and o.underOrderNo like CONCAT('%',#{underorderno},'%')
+      and o.under_order_no like CONCAT('%',#{underOrderNo},'%')
     </if>
     <if test="merchant != null and merchant != ''">
       and o.merchant like CONCAT('%',#{merchant},'%')
@@ -114,10 +114,10 @@
       and o.create_time &lt;= #{endTime}
     </if>
     <if test="orderNo != null and orderNo != ''">
-      and o.orderNo = #{orderno}
+      and o.order_no = #{orderNo}
     </if>
     <if test="underOrderNo != null and underOrderNo != ''">
-      and o.underOrderNo like CONCAT('%',#{underorderno},'%')
+      and o.under_order_no like CONCAT('%',#{underOrderNo},'%')
     </if>
     <if test="merchant != null and merchant != ''">
       and o.merchant like CONCAT('%',#{merchant},'%')

@@ -74,7 +74,7 @@ public class OrderController {
     }
 
     @PostMapping("/pay")
-    public Map<Object,Object> pay(@RequestBody OrderVo orderVo){
+    public Object pay(@RequestBody OrderVo orderVo){
         try {
             /*String key = "channel:"+orderVo.getChannelId()+":"+ DateUtil.getMinute();
             Long times = jedis.incr(key);

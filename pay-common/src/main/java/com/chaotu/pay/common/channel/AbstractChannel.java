@@ -17,7 +17,7 @@ public abstract class AbstractChannel implements Channel {
     private TChannel channel;
     private TChannelAccount account;
     @Override
-    public Map<String, Object> pay(OrderVo orderVo) {
+    public Object pay(OrderVo orderVo) {
         return requestUpper(orderVo, createSign(createSignMap(orderVo)));
     }
     public abstract String createSign(Map<String, Object> signParam);
@@ -27,7 +27,7 @@ public abstract class AbstractChannel implements Channel {
     public abstract boolean checkNotify(Map<String, Object> signParam, HttpServletRequest request);
 
     abstract Map<String,Object> createSignMap(OrderVo orderVo);
-    public abstract Map<String,Object> requestUpper(OrderVo orderVo,String sign);
+    public abstract Object requestUpper(OrderVo orderVo,String sign);
 
     public TChannel getChannel() {
         return channel;

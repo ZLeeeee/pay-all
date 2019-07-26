@@ -79,9 +79,17 @@ public class PddChannel extends AbstractChannel {
         if((int)resMap.get("retcode") == 0){
             JSONObject jsonObject = (JSONObject) resMap.get("data");
             Map map = jsonObject.toJavaObject(Map.class);
-            map.put("ORDER_NO","1");
-            map.put("QRCODE",map.get("qrcode"));
-            return map;
+            SortedMap<String,Object> result = new TreeMap<>();
+            result.put("userId",order.getUserId());
+            result.put("amount",order.getAmount());
+            result.put("qrCode",map.get("qrcode"));
+            result.put("success","1");
+            result.put("underOrderNo",order.getUnderOrderNo());
+            result.put("orderNo",order.getOrderNo());
+            result.put("upperOrderNo","1");
+            String resultSign = DigestUtil.createSignBySortMap(result,order.getUserKey()).toUpperCase();
+            result.put("sign",resultSign);
+            return result;
         }
         return resMap;
     }

@@ -19,12 +19,15 @@ public class DateUtil
      * 日期格式
      */
     public final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    public final static SimpleDateFormat MACHI_PAY_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
     /**
      * 时间格式
      */
     private final static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
+    public final static SimpleDateFormat MACHI_PAY_TIME_FORMAT = new SimpleDateFormat("HHmmss");
 
     private final static SimpleDateFormat MINUTE_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+    public final static SimpleDateFormat MACHI_PAY_MINUTE_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
     /**
      * 日期时间格式
      */
@@ -76,6 +79,10 @@ public class DateUtil
 
     public static String getMinute(){
         return MINUTE_FORMAT.format(new Date());
+    }
+
+    public static String format(SimpleDateFormat format,Date date){
+        return format.format(date);
     }
 
     /**

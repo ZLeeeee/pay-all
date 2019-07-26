@@ -31,8 +31,26 @@ public class ChannelFactory {
         account.setChannelId(channel.getId());
         account = channelAccountMapper.selectOne(account);
         Channel pddChannel = new PddChannel(channel,account);
+        TChannel channel2 = new TChannel();
+        channel2.setId(3L);
+        channel2 = channelMapper.selectOne(channel2);
+        TChannelAccount account2 = new TChannelAccount();
+        account2.setChannelId(channel2.getId());
+        account2 = channelAccountMapper.selectOne(account2);
+        Channel ali2BankHtmlChannel = new Ali2BankHtmlChannel(channel2,account2);
+        TChannel channel3 = new TChannel();
+        channel3.setId(4L);
+        channel3 = channelMapper.selectOne(channel3);
+        TChannelAccount account3 = new TChannelAccount();
+        account3.setChannelId(channel3.getId());
+        account3 = channelAccountMapper.selectOne(account3);
+        Channel machiPayChannel  = new MachiPayChannel(channel3,account3);
+        channelMap.put(channel3.getId(),machiPayChannel);
+        channelAccountMap.put(channel3.getId(),account3);
         channelMap.put(channel.getId(),pddChannel);
         channelAccountMap.put(channel.getId(),account);
+        channelMap.put(channel2.getId(),ali2BankHtmlChannel);
+        channelAccountMap.put(channel2.getId(),account2);
     }
 
     public Channel getChannel(Long id){

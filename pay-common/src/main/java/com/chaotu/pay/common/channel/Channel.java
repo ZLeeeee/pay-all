@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public interface Channel {
-    Map<String,Object> pay(OrderVo orderVo);
+    Object pay(OrderVo orderVo);
 
     TChannel getChannel();
 
