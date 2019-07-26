@@ -22,9 +22,14 @@
     <result column="type" jdbcType="INTEGER" property="type" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="del_flag" jdbcType="INTEGER" property="delFlag" />
-    <result column="payPassword" jdbcType="VARCHAR" property="paypassword" />
     <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
     <result column="parent_name" jdbcType="VARCHAR" property="parentName" />
+    <!--<result column="payPassword" jdbcType="VARCHAR" property="payPassword" />-->
+    <result column="rate" jdbcType="DECIMAL" property="rate" />
+    <result column="today_amount" jdbcType="DECIMAL" property="todayAmount" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
+    <result column="limit_amount" jdbcType="DECIMAL" property="limitAmount" />
+    <result column="signKey" jdbcType="VARCHAR" property="sign_key" />
   </resultMap>
 
   <resultMap id="VoResultMap" type="com.chaotu.pay.vo.UserVo">
@@ -48,11 +53,16 @@
     <result column="type" jdbcType="INTEGER" property="type" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="del_flag" jdbcType="INTEGER" property="delFlag" />
-    <result column="payPassword" jdbcType="VARCHAR" property="paypassword" />
+    <!--<result column="payPassword" jdbcType="VARCHAR" property="paypassword" />-->
     <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
     <result column="parent_name" jdbcType="VARCHAR" property="parentName" />
     <result column="amount" jdbcType="VARCHAR" property="amount" />
     <result column="payAmount" jdbcType="VARCHAR" property="payAmount" />
+    <result column="rate" jdbcType="DECIMAL" property="rate" />
+    <result column="signKey" jdbcType="VARCHAR" property="sign_key" />
+    <result column="today_amount" jdbcType="DECIMAL" property="todayAmount" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
+    <result column="limit_amount" jdbcType="DECIMAL" property="limitAmount" />
   </resultMap>
 
   <select id="findAll" parameterType="com.chaotu.pay.vo.UserVo" resultMap="BaseResultMap">
@@ -88,9 +98,15 @@
     <if test="username!=null and username!=''">
       and u.username like concat('%',#{username},'%')
     </if>
+    <if test="merchant!=null and merchant!=''">
+      and u.merchant like concat('%',#{merchant},'%')
+    </if>
 
     <if test="status!=null and status!=''">
       and u.status = #{status}
+    </if>
+    <if test="parentId!=null and parentId!=''">
+      and u.parent_id = #{parentId}
     </if>
 
 
@@ -117,6 +133,9 @@
     <if test="status!=null and status!=''">
       and u.status = #{status}
     </if>
+    <if test="parentId!=null and parentId!=''">
+      and u.parent_id = #{parentId}
+    </if>
     ) a
 
   </select>
@@ -130,4 +149,31 @@
     </foreach>
   </select>
 
+  <select id="getUser" parameterType="com.chaotu.pay.vo.UserVo" resultMap="VoResultMap">
+    SELECT  u.*,p.username parent_name,
+    wb.residual_amount amount
+    FROM t_user u LEFT JOIN t_user p ON u.parent_id = p.id
+    INNER JOIN t_user_role ur ON u.id = ur.user_id
+    LEFT JOIN t_wallet wb ON wb.user_id = u.id AND wb.type = '2'
+    where 1=1
+    <if test="roleIds!=null and roleIds!=''">
+      and ur.role_id = #{roleIds}
+    </if>
+
+    <if test="username!=null and username!=''">
+      and u.username = #{username}
+    </if>
+
+    <if test="status!=null and status!=''">
+      and u.status = #{status}
+    </if>
+    <if test="parentId!=null and parentId!=''">
+      and u.parent_id = #{parentId}
+    </if>
+    <if test="id!=null and id!=''">
+      and u.id = #{id}
+    </if>
+
+
+  </select>
 </mapper>

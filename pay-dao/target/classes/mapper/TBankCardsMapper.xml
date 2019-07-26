@@ -17,4 +17,99 @@
     <result column="branchName" jdbcType="VARCHAR" property="branchname" />
     <result column="status" jdbcType="CHAR" property="status" />
   </resultMap>
+
+  <resultMap id="VoResultMap" type="com.chaotu.pay.vo.BankCardVo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="bank_id" jdbcType="BIGINT" property="bankId" />
+    <result column="bankCardNo" jdbcType="VARCHAR" property="bankCardNo" />
+    <result column="accountName" jdbcType="VARCHAR" property="accountName" />
+    <result column="branchName" jdbcType="VARCHAR" property="branchName" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="bankName" jdbcType="VARCHAR" property="bankName" />
+    <result column="ico" jdbcType="VARCHAR" property="ico" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+
+  </resultMap>
+
+  <!--查询所有银行卡信息-->
+  <select id="findAll" parameterType="com.chaotu.pay.vo.BankCardVo" resultMap="VoResultMap">
+    select
+        b.code,
+        b.bankName,
+        b.ico,
+        bc.*
+    from
+        t_bank_cards bc
+      left join
+        t_bank b
+      on
+        bc.bank_id = b.id
+    where 1=1
+  </select>
+
+  <!--查询所有银行卡信息-->
+  <select id="findAllByCondition" parameterType="com.chaotu.pay.vo.BankCardVo" resultMap="VoResultMap">
+    SELECT
+      b.code,
+      b.bankName,
+      b.ico,
+      u.username user_name,
+      bc.*
+    FROM
+      t_bank_cards bc
+      LEFT JOIN t_bank b
+        ON bc.bank_id = b.id
+      LEFT JOIN t_user u
+        ON u.id = bc.`user_id`
+    <if test="userId!=null and userId!=''">
+      where bc.`user_id`=#{userId}
+    </if>
+  </select>
+
+  <!--修改银行卡-->
+  <update id="editBankCard" parameterType="com.chaotu.pay.vo.BankCardVo">
+    update t_bank_cards
+    <trim prefix="set" suffixOverrides=",">
+      <if test="bankId!=null and bankId!=''">
+        bank_id=#{bankId},
+      </if>
+      <if test="bankCardNo!=null and bankCardNo!=''">
+        bankCardNo=#{bankCardNo},
+      </if>
+      <if test="accountName!=null and accountName!=''">
+        accountName=#{accountName},
+      </if>
+      <if test="branchName!=null and branchName!=''">
+        branchName=#{branchName},
+      </if>
+      <if test="status!=null and status!=''">
+        status=#{status},
+      </if>
+      <if test="updateTime!=null">
+        update_time=#{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+    where id=#{id}
+  </update>
+
+  <!--修改状态-->
+  <update id="updateStatus" parameterType="com.chaotu.pay.vo.BankCardVo">
+    update t_bank_cards set status = 0 ;
+    update t_bank_cards
+        <set>
+          <if test="status!=null and status!=''">status = #{status}</if>
+        </set>
+    where id = #{id};
+  </update>
+
+
 </mapper>

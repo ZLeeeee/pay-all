@@ -1,0 +1,18 @@
+
+    currencyCode:156
+    extInfo:
+    mac:79aa588b17bd4ab5e7ec542736335917
+    macKeyId:966001810100477
+    merId:966001810100477
+    orderDate:20190725
+    orderId:P201907251906032163498
+    orderTime:190632
+    respCode:0000
+    respMsg:成功
+    secpMode:perm
+    secpVer:icp3-1.1
+    timeStamp:20190725192319
+    txnAmt:50000
+    txnId:201907250000000852784447
+    txnStatus:10
+    txnStatusDesc:订单交易完成

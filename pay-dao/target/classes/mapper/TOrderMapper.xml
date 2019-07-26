@@ -6,34 +6,29 @@
       WARNING - @mbg.generated
     -->
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
-    <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
-    <result column="del_flag" jdbcType="CHAR" property="delFlag" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="user_id" jdbcType="VARCHAR" property="userId" />
     <result column="merchant" jdbcType="VARCHAR" property="merchant" />
-    <result column="agent_id" jdbcType="VARCHAR" property="agentId" />
     <result column="channel_id" jdbcType="BIGINT" property="channelId" />
-    <result column="channel_payment_id" jdbcType="BIGINT" property="channelPaymentId" />
+    <result column="pay_type_id" jdbcType="INTEGER" property="payTypeId" />
     <result column="account" jdbcType="VARCHAR" property="account" />
-    <result column="phone_id" jdbcType="VARCHAR" property="phoneId" />
-    <result column="phone_uid" jdbcType="BIGINT" property="phoneUid" />
-    <result column="orderMk" jdbcType="VARCHAR" property="ordermk" />
-    <result column="orderNo" jdbcType="VARCHAR" property="orderno" />
-    <result column="underOrderNo" jdbcType="VARCHAR" property="underorderno" />
-    <result column="onOrderNo" jdbcType="VARCHAR" property="onorderno" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="under_order_no" jdbcType="VARCHAR" property="underOrderNo" />
+    <result column="upper_order_no" jdbcType="VARCHAR" property="upperOrderNo" />
     <result column="amount" jdbcType="DECIMAL" property="amount" />
-    <result column="orderRate" jdbcType="DECIMAL" property="orderrate" />
-    <result column="sysAmount" jdbcType="DECIMAL" property="sysamount" />
-    <result column="agentAmount" jdbcType="DECIMAL" property="agentamount" />
-    <result column="userAmount" jdbcType="DECIMAL" property="useramount" />
-    <result column="notifyUrl" jdbcType="VARCHAR" property="notifyurl" />
-    <result column="successUrl" jdbcType="VARCHAR" property="successurl" />
-    <result column="channelName" jdbcType="VARCHAR" property="channelname" />
-    <result column="paymentName" jdbcType="VARCHAR" property="paymentname" />
+    <result column="order_rate" jdbcType="DECIMAL" property="orderRate" />
+    <result column="sys_amount" jdbcType="DECIMAL" property="sysAmount" />
+    <result column="user_amount" jdbcType="DECIMAL" property="userAmount" />
+    <result column="notify_url" jdbcType="VARCHAR" property="notifyUrl" />
+    <result column="channel_name" jdbcType="VARCHAR" property="channelName" />
+    <result column="pay_type_name" jdbcType="VARCHAR" property="payTypeName" />
     <result column="extend" jdbcType="VARCHAR" property="extend" />
     <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="is_history" jdbcType="INTEGER" property="isHistory" />
+    <result column="is_notify" jdbcType="INTEGER" property="isNotify" />
+    <result column="channel_amount" jdbcType="DECIMAL" property="channelAmount" />
   </resultMap>
   
   <select id="findAll" parameterType="com.chaotu.pay.vo.OrderVo" resultMap="BaseResultMap">
@@ -45,33 +40,37 @@
       and o.create_time &lt;= #{endTime}
     </if>
     <if test="orderNo != null and orderNo != ''">
-      and o.orderNo = #{orderNo}
+      and o.order_no = #{orderNo}
     </if>
     <if test="underOrderNo != null and underOrderNo != ''">
-      and o.underOrderNo = #{underOrderNo}
+      and o.under_order_no like CONCAT('%',#{underOrderNo},'%')
     </if>
     <if test="merchant != null and merchant != ''">
-      and o.merchant = #{merchant}
+      and o.merchant like CONCAT('%',#{merchant},'%')
     </if>
     <if test="account != null and account != ''">
-      and o.account = #{account}
+      and o.account like CONCAT('%',#{account},'%')
     </if>
     <if test="amount != null and amount != ''">
-      and o.amount = #{amount}
+      and o.amount like CONCAT('%',#{amount},'%')
     </if>
     <if test="channelId != null and channelId != ''">
       and o.channel_id = #{channelId}
     </if>
-    <if test="channelPaymentId != null and channelPaymentId != ''">
-      and o.channel_payment_id = #{channelPaymentId}
-    </if>
-    <if test="status != null and status != ''">
+    <if test="status !=-1">
       and o.status = #{status}
     </if>
-  </select>
+    <if test="isHistory !=-1">
+      and o.is_history = #{isHistory}
+    </if>
 
-  <select id="getGeneralAccount" parameterType="com.chaotu.pay.vo.OrderVo" resultType="java.util.Map">
-    SELECT SUM(amount) AS allAmount, SUM(orderRate) AS allOrderRate, SUM(sysAmount) AS sysAmount,SUM(agentAmount) AS allAgentAmount, SUM(userAmount) allUserMount FROM `t_order` o WHERE 1 = 1
+    <if test="userId != null and userId != ''">
+      and o.user_id = #{userId}
+    </if>
+    order by create_time desc
+  </select>
+  <select id="countByCondition" parameterType="com.chaotu.pay.vo.OrderVo" resultType="java.lang.Integer">
+    SELECT count(1) FROM `t_order` o where 1=1
     <if test="startTime != null and startTime != ''">
       and o.create_time &gt;= #{startTime}
     </if>
@@ -79,28 +78,71 @@
       and o.create_time &lt;= #{endTime}
     </if>
     <if test="orderNo != null and orderNo != ''">
-      and o.orderNo = #{orderNo}
+      and o.order_no = #{orderNo}
     </if>
     <if test="underOrderNo != null and underOrderNo != ''">
-      and o.underOrderNo = #{underOrderNo}
+      and o.under_order_no like CONCAT('%',#{underOrderNo},'%')
     </if>
     <if test="merchant != null and merchant != ''">
-      and o.merchant = #{merchant}
+      and o.merchant like CONCAT('%',#{merchant},'%')
     </if>
     <if test="account != null and account != ''">
-      and o.account = #{account}
+      and o.account like CONCAT('%',#{account},'%')
     </if>
     <if test="amount != null and amount != ''">
-      and o.amount = #{amount}
+      and o.amount like CONCAT('%',#{amount},'%')
     </if>
     <if test="channelId != null and channelId != ''">
       and o.channel_id = #{channelId}
     </if>
-    <if test="channelPaymentId != null and channelPaymentId != ''">
-      and o.channel_payment_id = #{channelPaymentId}
+    <if test="isHistory !=-1">
+      and o.is_history = #{isHistory}
     </if>
-    <if test="status != null and status != ''">
+
+    <if test="userId != null and userId != ''">
+      and o.user_id = #{userId}
+    </if>
+    order by create_time desc
+  </select>
+
+  <select id="getGeneralAccount" parameterType="com.chaotu.pay.vo.OrderVo" resultType="java.util.Map">
+    SELECT SUM(amount) AS allAmount, SUM(order_rate) AS allOrderRate, SUM(sys_amount) AS sysAmount,SUM(channel_amount) AS allAgentAmount, SUM(user_amount) allUserMount FROM `t_order` o WHERE 1 = 1
+    <if test="startTime != null and startTime != ''">
+      and o.create_time &gt;= #{startTime}
+    </if>
+    <if test="endTime != null and endTime!=''">
+      and o.create_time &lt;= #{endTime}
+    </if>
+    <if test="orderNo != null and orderNo != ''">
+      and o.order_no = #{orderNo}
+    </if>
+    <if test="underOrderNo != null and underOrderNo != ''">
+      and o.under_order_no like CONCAT('%',#{underOrderNo},'%')
+    </if>
+    <if test="merchant != null and merchant != ''">
+      and o.merchant like CONCAT('%',#{merchant},'%')
+    </if>
+    <if test="account != null and account != ''">
+      and o.account like CONCAT('%',#{account},'%')
+    </if>
+    <if test="amount != null and amount != ''">
+      and o.amount like CONCAT('%',#{amount},'%')
+    </if>
+    <if test="channelId != null and channelId != ''">
+      and o.channel_id = #{channelId}
+    </if>
+    <if test=" status !=-1">
       and o.status = #{status}
     </if>
+    <if test="userId != null and userId != ''">
+      and o.user_id = #{userId}
+    </if>
+    <if test="isHistory !=-1">
+      and o.is_history = #{isHistory}
+    </if>
   </select>
+
+  <update id="updateStatus" parameterType="com.chaotu.pay.vo.OrderVo">
+    UPDATE `t_order` SET status = #{status} WHERE id = #{id}
+  </update>
 </mapper>

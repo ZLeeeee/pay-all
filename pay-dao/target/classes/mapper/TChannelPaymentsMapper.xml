@@ -20,4 +20,78 @@
     <result column="maxAmount" jdbcType="INTEGER" property="maxamount" />
     <result column="status" jdbcType="CHAR" property="status" />
   </resultMap>
+
+  <resultMap id="VoResultMap" type="com.chaotu.pay.vo.PaymentVo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="channel_id" jdbcType="BIGINT" property="channelId" />
+    <result column="paymentName" jdbcType="VARCHAR" property="paymentname" />
+    <result column="paymentCode" jdbcType="VARCHAR" property="paymentcode" />
+    <result column="ico" jdbcType="VARCHAR" property="ico" />
+    <result column="runRate" jdbcType="DECIMAL" property="runrate" />
+    <result column="costRate" jdbcType="DECIMAL" property="costrate" />
+    <result column="minAmount" jdbcType="INTEGER" property="minamount" />
+    <result column="maxAmount" jdbcType="INTEGER" property="maxamount" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="channel_name" jdbcType="VARCHAR" property="channelname" />
+  </resultMap>
+
+  <select id="findAll" resultMap="VoResultMap">
+        SELECT
+            tc.channel_name,
+            tcp.*
+        FROM
+            t_channel_payments tcp
+            LEFT JOIN
+                t_channel tc
+            ON
+                tcp.channel_id = tc.id
+        where 1=1
+  </select>
+
+  <!--修改支付方式-->
+  <update id="updatePayment" parameterType="com.chaotu.pay.vo.PaymentVo">
+    update t_channel_payments
+    <trim prefix="set" suffixOverrides=",">
+      <if test="paymentname!=null and paymentname!=''">
+        paymentName=#{paymentname},
+      </if>
+      <if test="paymentcode!=null and paymentcode!=''">
+        paymentCode=#{paymentcode},
+      </if>
+      <if test="ico!=null and ico!=''">
+        ico=#{ico},
+      </if>
+      <if test="channelId!=null and channelId!=''">
+        channel_id= #{channelId},
+      </if>
+      <if test="runrate!=null and runrate!=''">
+        runRate=#{runrate},
+      </if>
+      <if test="costrate!=null and costrate!=''">
+        costRate=#{costrate},
+      </if>
+      <if test="minamount!=null and minamount!=''">
+        minAmount=#{minamount},
+      </if>
+      <if test="maxamount!=null and maxamount!=''">
+        maxAmount=#{maxamount},
+      </if>
+      <if test="status!=null and status!=''">
+        status=#{status},
+      </if>
+      <if test="updateTime!=null">
+        update_time=#{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+    where id=#{id}
+  </update>
+
+
 </mapper>

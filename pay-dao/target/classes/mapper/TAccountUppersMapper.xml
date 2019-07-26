@@ -14,10 +14,89 @@
     <result column="signkey" jdbcType="VARCHAR" property="signkey" />
     <result column="channel_id" jdbcType="BIGINT" property="channelId" />
     <result column="channel_payment_id" jdbcType="BIGINT" property="channelPaymentId" />
+    <result column="account_type" jdbcType="CHAR" property="accountType" />
     <result column="status" jdbcType="CHAR" property="status" />
     <result column="order_num" jdbcType="INTEGER" property="orderNum" />
     <result column="dayQuota" jdbcType="DECIMAL" property="dayquota" />
     <result column="privatekey" jdbcType="LONGVARCHAR" property="privatekey" />
     <result column="publikey" jdbcType="LONGVARCHAR" property="publikey" />
   </resultMap>
+
+  <resultMap id="VoResultMap" type="com.chaotu.pay.vo.AccountUppersVo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="signkey" jdbcType="VARCHAR" property="signkey" />
+    <result column="channel_id" jdbcType="BIGINT" property="channelId" />
+    <result column="channel_payment_id" jdbcType="BIGINT" property="channelPaymentId" />
+    <result column="account_type" jdbcType="CHAR" property="accountType" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="order_num" jdbcType="INTEGER" property="orderNum" />
+    <result column="dayQuota" jdbcType="DECIMAL" property="dayQuota" />
+    <result column="privatekey" jdbcType="LONGVARCHAR" property="privatekey" />
+    <result column="publikey" jdbcType="LONGVARCHAR" property="publikey" />
+    <result column="channelName" jdbcType="VARCHAR" property="channelName" />
+    <result column="paymentName" jdbcType="VARCHAR" property="paymentName" />
+  </resultMap>
+
+  <!--查询所有通道商户-->
+  <select id="findAll"  resultMap="VoResultMap">
+    SELECT
+        tau.*,
+        tc.channelName,
+        tcp.paymentName
+    FROM
+	    t_account_uppers tau
+     LEFT JOIN
+	    t_channel tc
+     ON
+	    tau.channel_id = tc.id
+     LEFT JOIN
+	    t_channel_payments tcp
+     ON
+	    tau.channel_payment_id = tcp.id
+	where 1=1
+  </select>
+
+  <!--修改通道商户-->
+  <update id="editAccountUppers" parameterType="com.chaotu.pay.vo.AccountUppersVo">
+    update t_account_uppers
+    <trim prefix="set" suffixOverrides=",">
+      <if test="account!=null and account!=''">
+            account=#{account},
+      </if>
+      <if test="signkey!=null and signkey!=''">
+            signkey=#{signkey},
+      </if>
+      <if test="channelId!=null and channelId!=''">
+            channel_id=#{channelId},
+      </if>
+      <if test="channelPaymentId!=null and channelPaymentId!=''">
+            channel_payment_id=#{channelPaymentId},
+      </if>
+      <if test="dayQuota!=null and dayQuota!=''">
+            dayQuota=#{dayQuota},
+      </if>
+      <if test="privatekey!=null and privatekey!=''">
+            privatekey=#{privatekey},
+      </if>
+      <if test="publikey!=null and publikey!=''">
+            publikey=#{publikey},
+      </if>
+      <if test="updateTime!=null">
+            update_time=#{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status!=null and status !=''">
+            status=#{status}，
+      </if>
+    </trim>
+    where id = #{id}
+  </update>
+
 </mapper>
