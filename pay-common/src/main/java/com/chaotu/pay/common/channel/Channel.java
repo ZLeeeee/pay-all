@@ -22,5 +22,7 @@ public interface Channel {
 
     boolean checkNotify(Map<String, Object> signParam, HttpServletRequest request);
 
+    String getSuccessNotifyStr();
+
     //String createNotifySign(Map<String, Object> signParam, HttpServletRequest request);
 }

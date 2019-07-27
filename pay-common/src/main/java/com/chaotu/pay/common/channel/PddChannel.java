@@ -24,6 +24,7 @@ public class PddChannel extends AbstractChannel {
     public PddChannel(TChannel channel, TChannelAccount account) {
         super(channel, account);
     }
+    private static final String successStr = "success";
 
     @Override
     public String createSign(Map<String,Object> order) {
@@ -49,6 +50,11 @@ public class PddChannel extends AbstractChannel {
     @Override
     public boolean checkNotify(Map<String, Object> signParam, HttpServletRequest request) {
         return StringUtils.equals(createNotifySign(signParam,request),request.getParameter("sign"));
+    }
+
+    @Override
+    public String getSuccessNotifyStr() {
+        return successStr;
     }
 
     @Override

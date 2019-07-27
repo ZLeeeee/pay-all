@@ -100,7 +100,7 @@ public class OrderController {
             if(map!=null){
                 TOrder order = (TOrder) map.remove("order");
                 producer.sendAll(JSONObject.toJSONString(order));
-                return "success";
+                return (String)map.get("successParam");
             }
         }catch (Exception e){
            log.info("接收回调异常,订单:"+orderNo+"\n+通道id:"+channelId);

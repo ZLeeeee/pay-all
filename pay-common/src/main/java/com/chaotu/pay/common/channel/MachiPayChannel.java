@@ -22,6 +22,8 @@ public class MachiPayChannel extends AbstractChannel {
 
     private final BigDecimal bigDecimal100 = new BigDecimal(100);
 
+    private static final String successStr = "success";
+
     public MachiPayChannel(TChannel channel, TChannelAccount account) {
         super(channel, account);
     }
@@ -75,6 +77,11 @@ public class MachiPayChannel extends AbstractChannel {
     @Override
     public boolean checkNotify(Map<String, Object> signParam, HttpServletRequest request) {
         return StringUtils.equals(createNotifySign(signParam,request),request.getParameter("mac"));
+    }
+
+    @Override
+    public String getSuccessNotifyStr() {
+        return successStr;
     }
 
     @Override

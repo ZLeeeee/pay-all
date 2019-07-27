@@ -294,12 +294,12 @@ public class OrderServiceImpl implements OrderService {
         log.info("接收回调开始，订单:"+orderNo);
         Channel channel = channelFactory.getChannel(channelId);
         if (channel.checkNotify(map,request)) {
-            JSONObject object = JSONObject.parseObject(channel.getChannel().getExtend());
+            //JSONObject object = JSONObject.parseObject(channel.getChannel().getExtend());
             TOrder order = new TOrder();
             order.setOrderNo(orderNo);
             order = selectOne(order);
             Map<String,Object> result = new HashMap<>();
-            result.put(object.getString(CommonConstant.PARAM_NAME_SUCCESS_KEY),object.getString(CommonConstant.PARAM_NAME_SUCCESS_VAL));
+            result.put("successParam",channel.getSuccessNotifyStr());
             result.put("order",order);
             log.info("接收回调结束，订单:"+order.getId()+"接收回调成功!");
             return result;

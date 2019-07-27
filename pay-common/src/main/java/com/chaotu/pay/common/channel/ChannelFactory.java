@@ -24,33 +24,11 @@ public class ChannelFactory {
         this.channelAccountMapper = channelAccountMapper;
         this.channelMap = new ConcurrentHashMap<>();
         this.channelAccountMap = new ConcurrentHashMap<>();
-        TChannel channel = new TChannel();
-        channel.setId(2L);
-        channel = channelMapper.selectOne(channel);
-        TChannelAccount account = new TChannelAccount();
-        account.setChannelId(channel.getId());
-        account = channelAccountMapper.selectOne(account);
-        Channel pddChannel = new PddChannel(channel,account);
-        TChannel channel2 = new TChannel();
-        channel2.setId(3L);
-        channel2 = channelMapper.selectOne(channel2);
-        TChannelAccount account2 = new TChannelAccount();
-        account2.setChannelId(channel2.getId());
-        account2 = channelAccountMapper.selectOne(account2);
-        Channel ali2BankHtmlChannel = new Ali2BankHtmlChannel(channel2,account2);
-        TChannel channel3 = new TChannel();
-        channel3.setId(4L);
-        channel3 = channelMapper.selectOne(channel3);
-        TChannelAccount account3 = new TChannelAccount();
-        account3.setChannelId(channel3.getId());
-        account3 = channelAccountMapper.selectOne(account3);
-        Channel machiPayChannel  = new MachiPayChannel(channel3,account3);
-        channelMap.put(channel3.getId(),machiPayChannel);
-        channelAccountMap.put(channel3.getId(),account3);
-        channelMap.put(channel.getId(),pddChannel);
-        channelAccountMap.put(channel.getId(),account);
-        channelMap.put(channel2.getId(),ali2BankHtmlChannel);
-        channelAccountMap.put(channel2.getId(),account2);
+        registChannel(2,PddChannel.class);
+        registChannel(3,Ali2BankHtmlChannel.class);
+        registChannel(4,MachiPayChannel.class);
+        registChannel(5,QianBaoChannel.class);
+        registChannel(6,RongHeChannel.class);
     }
 
     public Channel getChannel(Long id){
@@ -59,6 +37,22 @@ public class ChannelFactory {
 
     public TChannelAccount getChannelAccount(Long channelId){
         return channelAccountMap.get(channelId);
+    }
+
+    private void registChannel(long id,Class<? extends Channel> clzz){
+        TChannel channel = new TChannel();
+        channel.setId(id);
+        channel = channelMapper.selectOne(channel);
+        TChannelAccount account = new TChannelAccount();
+        account.setChannelId(channel.getId());
+        account = channelAccountMapper.selectOne(account);
+        try{
+            Channel channel1 = (Channel) (clzz.getConstructor(TChannel.class, TChannelAccount.class).newInstance(channel, account));
+            channelMap.put(channel.getId(),channel1);
+            channelAccountMap.put(channel.getId(),account);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 }

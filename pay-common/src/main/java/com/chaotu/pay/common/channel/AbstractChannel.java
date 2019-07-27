@@ -26,6 +26,9 @@ public abstract class AbstractChannel implements Channel {
 
     public abstract boolean checkNotify(Map<String, Object> signParam, HttpServletRequest request);
 
+    @Override
+    public abstract String getSuccessNotifyStr() ;
+
     abstract Map<String,Object> createSignMap(OrderVo orderVo);
     public abstract Object requestUpper(OrderVo orderVo,String sign);
 

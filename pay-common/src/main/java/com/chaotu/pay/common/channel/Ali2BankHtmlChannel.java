@@ -21,6 +21,7 @@ import java.util.TreeMap;
 public class Ali2BankHtmlChannel extends AbstractChannel {
 
     //private final BigDecimal bigDecimal100 = new BigDecimal(100);
+    private static final String successStr = "success";
 
     public Ali2BankHtmlChannel(TChannel channel, TChannelAccount account) {
         super(channel, account);
@@ -52,6 +53,11 @@ public class Ali2BankHtmlChannel extends AbstractChannel {
     @Override
     public boolean checkNotify(Map<String, Object> signParam, HttpServletRequest request) {
         return StringUtils.equals(createNotifySign(signParam,request),request.getParameter("sign"));
+    }
+
+    @Override
+    public String getSuccessNotifyStr() {
+        return successStr;
     }
 
     @Override
