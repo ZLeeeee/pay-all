@@ -8,7 +8,6 @@ import com.chaotu.pay.vo.OrderVo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
-
 public abstract class AbstractChannel implements Channel {
     public AbstractChannel(TChannel channel,TChannelAccount account){
         this.channel = channel;

@@ -8,13 +8,14 @@ import com.chaotu.pay.common.utils.RequestUtil;
 import com.chaotu.pay.po.TChannel;
 import com.chaotu.pay.po.TChannelAccount;
 import com.chaotu.pay.vo.OrderVo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.*;
-
+@Slf4j
 public class QianBaoChannel extends AbstractChannel {
 
     private final BigDecimal bigDecimal100 = new BigDecimal(100);
@@ -62,7 +63,7 @@ public class QianBaoChannel extends AbstractChannel {
         SortedMap<String,Object> sortedMap = new TreeMap<>();
         sortedMap.put("out_uid",order.getUnderOrderNo());
         sortedMap.put("out_order_sn",order.getOrderNo());
-        sortedMap.put("tradeMoney",order.getAmount().intValue());
+        sortedMap.put("tradeMoney",order.getAmount().multiply(bigDecimal100).intValue());
         sortedMap.put("notifyUrl",getChannel().getNotifyUrl()+order.getChannelId()+"/"+order.getOrderNo());
         sortedMap.put("payType", 2);
         sortedMap.put("codeType",2);
@@ -75,7 +76,7 @@ public class QianBaoChannel extends AbstractChannel {
         sortedMap.put("business_code",getAccount().getAccount());
         sortedMap.put("out_uid",order.getUnderOrderNo());
         sortedMap.put("out_order_sn",order.getOrderNo());
-        sortedMap.put("tradeMoney",order.getAmount().intValue());
+        sortedMap.put("tradeMoney",order.getAmount().multiply(bigDecimal100).intValue());
         sortedMap.put("notifyUrl",getChannel().getNotifyUrl()+order.getChannelId()+"/"+order.getOrderNo());
         sortedMap.put("payType", 2);
         sortedMap.put("codeType",2);
@@ -96,6 +97,7 @@ public class QianBaoChannel extends AbstractChannel {
             result.put("sign",resultSign);
             return result;
         }
+        log.info("下单失败！失败信息:["+JSONObject.toJSONString(resMap)+"]");
         return null;
     }
     private boolean checkSign(SortedMap<Object,Object> params,String sign){

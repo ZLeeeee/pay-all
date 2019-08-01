@@ -7,6 +7,7 @@ import com.chaotu.pay.constant.CommonConstant;
 import com.chaotu.pay.po.TChannel;
 import com.chaotu.pay.po.TChannelAccount;
 import com.chaotu.pay.vo.OrderVo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
+@Slf4j
 public class PddChannel extends AbstractChannel {
 
     private final BigDecimal bigDecimal100 = new BigDecimal(100);
@@ -97,7 +98,8 @@ public class PddChannel extends AbstractChannel {
             result.put("sign",resultSign);
             return result;
         }
-        return resMap;
+        log.info("下单失败！失败信息:["+JSONObject.toJSONString(resMap)+"]");
+        return null;
     }
     private boolean checkSign(SortedMap<Object,Object> params,String sign){
         return StringUtils.equals(DigestUtil.createSign(params,getAccount().getSignKey()),sign);

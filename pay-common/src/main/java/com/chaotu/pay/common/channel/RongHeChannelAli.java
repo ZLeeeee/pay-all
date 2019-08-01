@@ -13,15 +13,18 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 @Slf4j
-public class RongHeChannel extends AbstractChannel {
+public class RongHeChannelAli extends AbstractChannel {
 
     private final BigDecimal bigDecimal100 = new BigDecimal(100);
 
     private static final String successStr = "{\"status\":200,\"statusDes\":\"SUCCESS\"}";
 
-    public RongHeChannel(TChannel channel, TChannelAccount account) {
+    public RongHeChannelAli(TChannel channel, TChannelAccount account) {
         super(channel, account);
     }
 
@@ -46,7 +49,8 @@ public class RongHeChannel extends AbstractChannel {
                 +"|price=" +price
                 +"|orderId="+orderId
                 +"|status="+status
-                +"|statusDes="+statusDes;
+                +"|statusDes="+statusDes
+                +"|key="+getAccount().getSignKey();
         System.out.println(str);
         return DigestUtils.md5Hex(str);
     }
@@ -76,8 +80,8 @@ public class RongHeChannel extends AbstractChannel {
         sortedMap.put("cpOrderId",order.getOrderNo());
         sortedMap.put("cpId",getAccount().getAccount());
         sortedMap.put("price",order.getAmount().multiply(bigDecimal100).intValue());
-        sortedMap.put("notifyUrl",getChannel().getNotifyUrl()+order.getChannelId()+"/"+order.getOrderNo());
-        sortedMap.put("payType", 2);
+        sortedMap.put("notifyUrl","http://47.75.146.15:8080/order/ronghe/notify");
+        sortedMap.put("payType", 1);
         sortedMap.put("sign",sign);
         String postParamStr = RequestUtil.createPostParamStr(sortedMap);
         PddMerchantSender<Map<String,Object>> paySender = new PddMerchantSender<>(getChannel().getRequestUrl(),postParamStr,null);
@@ -95,7 +99,7 @@ public class RongHeChannel extends AbstractChannel {
             result.put("sign",resultSign);
             return result;
         }
-        log.info("下单失败！失败信息:["+JSONObject.toJSONString(resMap)+"]");
+        log.info("下单失败！失败信息:["+ JSONObject.toJSONString(resMap)+"]");
         return null;
     }
     private boolean checkSign(SortedMap<Object,Object> params,String sign){

@@ -54,7 +54,7 @@ public class UserRatesServiceImpl implements UserRatesService {
 
     @Override
     public void editUserRates(TUserRates vo) {
-        userRatesMapper.updateByPrimaryKey(vo);
+        userRatesMapper.updateByPrimaryKeySelective(vo);
     }
 
     @Override

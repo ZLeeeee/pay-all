@@ -5,6 +5,7 @@ import com.chaotu.pay.common.utils.MyBeanUtils;
 import com.chaotu.pay.constant.CommonStatus;
 import com.chaotu.pay.dao.TPermissionMapper;
 import com.chaotu.pay.dao.TUserMapper;
+import com.chaotu.pay.dao.TUserRatesMapper;
 import com.chaotu.pay.dao.TUserRoleMapper;
 import com.chaotu.pay.enums.ExceptionCode;
 import com.chaotu.pay.po.*;
@@ -35,7 +36,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private TUserMapper tUserMapper;
-
+    @Autowired
+    TUserRatesMapper userRatesMapper;
     @Autowired
     private TUserRoleMapper tUserRoleMapper;
     @Autowired
@@ -273,6 +275,7 @@ public class UserServiceImpl implements UserService {
         wallet2.setResidualAmount(new BigDecimal(0));
         walletService.add(wallet);
         walletService.add(wallet2);
+        userRatesMapper.initUserRates(tuser);
         log.info("添加用户成功");
     }
 

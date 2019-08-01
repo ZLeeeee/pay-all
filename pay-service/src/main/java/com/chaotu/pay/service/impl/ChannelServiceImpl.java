@@ -72,7 +72,7 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Override
     public void update(TChannel channelVo) {
-        factory.getChannel(channelVo.getId()).setChannel(channelVo);
+        //factory.getChannel(channelVo.getId()).setChannel(channelVo);
         channelMapper.updateByPrimaryKeySelective(channelVo);
         choserFactory.update();
 

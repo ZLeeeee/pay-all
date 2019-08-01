@@ -110,6 +110,24 @@ public class OrderController {
         resultMap.put("msg","系统异常");
         return "false";
     }
+    @PostMapping("/ronghe/notify")
+    public String notifyRonghe( HttpServletRequest request){
+        String orderNo = request.getParameter("cpOrderId");
+        try {
+            Map<String, Object> map = orderService.notify(null,orderNo, 7L,request);
+            if(map!=null){
+                TOrder order = (TOrder) map.remove("order");
+                producer.sendAll(JSONObject.toJSONString(order));
+                return (String)map.get("successParam");
+            }
+        }catch (Exception e){
+            log.info("接收回调异常,订单:"+orderNo+"\n+通道id:"+7);
+        }
+        Map<String,Object > resultMap = new HashMap<>();
+        resultMap.put("success","0");
+        resultMap.put("msg","系统异常");
+        return "false";
+    }
 
     @PostMapping("/test")
     public Map<String,String> test(@RequestBody OrderVo orderVo){

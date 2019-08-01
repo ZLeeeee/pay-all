@@ -1,10 +1,12 @@
 package com.chaotu.pay.common.channel;
 
+import com.alibaba.fastjson.JSONObject;
 import com.chaotu.pay.dao.TChannelAccountMapper;
 import com.chaotu.pay.dao.TChannelMapper;
 import com.chaotu.pay.po.TChannel;
 import com.chaotu.pay.po.TChannelAccount;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,6 +15,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Configuration
+@Slf4j
 public class ChannelFactory {
     private TChannelMapper channelMapper;
     private TChannelAccountMapper channelAccountMapper;
@@ -29,6 +32,9 @@ public class ChannelFactory {
         registChannel(4,MachiPayChannel.class);
         registChannel(5,QianBaoChannel.class);
         registChannel(6,RongHeChannel.class);
+        registChannel(7,RongHeChannelAli.class);
+        registChannel(8,USDTChannel.class);
+        registChannel(9,SaoMaFuChannel.class);
     }
 
     public Channel getChannel(Long id){
@@ -50,6 +56,7 @@ public class ChannelFactory {
             Channel channel1 = (Channel) (clzz.getConstructor(TChannel.class, TChannelAccount.class).newInstance(channel, account));
             channelMap.put(channel.getId(),channel1);
             channelAccountMap.put(channel.getId(),account);
+            log.info("通道:"+ JSONObject.toJSONString(channel)+"已注册");
         }catch (Exception e){
             e.printStackTrace();
         }

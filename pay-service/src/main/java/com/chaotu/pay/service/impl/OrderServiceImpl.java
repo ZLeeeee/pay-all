@@ -11,10 +11,7 @@ import com.chaotu.pay.common.utils.IDGeneratorUtils;
 import com.chaotu.pay.common.utils.RequestUtil;
 import com.chaotu.pay.constant.CommonConstant;
 import com.chaotu.pay.dao.TOrderMapper;
-import com.chaotu.pay.po.TChannel;
-import com.chaotu.pay.po.TChannelAccount;
-import com.chaotu.pay.po.TOrder;
-import com.chaotu.pay.po.TPayType;
+import com.chaotu.pay.po.*;
 import com.chaotu.pay.service.*;
 import com.chaotu.pay.vo.*;
 import com.github.pagehelper.Page;
@@ -58,6 +55,8 @@ public class OrderServiceImpl implements OrderService {
     ChannelChooser channelChooser;
     @Autowired
     RedisUtils redisUtils;
+    @Autowired
+    UserRatesService userRatesService;
 
 
     @Override
@@ -236,6 +235,10 @@ public class OrderServiceImpl implements OrderService {
             log.info("创建订单失败:["+ JSONObject.toJSONString(order) +"验签失败]");
             return sortedMap;
         }*/
+        TUserRates userRates = new TUserRates();
+        userRates.setUserId(userVo.getId());
+        userRates.setChannelId(channel.getId());
+        userRates = userRatesService.get(userRates);
         TPayType payType = payTypeService.findById(channel.getPayTypeId());
         String orderNo = "P"+ IDGeneratorUtils.getFlowNum();
         order.setIsNotify(CommonConstant.ORDER_STATUS_HASNT_NOTIFYED);
@@ -246,7 +249,7 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderNo(orderNo);
         order.setPayTypeName(payType.getName());
         order.setMerchant(userVo.getMerchant());
-        order.setOrderRate(userVo.getRate());
+        order.setOrderRate(userRates.getRate());
         order.setStatus(CommonConstant.ORDER_STATUS_NOT_PAIED);
         order.setUnderOrderNo(vo.getUnderOrderNo());
         order.setAccount(account.getAccount());

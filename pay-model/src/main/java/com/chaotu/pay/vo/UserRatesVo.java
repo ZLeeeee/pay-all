@@ -22,13 +22,13 @@ public class UserRatesVo {
      * 通道id
      */
 
-    private Integer channelId;
+    private Long channelId;
 
     /**
      * 支付id
      */
 
-    private Integer channelPaymentId;
+    private Integer payTypeId;
 
     /**
      * 商户费率：为0时走通道运营费率
@@ -40,5 +40,6 @@ public class UserRatesVo {
      */
     private Byte status;
 
-    private String paymentName;
+    private String channelName;
+    private String payTypeName;
 }

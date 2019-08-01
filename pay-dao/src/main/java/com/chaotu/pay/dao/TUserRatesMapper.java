@@ -24,4 +24,6 @@ public interface TUserRatesMapper extends MyMapper<TUserRates> {
      * @param userRates
      */
     void updateByUserId(@Param("users")List<TUser> users,@Param("userRates")TUserRates userRates);
+
+    void initUserRates(TUser user);
 }

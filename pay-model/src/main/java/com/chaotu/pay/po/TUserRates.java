@@ -19,13 +19,21 @@ public class TUserRates {
      * 通道id
      */
     @Column(name = "channel_id")
-    private Integer channelId;
+    private Long channelId;
+
+    public Integer getPayTypeId() {
+        return payTypeId;
+    }
+
+    public void setPayTypeId(Integer payTypeId) {
+        this.payTypeId = payTypeId;
+    }
 
     /**
      * 支付id
      */
-    @Column(name = "channel_payment_id")
-    private Integer channelPaymentId;
+    @Column(name = "pay_type_id")
+    private Integer payTypeId;
 
     /**
      * 商户费率：为0时走通道运营费率
@@ -74,7 +82,7 @@ public class TUserRates {
      *
      * @return channel_id - 通道id
      */
-    public Integer getChannelId() {
+    public Long getChannelId() {
         return channelId;
     }
 
@@ -83,7 +91,7 @@ public class TUserRates {
      *
      * @param channelId 通道id
      */
-    public void setChannelId(Integer channelId) {
+    public void setChannelId(Long channelId) {
         this.channelId = channelId;
     }
 
@@ -92,18 +100,6 @@ public class TUserRates {
      *
      * @return channel_payment_id - 支付id
      */
-    public Integer getChannelPaymentId() {
-        return channelPaymentId;
-    }
-
-    /**
-     * 设置支付id
-     *
-     * @param channelPaymentId 支付id
-     */
-    public void setChannelPaymentId(Integer channelPaymentId) {
-        this.channelPaymentId = channelPaymentId;
-    }
 
     /**
      * 获取商户费率：为0时走通道运营费率
