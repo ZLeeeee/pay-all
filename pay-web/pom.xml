@@ -176,11 +176,6 @@
             <scope>compile</scope>
         </dependency>
         <!--引入外部pdd jar-->
-        <dependency>
-            <groupId>com.pdd</groupId>
-            <artifactId>pop-sdk</artifactId>
-            <version>0.0.1</version>
-        </dependency>
     </dependencies>
 
     <build>
