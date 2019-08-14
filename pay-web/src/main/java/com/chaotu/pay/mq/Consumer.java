@@ -47,10 +47,9 @@ public class Consumer {
             o.setId(order.getId());
             BigDecimal channelAmount = order.getAmount().multiply(channel.getRate());
             o.setChannelAmount(channelAmount);
-            BigDecimal sysAmount = order.getAmount().multiply(user.getRate());
-            o.setSysAmount(sysAmount.subtract(channelAmount));
-            BigDecimal userAmount = order.getAmount().subtract(sysAmount);
+            BigDecimal sysAmount = order.getAmount().multiply(order.getOrderRate());
             o.setSysAmount(sysAmount);
+            BigDecimal userAmount = order.getAmount().subtract(sysAmount);
             o.setUserAmount(userAmount);
             o.setStatus(CommonConstant.ORDER_STATUS_PAIED);
             channelService.updateAmount(order.getAmount(),channel.getId());

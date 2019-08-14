@@ -36,6 +36,7 @@ public class ChannelFactory {
         registChannel(8,USDTChannel.class);
         registChannel(9,SaoMaFuChannel.class);
         registChannel(10,YzChannel.class);
+        registChannel(11,SuDaHtmlChannel.class);
     }
 
     public Channel getChannel(Long id){
