@@ -1,6 +1,9 @@
 package com.chaotu.pay.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.chaotu.pay.common.sender.StringResultSender;
+import com.chaotu.pay.common.utils.DigestUtil;
+import com.chaotu.pay.common.utils.RequestUtil;
 import com.chaotu.pay.common.utils.ResponseUtil;
 import com.chaotu.pay.mq.MsgProducer;
 import com.chaotu.pay.po.TOrder;
@@ -11,11 +14,13 @@ import com.chaotu.pay.vo.OrderVo;
 import com.chaotu.pay.vo.PageVo;
 import com.chaotu.pay.vo.SearchVo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -148,5 +153,22 @@ public class OrderController {
             return resultMap;
         }
 
+    }
+    @GetMapping("/redirect")
+    public String redirect(HttpServletRequest request){
+        String url = "" ;
+        Map<Object,Object> map = new HashMap<>();
+        Enumeration em = request.getParameterNames();
+        while (em.hasMoreElements()) {
+            String name = (String) em.nextElement();
+            String value = request.getParameter(name);
+            if(StringUtils.equals("url",name)) {
+                url = value;
+            }else {
+                map.put(name,value);
+            }
+        }
+        StringResultSender sender = new StringResultSender(url, RequestUtil.createPostParamStr(map),"");
+        return sender.send();
     }
 }

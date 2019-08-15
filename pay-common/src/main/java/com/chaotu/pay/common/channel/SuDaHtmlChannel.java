@@ -85,7 +85,7 @@ public class SuDaHtmlChannel extends AbstractChannel {
     }
 
     @Override
-    public String requestUpper(OrderVo order, String sign) {
+    public Map<String,Object> requestUpper(OrderVo order, String sign) {
         String    pay_memberid=getAccount().getAccount();//商户id
         String    pay_orderid=order.getOrderNo();//20位订单号 时间戳+6位随机字符串组成
         String    pay_applydate=DateUtil.getDateTime(order.getCreateTime());//yyyy-MM-dd HH:mm:ss
@@ -103,10 +103,19 @@ public class SuDaHtmlChannel extends AbstractChannel {
         map.put("pay_productname",pay_productname);
         map.put("pay_bankcode",pay_bankcode);
         map.put("pay_md5sign",sign);
-        String url=getChannel().getRequestUrl();
-        StringResultSender paySender = new StringResultSender(url, RequestUtil.createPostParamStr(map), null);
-        String resMap = paySender.send();
-        return resMap;
+        map.put("url",getChannel().getRequestUrl());
+        String url="http://47.75.146.15:8080/order/redirect?"+RequestUtil.createPostParamStr(map);
+        SortedMap<String,Object> result = new TreeMap<>();
+        result.put("userId",order.getUserId());
+        result.put("amount",order.getAmount());
+        result.put("qrCode",url);
+        result.put("success","1");
+        result.put("underOrderNo",order.getUnderOrderNo());
+        result.put("orderNo",order.getOrderNo());
+        result.put("upperOrderNo","1");
+        String resultSign = DigestUtil.createSignBySortMap(result,order.getUserKey()).toUpperCase();
+        result.put("sign",resultSign);
+        return result;
     }
 
     private boolean checkSign(SortedMap<Object, Object> params, String sign) {
