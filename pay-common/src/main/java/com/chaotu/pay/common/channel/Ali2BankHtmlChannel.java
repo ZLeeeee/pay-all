@@ -85,7 +85,7 @@ public class Ali2BankHtmlChannel extends AbstractChannel {
         sortedMap.put("notify_url", getChannel().getNotifyUrl() + order.getChannelId() + "/" + order.getOrderNo());
         sortedMap.put("return_url", "https://www.baidu.com");
         sortedMap.put("order_time", DateUtil.getDateTime(order.getCreateTime()));
-        sortedMap.put("pay_code", "alipay_bank2");
+        sortedMap.put("pay_code", getChannel().getChannelCode());
         System.out.println(JSONObject.toJSONString(sortedMap));
         return sortedMap;
     }
@@ -99,7 +99,7 @@ public class Ali2BankHtmlChannel extends AbstractChannel {
         sortedMap.put("notify_url", getChannel().getNotifyUrl() + order.getChannelId() + "/" + order.getOrderNo());
         sortedMap.put("return_url", "https://www.baidu.com");
         sortedMap.put("order_time", DateUtil.getDateTime(order.getCreateTime()));
-        sortedMap.put("pay_code", "alipay_bank2");
+        sortedMap.put("pay_code", getChannel().getChannelCode());
         sortedMap.put("json", "json");
         sortedMap.put("sign", sign);
         PddMerchantSender<Map<String, Object>> paySender = new PddMerchantSender<>(getChannel().getRequestUrl(), sortedMap, null);

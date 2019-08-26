@@ -15,7 +15,7 @@ public class TestPay {
                 "    \"userId\": \"2d7b48d58a574fc1b6b874a930829a62\",\n" +
                 "    \"underOrderNo\": \"111\",\n" +
                 "    \"notifyUrl\": \"http://127.0.0.1:8080/yz/order/notify\",\n" +
-                "    \"amount\": \"1\",\n" +
+                "    \"amount\": \"1.00\",\n" +
                 "    \"sign\": \"71598D89CCE7052A4536A61360D8DCD7\",\n" +
                 "    \"payTypeId\":2\n" +
                 "}";
