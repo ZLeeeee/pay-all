@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Map;
@@ -115,6 +116,25 @@ public class RequestUtil {
         } else {
             return getRequestPostStr(request);
         }
+    }
+    public static String getBody(HttpServletRequest request)
+    {
+        try {
+            StringBuffer sb = new StringBuffer("");
+            String line = null;
+            BufferedReader reader;
+            reader = request.getReader();
+
+            while ((line = reader.readLine()) != null)
+                sb.append(line.trim());
+
+            return sb.toString();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return "";
     }
 
     /**
