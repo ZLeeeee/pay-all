@@ -97,7 +97,7 @@ public class OrderController {
         }
 
     }
-    @PostMapping("/notify/{channelId}/{orderNo}")
+    @RequestMapping("/notify/{channelId}/{orderNo}")
     public String notify(/*@RequestBody Map<String,Object> params,*/ @PathVariable Long channelId,@PathVariable String orderNo, HttpServletRequest request){
 
         try {
