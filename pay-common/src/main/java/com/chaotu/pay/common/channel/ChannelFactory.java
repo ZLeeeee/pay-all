@@ -41,6 +41,7 @@ public class ChannelFactory {
         registChannel(13,RongYiFuChannel.class);
         registChannel(14,HiPayChannel.class);
         registChannel(15,YouKuaiChannel.class);
+        registChannel(16,YouKuaiChannel.class);
     }
 
     public Channel getChannel(Long id){
@@ -55,9 +56,12 @@ public class ChannelFactory {
         TChannel channel = new TChannel();
         channel.setId(id);
         channel = channelMapper.selectOne(channel);
+        if(channel == null)
+            return;
         TChannelAccount account = new TChannelAccount();
         account.setChannelId(channel.getId());
         account = channelAccountMapper.selectOne(account);
+
         try{
             Channel channel1 = (Channel) (clzz.getConstructor(TChannel.class, TChannelAccount.class).newInstance(channel, account));
             channelMap.put(channel.getId(),channel1);
