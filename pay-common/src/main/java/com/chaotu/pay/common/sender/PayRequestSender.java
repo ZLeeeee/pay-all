@@ -26,14 +26,18 @@ public class PayRequestSender<T> implements Sender<T> {
 
         post.setHeader("User-Agent", "Mozilla/5.0 (Linux; Android 7.0; SM-G892A Build/NRD90M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/67.0.3396.87 Mobile Safari/537.36");
         String str = null;
+        String contentType = "";
         if(param instanceof String){
-            post.setHeader("Content-type", "application/x-www-form-urlencoded");
+            contentType="application/x-www-form-urlencoded";
             str = param.toString();
         }else{
-            post.setHeader("Content-type", "application/json");
+            contentType="application/json";
+
             str = JSON.toJSONString(param);
         }
         StringEntity entity = new StringEntity( str, Charset.forName("UTF-8"));
+        entity.setContentEncoding("UTF-8");
+        entity.setContentType(contentType);
         // 发送Json格式的数据请求
         post.setEntity(entity);
         RequestConfig requestConfig = RequestConfig.custom()
