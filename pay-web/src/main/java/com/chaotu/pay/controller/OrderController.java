@@ -171,4 +171,41 @@ public class OrderController {
         StringResultSender sender = new StringResultSender(url, RequestUtil.createPostParamStr(map),"");
         return sender.send();
     }
+    @GetMapping("/redirect/form")
+    public String redirectForm(HttpServletRequest request){
+        String url = request.getParameter("url");
+        StringBuilder sb = new StringBuilder();
+        sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n" ).
+               append("<html>\n" ).
+               append("<head>\n" ).
+               append("<title>To Pay</title>\n" ).
+               append("<script>\n" ).
+               append("self.moveTo(0,0);\n" ).
+               append("self.resizeTo(screen.availWidth,screen.availHeight);\n" ).
+               append("</script>\n" ).
+               append("<style> \n" ).
+               append(".tabPages{\n" ).
+               append("margin-top:150px;text-align:center;display:block; border:3px solid #d9d9de; padding:30px; font-size:14px;\n" ).
+               append("}\n" ).
+               append("</style>\n" ).
+               append("</head>\n" ).
+               append("<body onLoad=\"document.uncome.submit()\">\n" ).
+               append("<div id=\"Content\">\n" ).
+               append("  <div class=\"tabPages\">我们正在为您连接银行，请稍等......</div>\n" ).
+               append("</div>\n" ).
+               append("<form name=\"uncome\" action=\"").append(url).append("\" method=\"post\">\n" );
+        Enumeration em = request.getParameterNames();
+        while (em.hasMoreElements()) {
+            String name = (String) em.nextElement();
+            String value = request.getParameter(name);
+            if(StringUtils.equals("url",name)) {
+            }else {
+                sb.append("<input type=\"hidden\" name=\"").append(name).append("\"  value=\"").append(value).append("\">\n" );
+            }
+        }
+        sb.append("</form>\n" ).
+                append("</body>\n" ).
+                append("</html>");
+        return sb.toString();
+    }
 }

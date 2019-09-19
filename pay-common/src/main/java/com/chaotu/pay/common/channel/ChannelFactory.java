@@ -44,6 +44,7 @@ public class ChannelFactory {
         registChannel(16,YouKuaiChannel.class);
         registChannel(17,XiAnTaoBaChannel.class);
         registChannel(18,MyPayChannel.class);
+        registChannel(19,NewRongYiFuChannel.class);
     }
 
     public Channel getChannel(Long id){

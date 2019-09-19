@@ -6,6 +6,7 @@ import com.chaotu.pay.common.sender.PddMerchantSender;
 import com.chaotu.pay.common.utils.DateUtil;
 import com.chaotu.pay.common.utils.DigestUtil;
 import com.chaotu.pay.common.utils.RequestUtil;
+import com.chaotu.pay.constant.CommonConstant;
 import com.chaotu.pay.po.TChannel;
 import com.chaotu.pay.po.TChannelAccount;
 import com.chaotu.pay.vo.OrderVo;
@@ -87,7 +88,7 @@ public class YouKuaiChannel extends AbstractChannel {
         content.put("pay_md5sign",sign1);
         content.put("pay_productname","花费");
         content.put("url",getChannel().getRequestUrl());
-        String url="http://47.75.146.15:8080/order/redirect?"+RequestUtil.createPostParamStr(content);
+        String url= CommonConstant.REDIRECT_URL +RequestUtil.createPostParamStr(content);
 
             SortedMap<String,Object> result = new TreeMap<>();
             result.put("userId",order.getUserId());
