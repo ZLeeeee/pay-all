@@ -62,6 +62,18 @@ public class RequestUtil {
         }
         return sb.toString();
     }
+    public static String createPostParamStr2(Map<String, Object> payParam) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            for (Map.Entry entry : payParam.entrySet()) {
+                sb.append(URLEncoder.encode(entry.getKey().toString(), "UTF-8")).append("=").append(URLEncoder.encode(entry.getValue().toString(), "UTF-8")).append("&");
+            }
+            sb.deleteCharAt(sb.length() - 1);
+        }catch (Exception e){
+
+        }
+        return sb.toString();
+    }
 
     /**
      * @Author: zhangchu@iyungu.com
