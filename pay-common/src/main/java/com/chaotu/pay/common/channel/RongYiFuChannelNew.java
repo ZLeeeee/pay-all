@@ -48,6 +48,7 @@ public class RongYiFuChannelNew extends AbstractChannel {
         String sign = null;
         if (StringUtils.equals("1",state)) {
             sign = state+getAccount().getAccount()+request.getParameter("orderNo")+request.getParameter("amount")+getAccount().getSignKey();
+            request.setAttribute("amount",request.getParameter("actualPayAmount"));
             if (StringUtils.equals(request.getParameter("sign"),DigestUtils.md5Hex(sign))) {
                 return true;
             }

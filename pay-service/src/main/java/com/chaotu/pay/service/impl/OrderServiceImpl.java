@@ -301,6 +301,10 @@ public class OrderServiceImpl implements OrderService {
             TOrder order = new TOrder();
             order.setOrderNo(orderNo);
             order = selectOne(order);
+            Object amount = request.getAttribute("amount");
+            if(amount!=null){
+                order.setAmount(new BigDecimal((String)amount));
+            }
             Map<String,Object> result = new HashMap<>();
             result.put("successParam",channel.getSuccessNotifyStr());
             result.put("order",order);

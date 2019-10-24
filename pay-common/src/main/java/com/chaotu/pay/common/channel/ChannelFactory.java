@@ -51,6 +51,11 @@ public class ChannelFactory {
         registChannel(23,RongYiFuChannelNew.class);
         registChannel(24,JingYiTongChannel.class);
         registChannel(25,JuXinChannel.class);
+        registChannel(26,TTChannel.class);
+        registChannel(27, WuHanWuChannel.class);
+        registChannel(28, ChaoRenChannel.class);
+        registChannel(29, MachiPayChannel.class);
+        registChannel(30, TTChannel.class);
     }
 
     public Channel getChannel(Long id){

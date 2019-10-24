@@ -1,6 +1,7 @@
 package com.chaotu.pay.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.chaotu.pay.common.sender.PddMerchantSender;
 import com.chaotu.pay.common.sender.StringResultSender;
 import com.chaotu.pay.common.utils.DigestUtil;
 import com.chaotu.pay.common.utils.RequestUtil;
@@ -20,9 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @description: 订单管理
@@ -108,7 +107,28 @@ public class OrderController {
                 return (String)map.get("successParam");
             }
         }catch (Exception e){
+            e.printStackTrace();
            log.info("接收回调异常,订单:"+orderNo+"\n+通道id:"+channelId);
+        }
+        Map<String,Object > resultMap = new HashMap<>();
+        resultMap.put("success","0");
+        resultMap.put("msg","系统异常");
+        return "false";
+    }
+    @RequestMapping("/notify/chaoren/{orderNo}")
+    public String notify(@RequestBody String body, @PathVariable String orderNo, HttpServletRequest request){
+        try {
+            log.info("body: "+body);
+            request.setAttribute("body",body);
+            Map<String, Object> map = orderService.notify(null,orderNo, 28L,request);
+            if(map!=null){
+                TOrder order = (TOrder) map.remove("order");
+                producer.sendAll(JSONObject.toJSONString(order));
+                return (String)map.get("successParam");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            log.info("接收回调异常,订单:"+orderNo+"\n+通道id:"+28);
         }
         Map<String,Object > resultMap = new HashMap<>();
         resultMap.put("success","0");
@@ -135,22 +155,28 @@ public class OrderController {
     }
 
     @PostMapping("/test")
-    public Map<String,String> test(@RequestBody OrderVo orderVo){
+    public Message test(@RequestBody OrderVo orderVo){
         try {
-            Map<String,String> map = new HashMap<String , String>();
-            map.put("OUT_TRADE_NO","OUT_TRADE_NO");
-            map.put("ORDER_NO","ORDER_NO");
-            map.put("SUCCESS","1");
-            map.put("sign","SIGN");
-            map.put("NOTIFY_URL","NOTIFY_URL");
-            map.put("QRCODE","QRCODE");
-            map.put("AMOUNT","10");
-            return map;
+            String str = "{\n" +
+                    "    \"userId\": \"2d7b48d58a574fc1b6b874a930829a62\",\n" +
+                    "    \"underOrderNo\": \"111\",\n" +
+                    "    \"notifyUrl\": \"http://127.0.0.1:8080/yz/order/notify\",\n" +
+                    "    \"amount\": \"1.00\",\n" +
+                    "    \"sign\": \"dce88090fae7402c9c3930266f5d92e4\",\n" +
+                    "    \"payTypeId\":2\n" +
+                    "}";
+            Map<String,Object> map = JSONObject.parseObject(str,Map.class);
+            SortedMap<Object,Object> sortedMap = new TreeMap<>();
+            sortedMap.putAll(map);
+            sortedMap.put("payTypeId",orderVo.getPayTypeId());
+            sortedMap.put("amount",orderVo.getAmount());
+            sortedMap.remove("sign");
+            sortedMap.put("sign",DigestUtil.createSign(sortedMap,"1cc3352776504514ad4d5ae7be327c22"));
+            PddMerchantSender<Map<String,Object>> merchantSender = new PddMerchantSender<>("http://localhost:8080/order/pay",sortedMap,null);
+            Map<String, Object> send = merchantSender.send();
+            return ResponseUtil.responseBody(send);
         }catch (Exception e){
-            Map<String,String > resultMap = new HashMap<>();
-            resultMap.put("success","0");
-            resultMap.put("msg","系统异常");
-            return resultMap;
+            return ResponseUtil.responseBody("0001","系统异常");
         }
 
     }

@@ -16,8 +16,8 @@ public class TestPay {
                 "    \"userId\": \"2d7b48d58a574fc1b6b874a930829a62\",\n" +
                 "    \"underOrderNo\": \"111\",\n" +
                 "    \"notifyUrl\": \"http://127.0.0.1:8080/yz/order/notify\",\n" +
-                "    \"amount\": \"10.00\",\n" +
-                "    \"sign\": \"71598D89CCE7052A4536A61360D8DCD7\",\n" +
+                "    \"amount\": \"1.00\",\n" +
+                "    \"sign\": \"dce88090fae7402c9c3930266f5d92e4\",\n" +
                 "    \"payTypeId\":2\n" +
                 "}";
         Map<String,Object> map = JSONObject.parseObject(str,Map.class);

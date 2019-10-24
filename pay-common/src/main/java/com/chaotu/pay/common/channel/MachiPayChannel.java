@@ -103,7 +103,7 @@ public class MachiPayChannel extends AbstractChannel {
         sortedMap.put("secpVer","icp3-1.1");
         sortedMap.put("timeStamp",DateUtil.format(DateUtil.MACHI_PAY_MINUTE_FORMAT,order.getCreateTime()));
         sortedMap.put("txnAmt",order.getAmount().multiply(bigDecimal100).intValue());
-        sortedMap.put("txnSubType","41");
+        sortedMap.put("txnSubType",getChannel().getChannelCode());
         sortedMap.put("txnType","01");
         sortedMap.put("wapName","test");
         sortedMap.put("wapUrl","http://www.baidu.com");
@@ -128,7 +128,7 @@ public class MachiPayChannel extends AbstractChannel {
         sortedMap.put("secpVer","icp3-1.1");
         sortedMap.put("timeStamp",DateUtil.format(DateUtil.MACHI_PAY_MINUTE_FORMAT,order.getCreateTime()));
         sortedMap.put("txnAmt",order.getAmount().multiply(bigDecimal100).intValue());
-        sortedMap.put("txnSubType","41");
+        sortedMap.put("txnSubType",getChannel().getChannelCode());
         sortedMap.put("txnType","01");
         sortedMap.put("wapName","test");
         sortedMap.put("wapUrl","http://www.baidu.com");

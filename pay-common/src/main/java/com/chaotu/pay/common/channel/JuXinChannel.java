@@ -38,10 +38,12 @@ public class JuXinChannel extends AbstractChannel {
     @Override
     public boolean checkNotify(Map<String, Object> signParam, HttpServletRequest request) {
         String amount = request.getParameter("amount");
+        String payAmount = request.getParameter("payAmount");
         String orderid = request.getParameter("orderid");
         String status = request.getParameter("status");
         String shkey = request.getParameter("shkey");
-        String sign = DigestUtils.md5Hex(DigestUtils.md5Hex(getAccount().getSignKey())+DigestUtils.md5Hex(getAccount().getAccount()+amount+getChannel().getChannelCode()+orderid));
+        String sign = DigestUtils.md5Hex(DigestUtils.md5Hex(getAccount().getSignKey())+DigestUtils.md5Hex(getAccount().getAccount()+amount+"2"+orderid));
+        request.setAttribute("amount",payAmount);
         log.info("通道:"+getChannel().getChannelName()+"接收回调验证："+orderid+" sign:"+shkey+" status:"+status+" orderId:"+orderid+" mySign:"+sign);
         if(StringUtils.equals(status,"1")) {
             //String sign = DigestUtils.md5Hex(DigestUtils.md5Hex(getAccount().getSignKey()) + DigestUtils.md5Hex(getAccount().getAccount() + amount + getChannel().getChannelCode() + orderid));

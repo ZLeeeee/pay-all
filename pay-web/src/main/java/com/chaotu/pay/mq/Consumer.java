@@ -45,6 +45,7 @@ public class Consumer {
             UserVo user = userService.getUserById(order.getUserId());
             TOrder o = new TOrder();
             o.setId(order.getId());
+            o.setAmount(order.getAmount());
             BigDecimal channelAmount = order.getAmount().multiply(channel.getRate());
             o.setChannelAmount(channelAmount);
             BigDecimal sysAmount = order.getAmount().multiply(order.getOrderRate());
