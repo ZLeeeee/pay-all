@@ -35,6 +35,8 @@ public class Consumer {
     OrderService tOrderService;
     @Autowired
     ChannelAccountService accountService;
+    @Autowired
+    YinlianAccountService yinlianAccountService;
 
     @RabbitListener(id = "a",queues = RabbitMQConfig.QUEUE_A)
     public void processMessage(String content) {
@@ -54,6 +56,8 @@ public class Consumer {
             o.setUserAmount(userAmount);
             o.setStatus(CommonConstant.ORDER_STATUS_PAIED);
             channelService.updateAmount(order.getAmount(),channel.getId());
+            if(32L == order.getChannelId())
+                yinlianAccountService.updateAmount(order.getAmount(),order.getAccount());
             //accountService.updateAmount(order.getAmount(), o.getChannelId());
             tOrderService.update(o);
             userService.updateAmount(userAmount,user.getId());

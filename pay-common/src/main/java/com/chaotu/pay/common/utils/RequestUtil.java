@@ -2,11 +2,34 @@ package com.chaotu.pay.common.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContexts;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import javax.net.ssl.SSLContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 
@@ -23,7 +46,36 @@ public class RequestUtil {
         }
         return instance;
     }
-
+    /**
+     * XML格式字符串转换为Map
+     *
+     * @param xml XML字符串
+     * @return XML数据转换后的Map
+     * @throws Exception
+     */
+    public static Map<String, String> xmlToMap(String xml) {
+        try {
+            Map<String, String> data = new HashMap<>();
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            InputStream stream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
+            org.w3c.dom.Document doc = documentBuilder.parse(stream);
+            doc.getDocumentElement().normalize();
+            NodeList nodeList = doc.getDocumentElement().getChildNodes();
+            for (int idx = 0; idx < nodeList.getLength(); ++idx) {
+                Node node = nodeList.item(idx);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    org.w3c.dom.Element element = (org.w3c.dom.Element) node;
+                    data.put(element.getNodeName(), element.getTextContent());
+                }
+            }
+            stream.close();
+            return data;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     /**
      * @Author: zhangchu@iyungu.com
@@ -74,7 +126,38 @@ public class RequestUtil {
         }
         return sb.toString();
     }
+    public static CloseableHttpClient getHttpsClient() {
+        RegistryBuilder<ConnectionSocketFactory> registryBuilder = RegistryBuilder.<ConnectionSocketFactory>create();
+        ConnectionSocketFactory plainSF = new PlainConnectionSocketFactory();
+        registryBuilder.register("http", plainSF);
+        // 指定信任密钥存储对象和连接套接字工厂
+        try {
+            KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            // 信任任何链接
+            TrustStrategy anyTrustStrategy = new TrustStrategy() {
 
+                @Override
+                public boolean isTrusted(java.security.cert.X509Certificate[] arg0, String arg1) throws java.security.cert.CertificateException {
+                    // TODO Auto-generated method stub
+                    return true;
+                }
+            };
+            SSLContext sslContext = SSLContexts.custom().useTLS().loadTrustMaterial(trustStore, anyTrustStrategy).build();
+            LayeredConnectionSocketFactory sslSF = new SSLConnectionSocketFactory(sslContext, SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+            registryBuilder.register("https", sslSF);
+        } catch (KeyStoreException e) {
+            throw new RuntimeException(e);
+        } catch (KeyManagementException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        Registry<ConnectionSocketFactory> registry = registryBuilder.build();
+        // 设置连接管理器
+        PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(registry);
+        // 构建客户端
+        return HttpClientBuilder.create().setConnectionManager(connManager).build();
+    }
     /**
      * @Author: zhangchu@iyungu.com
      * @Description:根据request将参数整理到MAP对象里

@@ -194,7 +194,7 @@ public class OrderServiceImpl implements OrderService {
             }
 
         }
-        TChannelAccount account = new TChannelAccount();
+        /*TChannelAccount account = new TChannelAccount();
         account.setChannelId(channel.getId());
         account = accountService.selectOne(account);
         if(StringUtils.equals(account.getStatus(),CommonConstant.CHANNEL_STATUS_FALSE)){
@@ -208,7 +208,7 @@ public class OrderServiceImpl implements OrderService {
             sortedMap.put("msg","通道账号超限额");
             log.info("创建订单失败:["+ JSONObject.toJSONString(order) +"],通道账号:"+channel.getChannelName()+"超限额");
             return sortedMap;
-        }
+        }*/
         UserVo userVo = userService.getUserById(order.getUserId());
         if(userVo.getTodayAmount().compareTo(userVo.getLimitAmount())>=0){
             sortedMap.put("success","0");
@@ -241,6 +241,7 @@ public class OrderServiceImpl implements OrderService {
         userRates = userRatesService.get(userRates);
         TPayType payType = payTypeService.findById(channel.getPayTypeId());
         String orderNo = "P"+ IDGeneratorUtils.getFlowNum();
+        Channel c = channelFactory.getChannel(channel.getId());
         order.setIsNotify(CommonConstant.ORDER_STATUS_HASNT_NOTIFYED);
         order.setPayTypeId(channel.getPayTypeId());
         order.setChannelName(channel.getChannelName());
@@ -252,7 +253,7 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderRate(userRates.getRate());
         order.setStatus(CommonConstant.ORDER_STATUS_NOT_PAIED);
         order.setUnderOrderNo(vo.getUnderOrderNo());
-        order.setAccount(account.getAccount());
+
         /*JSONObject jso = JSONObject.parseObject(channel.getExtend());
 
         sortedMap.put(jso.get(CommonConstant.PARAM_NAME_ACCOUNT_ID),account.getAccount());
@@ -262,7 +263,6 @@ public class OrderServiceImpl implements OrderService {
         String sign = DigestUtil.createSign(sortedMap, account.getSignKey());
         sortedMap.put(jso.get(CommonConstant.PARAM_NAME_SIGN),sign);*/
         vo.setUserKey(userVo.getSignKey());
-        Channel c = channelFactory.getChannel(channel.getId());
         BeanUtils.copyProperties(order,vo);
         Object resultT = c.pay(vo);
         /*Sender<Map<Object, Object>> sender = null;
@@ -285,7 +285,7 @@ public class OrderServiceImpl implements OrderService {
         }else {
             order.setUpperOrderNo("1");
         }
-
+        order.setAccount(c.getAccountId());
         insert(order);
         redisUtils.zadd(CommonConstant.CHANNEL_ZSET_KEY+channel1.getId(),new Double(System.currentTimeMillis()),order.getOrderNo());
 

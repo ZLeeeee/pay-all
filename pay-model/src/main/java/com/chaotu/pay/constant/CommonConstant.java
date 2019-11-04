@@ -5,7 +5,8 @@ public interface CommonConstant {
     byte ORDER_STATUS_NOT_PAIED = 0;
     int ORDER_STATUS_HAS_NOTIFYED = 1;
     int ORDER_STATUS_HASNT_NOTIFYED = 0;
-    String REDIRECT_URL="http://47.56.173.70:8080/order/redirect/form?";
+    String REDIRECT_URL="http://47.75.80.109:8080/order/redirect/form?";
+    String REDIRECT_IMG_URL="http://47.75.80.109:8080/order/redirect/img?";
     String CHANNEL_ZSET_KEY = "channel:zset:";
     String NOTIFY_URL = "http://47.75.146.15:8080/order/notify/";
     String PARAM_NAME_OUT_TRADE_NO = "OUT_TRADE_NO";

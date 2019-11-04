@@ -24,5 +24,7 @@ public interface Channel {
 
     String getSuccessNotifyStr();
 
+    String getAccountId();
+
     //String createNotifySign(Map<String, Object> signParam, HttpServletRequest request);
 }

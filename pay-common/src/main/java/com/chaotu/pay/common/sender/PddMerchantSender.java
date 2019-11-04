@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.parser.Feature;
+import com.chaotu.pay.common.utils.RequestUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -21,7 +22,7 @@ import java.nio.charset.Charset;
 public class PddMerchantSender<T> implements Sender<T> {
 
     public PddMerchantSender(String url, Object param, String cookie){
-        HttpClient client = new DefaultHttpClient();
+        HttpClient client = RequestUtil.getHttpsClient();//new DefaultHttpClient();
         HttpPost post = new HttpPost(url);
 
         //post.setHeader("Cookie", cookie);

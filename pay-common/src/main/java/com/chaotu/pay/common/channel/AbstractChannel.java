@@ -28,6 +28,11 @@ public abstract class AbstractChannel implements Channel {
     @Override
     public abstract String getSuccessNotifyStr() ;
 
+    @Override
+    public String getAccountId() {
+        return getAccount().getAccount();
+    }
+
     abstract Map<String,Object> createSignMap(OrderVo orderVo);
     public abstract Object requestUpper(OrderVo orderVo,String sign);
 

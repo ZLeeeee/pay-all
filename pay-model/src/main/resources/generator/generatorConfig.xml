@@ -23,10 +23,7 @@
         <sqlMapGenerator targetPackage="mapper" targetProject="../pay-dao/src/main/resources"/>
 
         <javaClientGenerator targetPackage="com.chaotu.pay.dao" targetProject="../pay-dao/src/main/java" type="XMLMAPPER"/>
-        <table schema="pay" tableName="t_yz_user_address">
-            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
-        </table>
-        <table schema="pay" tableName="t_yz_user">
+        <table schema="pay" tableName="t_yinlian_account">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
      <!--   <table schema="pay" tableName="t_pdd_goods">

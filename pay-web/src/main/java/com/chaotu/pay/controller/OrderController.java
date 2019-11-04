@@ -234,4 +234,95 @@ public class OrderController {
                 append("</html>");
         return sb.toString();
     }
+    @GetMapping("/redirect/img")
+    public String redirectImg(HttpServletRequest request){
+        String url = request.getParameter("url");
+        StringBuilder sb = new StringBuilder();
+        sb.append("<!DOCTYPE html>").
+            append("<html lang=\"en\">").
+            append("<head>").
+            append("  <meta charset=\"UTF-8\">").
+            append("  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">").
+            append("  <meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\">").
+            append("  <title>Document</title>").
+            append("  <style>").
+            append("    *{").
+            append("            margin:0;").
+            append("            padding:0;").
+            append("        }").
+            append("        ul {").
+            append("            list-style: none;").
+            append("            margin:15px 15px;").
+            append("            border:1px solid #888383;").
+            append("            background-color:#F1EDEE;").
+            append("            border-radius: 1px;").
+            append("        }").
+            append("        li {").
+            append("            line-height:40px;").
+            append("            border-bottom:1px solid #888383;").
+            append("            padding-left:10px;").
+            append("        }").
+            append("        ul:last-child{").
+            append("            border-bottom:none;").
+            append("        }").
+            append("        p{").
+            append("            display:inline;").
+            append("        }").
+            append("    .top{").
+            append("            font-size:14px;").
+            append("        }").
+            append("    .top p{").
+            append("            color:red").
+            append("        }").
+            append("    .down{").
+            append("            margin:15px 15px;").
+            append("            border:1px solid #888383;").
+            append("        }").
+            append("    .tit1{").
+            append("            padding-left:10px;").
+            append("        }").
+            append("    .item1{").
+            append("            margin-top:10px;").
+            append("        }").
+            append("        img{").
+            append("            width:321px;").
+            append("            height:327px;").
+            append("        }").
+            append("  </style>").
+            append("</head>").
+            append("<body>").
+            append("  <div>").
+            append("    <!-- 上部标题 -->").
+            append("    <div class=\"top\">").
+            append("      <ul>").
+            append("        <li><span>订单编号：").
+            append(request.getParameter("orderNo")).
+            append("</span></li>").
+            append("        <li><span>应付金额：<p>").
+            append(request.getParameter("amount")).
+            append("</p>人民币CNY</span></li>").
+            append("        <li><span>请于<p>5分钟</p>内完成支付</span></li>").
+            append("      </ul>").
+            append("    </div>").
+            append("    <!-- 下部二维码 -->").
+            append("    <div class=\"down\">").
+            append("      <!-- 标题 -->").
+            append("      <div class=\"tit1\">").
+            append("        <span class=\"item1\">1.将款项人民币<p>").
+            append(request.getParameter("amount")).
+            append("</p>元支付至以下账户</span>").
+            append("      </div>").
+            append("      <div class=\"tit1\">").
+            append("        <div>").
+            append("          <img src=\"").
+            append(request.getParameter("imgUrl")).
+            append("\" alt=\"\">").
+            append("        </div>").
+            append("      </div>").
+            append("    </div>").
+            append("  </div>").
+            append("</body>").
+            append("</html>");
+        return sb.toString();
+    }
 }

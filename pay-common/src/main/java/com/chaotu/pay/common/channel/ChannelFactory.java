@@ -56,6 +56,8 @@ public class ChannelFactory {
         registChannel(28, ChaoRenChannel.class);
         registChannel(29, MachiPayChannel.class);
         registChannel(30, TTChannel.class);
+        registChannel(31, ChaoRenChannel.class);
+        registChannel(33, PowerChannel.class);
     }
 
     public Channel getChannel(Long id){

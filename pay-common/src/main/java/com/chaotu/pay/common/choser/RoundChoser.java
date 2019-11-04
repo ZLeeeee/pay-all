@@ -29,7 +29,7 @@ public class RoundChoser<T> implements Choser{
     @Override
     public void update(List list) {
         this.list = list;
-        this.integer = new AtomicInteger(0);
+        integer.set(0);
     }
 
     @Override
