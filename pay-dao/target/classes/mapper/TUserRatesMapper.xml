@@ -1,53 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.chaotu.pay.dao.TUserRatesMapper">
-  <resultMap id="BaseResultMap" type="com.chaotu.pay.po.TUserRates">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="user_id" jdbcType="VARCHAR" property="userId" />
-    <result column="channel_id" jdbcType="INTEGER" property="channelId" />
-    <result column="channel_payment_id" jdbcType="INTEGER" property="channelPaymentId" />
-    <result column="rate" jdbcType="DECIMAL" property="rate" />
-    <result column="status" jdbcType="TINYINT" property="status" />
-  </resultMap>
+    <resultMap id="BaseResultMap" type="com.chaotu.pay.po.TUserRates">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="channel_id" jdbcType="BIGINT" property="channelId"/>
+        <result column="pay_type_id" jdbcType="INTEGER" property="payTypeId"/>
+        <result column="rate" jdbcType="DECIMAL" property="rate"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+    </resultMap>
 
-  <resultMap id="VoResultMap" type="com.chaotu.pay.vo.UserRatesVo">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="user_id" jdbcType="VARCHAR" property="userId" />
-    <result column="channel_id" jdbcType="INTEGER" property="channelId" />
-    <result column="channel_payment_id" jdbcType="INTEGER" property="channelPaymentId" />
-    <result column="rate" jdbcType="DECIMAL" property="rate" />
-    <result column="status" jdbcType="TINYINT" property="status" />
-    <result column="paymentName" jdbcType="TINYINT" property="paymentName" />
-  </resultMap>
+    <resultMap id="VoResultMap" type="com.chaotu.pay.vo.UserRatesVo">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="channel_id" jdbcType="BIGINT" property="channelId"/>
+        <result column="pay_type_id" jdbcType="INTEGER" property="payTypeId"/>
+        <result column="rate" jdbcType="DECIMAL" property="rate"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="channel_name" jdbcType="VARCHAR" property="channelName"/>
+        <result column="payTypeName" jdbcType="VARCHAR" property="payTypeName"/>
+    </resultMap>
 
 
-  <select id="getUserRatesByUser" parameterType="com.chaotu.pay.vo.UserVo" resultMap="VoResultMap">
-    SELECT ur.*,cp.paymentName paymentName FROM t_user_rates ur
-    <if test="parentId!=null and parentId!=''">
-    inner join t_user_rates urp on urp.channel_id = ur.channel_id
-    and urp.user_id = #{parentId} and urp.status = '1'
-    </if>
-    inner join t_channel c on c.id = ur.channel_id and c.status = '1'
-    inner join t_channel_payments cp on c.id = cp.channel_id and cp.status = '1'
-    where ur.user_id = #{id}
+    <select id="getUserRatesByUser" parameterType="com.chaotu.pay.vo.UserVo" resultMap="VoResultMap">
+        SELECT ur.*,cp.name payTypeName,c.channel_name channel_name FROM t_user_rates ur
+        <!--<if test="parentId!=null and parentId!=''">
+        inner join t_user_rates urp on urp.channel_id = ur.channel_id
+        and urp.user_id = #{parentId} and urp.status = '1'
+        </if>-->
+        inner join t_channel c on c.id = ur.channel_id
+        inner join t_pay_type cp on c.pay_type_id = cp.id
+        where ur.user_id = #{id}
 
-  </select>
+    </select>
 
-  <update id="updateByUserId">
-    update t_user_rates
-    <set>
-      <if test="userRates.status != null">status = #{userRates.status}</if>
-    </set>
-    where user_id in
-    <foreach collection="users" item="item" index="index" open="(" close=")" separator=",">
-      #{item.id}
-    </foreach>
-    and channel_payment_id = #{userRates.channelPaymentId}
-  </update>
+    <update id="updateByUserId">
+        update t_user_rates
+        <set>
+            <if test="userRates.status != null">status = #{userRates.status}</if>
+        </set>
+        where user_id in
+        <foreach collection="users" item="item" index="index" open="(" close=")" separator=",">
+            #{item.id}
+        </foreach>
+        and channel_payment_id = #{userRates.channelPaymentId}
+    </update>
+    <insert id="initUserRates" parameterType="com.chaotu.pay.po.TUser">
+    INSERT INTO t_user_rates
+    (user_id,channel_id,pay_type_id,rate,STATUS)
+    SELECT u.id,c.id,c.pay_type_id,c.rate,1
+    FROM t_user u,t_channel c
+    WHERE u.id = #{id}
+  </insert>
 </mapper>
