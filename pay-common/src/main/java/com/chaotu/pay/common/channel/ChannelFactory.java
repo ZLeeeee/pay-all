@@ -3,6 +3,7 @@ package com.chaotu.pay.common.channel;
 import com.alibaba.fastjson.JSONObject;
 import com.chaotu.pay.dao.TChannelAccountMapper;
 import com.chaotu.pay.dao.TChannelMapper;
+import com.chaotu.pay.dao.TYinlianAccountMapper;
 import com.chaotu.pay.po.TChannel;
 import com.chaotu.pay.po.TChannelAccount;
 
@@ -22,7 +23,7 @@ public class ChannelFactory {
     private Map<Long,Channel> channelMap;
     private Map<Long,TChannelAccount> channelAccountMap;
     @Autowired
-    public ChannelFactory(TChannelMapper channelMapper , TChannelAccountMapper channelAccountMapper){
+    public ChannelFactory(TChannelMapper channelMapper , TChannelAccountMapper channelAccountMapper, TYinlianAccountMapper yinlianAccountMapper){
         this.channelMapper = channelMapper;
         this.channelAccountMapper = channelAccountMapper;
         this.channelMap = new ConcurrentHashMap<>();
@@ -58,6 +59,18 @@ public class ChannelFactory {
         registChannel(30, TTChannel.class);
         registChannel(31, ChaoRenChannel.class);
         registChannel(33, PowerChannel.class);
+        registChannel(34, ACVChannel.class);
+        registChannel(35, RongYiFuNew.class);
+        registChannel(36,TTChannel.class);
+        registChannel(37,TTChannel.class);
+        registChannel(38,WeiBoChannel.class);
+        TChannel channel = new TChannel();
+        channel.setId(32L);
+        channel = channelMapper.selectOne(channel);
+        YinLianChannel yinLianChannel = new YinLianChannel(channel, yinlianAccountMapper);
+        channelMap.put(channel.getId(),yinLianChannel);
+        channelAccountMap.put(channel.getId(),new TChannelAccount());
+
     }
 
     public Channel getChannel(Long id){

@@ -5,6 +5,10 @@ import com.chaotu.pay.common.channel.YinLianChannel;
 import com.chaotu.pay.dao.TYinlianAccountMapper;
 import com.chaotu.pay.po.TYinlianAccount;
 import com.chaotu.pay.service.YinlianAccountService;
+import com.chaotu.pay.vo.MyPageInfo;
+import com.chaotu.pay.vo.PageVo;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -49,14 +53,22 @@ public class YinlianAccountServiceImpl implements YinlianAccountService {
     }
     @Override
     public synchronized void updateAmount(BigDecimal amount, String accountid) {
-        Example example = new Example(TYinlianAccount.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("account",accountid);
-        TYinlianAccount account = accountMapper.selectOneByExample(example);
+        TYinlianAccount yinlianAccount = new TYinlianAccount();
+        yinlianAccount.setAccount(accountid);
+        TYinlianAccount account = accountMapper.selectOne(yinlianAccount);
         BigDecimal todayAmount = account.getTodayAmount().add(amount);
         BigDecimal totalAmount = account.getTotalAmount().add(amount);
         account.setTodayAmount(todayAmount);
         account.setTotalAmount(totalAmount);
         accountMapper.updateByPrimaryKeySelective(account);
+    }
+
+    @Override
+    public MyPageInfo findAllByPage(PageVo pageVo) {
+        Page<Object> objects = PageHelper.startPage(pageVo.getPageNumber(), pageVo.getPageNumber());
+        List<TYinlianAccount> accounts = findAll();
+        MyPageInfo pageInfo = new MyPageInfo(accounts);
+        pageInfo.setTotal(objects.getTotal());
+        return pageInfo;
     }
 }

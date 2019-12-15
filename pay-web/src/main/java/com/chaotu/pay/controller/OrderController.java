@@ -86,7 +86,9 @@ public class OrderController {
             if(-1 == ttl){
                 jedis.expire(key,60);
             }*/
-            return orderService.pay(orderVo);
+            Map pay = (Map) orderService.pay(orderVo);
+            pay.remove("upperOrderNo");
+            return pay;
         }catch (Exception e){
             e.printStackTrace();
             Map<Object,Object > resultMap = new HashMap<>();
@@ -308,9 +310,9 @@ public class OrderController {
             append("    <div class=\"down\">").
             append("      <!-- 标题 -->").
             append("      <div class=\"tit1\">").
-            append("        <span class=\"item1\">1.将款项人民币<p>").
+            append("        <span class=\"item1\">1.将二维码截图保存<p>").
             append(request.getParameter("amount")).
-            append("</p>元支付至以下账户</span>").
+            append("</p>使用支付宝扫一扫支付</span>").
             append("      </div>").
             append("      <div class=\"tit1\">").
             append("        <div>").

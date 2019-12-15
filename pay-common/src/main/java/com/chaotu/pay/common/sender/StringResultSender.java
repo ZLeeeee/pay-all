@@ -28,7 +28,7 @@ public class StringResultSender implements Sender<String> {
         post.setHeader("User-Agent", "Mozilla/5.0 (Linux; Android 7.0; SM-G892A Build/NRD90M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/67.0.3396.87 Mobile Safari/537.36");
         String str = null;
         if(param instanceof String){
-            post.setHeader("Content-type", "application/x-www-form-urlencoded");
+            post.setHeader("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
             str = param.toString();
         }else{
             post.setHeader("Content-type", "application/json");

@@ -30,7 +30,7 @@ import java.util.*;
 @Slf4j
 public class YinLianChannel extends AbstractChannel {
 
-    private static final String successStr = "OK";
+    private static final String successStr = "success";
     private final RoundChoser<TYinlianAccount> roundChoser;
     private final TYinlianAccountMapper accountMapper;
     private final ThreadLocal<String> accountThreadLocal = new ThreadLocal<>();
@@ -66,25 +66,23 @@ public class YinLianChannel extends AbstractChannel {
             update();
             return chooseAccount();
         }
-        return roundChoser.chose();
+        return account;
     }
     public void update(){
         TYinlianAccount yinlianAccount = new TYinlianAccount();
-        yinlianAccount.setStatus("0");
+        yinlianAccount.setStatus("1");
         roundChoser.update(accountMapper.select(yinlianAccount));
     }
     @Override
     public boolean checkNotify(Map<String, Object> signParam, HttpServletRequest request) {
-        SortedMap<Object,Object> map = new TreeMap<>();
-        Enumeration<String> parameterNames = request.getParameterNames();
-        while (parameterNames.hasMoreElements()){
-            String s = parameterNames.nextElement();
-            map.put(s,request.getParameter(s));
-        }
-        String sign = (String) map.remove("sign");
-        map.remove("attach");
-        log.info("通道:"+getChannel().getChannelName()+"接收回调验证："+JSONObject.toJSONString(map));
-        if ("00".equals(request.getParameter("returncode"))&&StringUtils.equals(sign,DigestUtil.createSign(map,getAccount().getSignKey())))
+        String body = RequestUtil.getBody(request);
+        Map<String, String> map = RequestUtil.xmlToMap(body);
+        String sign = map.remove("sign");
+        TreeMap<String, Object> sortMap = new TreeMap<>(map);
+        TYinlianAccount account = new TYinlianAccount();
+        account.setAccount(map.get("mch_id"));
+        log.info("通道:"+getChannel().getChannelName()+"接收回调验证："+JSONObject.toJSONString(sortMap)+sign);
+        if ("0".equals(map.get("result_code"))&&StringUtils.equalsIgnoreCase(sign,createSign(sortMap,accountMapper.selectOne(account).getSignKey())))
             return true;
 
         return false;
@@ -116,7 +114,7 @@ public class YinLianChannel extends AbstractChannel {
         map.put("nonce_str", order.getOrderNo());
         map.put("mch_create_ip", "127.0.0.1");
         map.put("total_fee", order.getAmount().multiply(B_100).intValue());
-        map.put("body", "话费充值");
+        map.put("body", account.getCreateBy());
         map.put("out_trade_no", order.getOrderNo());
         map.put("notify_url",getChannel().getNotifyUrl()+order.getChannelId()+"/"+order.getOrderNo());
         map.put("sign", createSign(map,account.getSignKey()));
@@ -135,6 +133,11 @@ public class YinLianChannel extends AbstractChannel {
             String resultSign = DigestUtil.createSignBySortMap(result, order.getUserKey()).toUpperCase();
             result.put("sign", resultSign);
             return result;
+        }else{
+            account.setPassword(JSONObject.toJSONString(resMap));
+            account.setStatus("0");
+            accountMapper.updateByPrimaryKeySelective(account);
+            update();
         }
         return null;
     }
@@ -157,13 +160,13 @@ public class YinLianChannel extends AbstractChannel {
 
         log.info("==============================待编码字符串==============================\r\n" + reqBody);
 
-        try {
+        /*try {
             reqBody = URLEncoder.encode(reqBody, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
-        log.info("==============================编码后字符串==============================\r\n" + reqBody);
+        log.info("==============================编码后字符串==============================\r\n" + reqBody);*/
         return reqBody;
     }
     private  String createSign(SortedMap<String, Object> parameters, String key) {
@@ -180,10 +183,10 @@ public class YinLianChannel extends AbstractChannel {
                 sb.append(k + "=" + v + "&");
             }
         }
-        sb.deleteCharAt(sb.length()-1);
+        //sb.deleteCharAt(sb.length()-1);
         sb.append("key="+key); //KEY是商户秘钥
         String sign = DigestUtils.md5Hex(sb.toString());
-        return sign; // D3A5D13E7838E1D453F4F2EA526C4766
+        return sign.toUpperCase(); // D3A5D13E7838E1D453F4F2EA526C4766
     }
     @Override
     public String getAccountId(){

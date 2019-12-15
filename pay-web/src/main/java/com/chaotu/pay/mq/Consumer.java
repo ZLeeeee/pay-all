@@ -62,6 +62,7 @@ public class Consumer {
             tOrderService.update(o);
             userService.updateAmount(userAmount,user.getId());
         }catch (Exception e){
+            e.printStackTrace();
             log.error("订单:"+content+"接收异常");
         }
     }

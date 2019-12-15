@@ -102,12 +102,14 @@ public class ChannelServiceImpl implements ChannelService {
         account.setTodayAmount(todayAmount);
         account.setTotalAmount(totalAmount);
         Channel channel = factory.getChannel(channelId);
-        TChannelAccount account1 = channel.getAccount();
         TChannel tChannel = channel.getChannel();
         tChannel.setTodayAmount(todayAmount);
         tChannel.setTotalAmount(totalAmount);
-        account1.setTodayAmount(todayAmount);
-        account1.setTotalAmount(totalAmount);
+        if(channelId!=32L) {
+            TChannelAccount account1 = channel.getAccount();
+            account1.setTodayAmount(todayAmount);
+            account1.setTotalAmount(totalAmount);
+        }
         channelMapper.updateByPrimaryKeySelective(account);
     }
 }
